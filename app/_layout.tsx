@@ -1,3 +1,4 @@
+import React from "react";
 import { GluestackUIProvider } from "@gluestack-ui/themed";
 import { config } from "../gluestack-ui.config";
 import { Stack } from "expo-router";
@@ -17,14 +18,16 @@ if (typeof window !== "undefined") {
 function RootLayoutContent() {
   const { resolvedTheme } = useTheme();
 
-  // Apply dark class to document in web
-  if (Platform.OS === 'web' && typeof document !== 'undefined') {
-    if (resolvedTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
+  // Apply dark class to document in web using useLayoutEffect (runs synchronously before paint)
+  React.useLayoutEffect(() => {
+    if (Platform.OS === 'web' && typeof document !== 'undefined') {
+      if (resolvedTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
     }
-  }
+  }, [resolvedTheme]);
 
   const colors = getThemeColors(resolvedTheme === 'dark');
   const backgroundColor = colors.background;

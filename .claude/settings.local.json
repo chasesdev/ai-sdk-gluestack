@@ -10,7 +10,10 @@
       "Bash(cp:*)",
       "Bash(yarn install:*)",
       "WebFetch(domain:github.com)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(git -C /Users/cd/github/ai-sdk-gluestack diff app/components.tsx)",
+      "Bash(git -C /Users/cd/github/ai-sdk-gluestack log --oneline --all -10)",
+      "Bash(npx tsc:*)"
     ],
     "deny": [],
     "ask": []

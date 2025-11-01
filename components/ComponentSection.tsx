@@ -1,9 +1,6 @@
 import { VStack } from '@gluestack-ui/themed';
-import { Heading } from '@gluestack-ui/themed';
-import { Text } from '@gluestack-ui/themed';
 import { ReactNode } from 'react';
-import { useTheme } from '../contexts/ThemeContext';
-import { getThemeColors } from '../constants/theme';
+import { ThemedHeading, ThemedText } from './themed';
 
 interface ComponentSectionProps {
   title: string;
@@ -12,23 +9,17 @@ interface ComponentSectionProps {
 }
 
 export function ComponentSection({ title, description, children }: ComponentSectionProps) {
-  const { resolvedTheme } = useTheme();
-  const colors = getThemeColors(resolvedTheme === 'dark');
-  const { text: textColor, mutedText: mutedTextColor } = colors;
-
   return (
-    <VStack space="md" className="mb-8">
+    <VStack space="md" sx={{ marginBottom: '$8' }}>
       <VStack space="xs">
-        <Heading size="xl" style={{ color: textColor }}>
-          {title}
-        </Heading>
+        <ThemedHeading size="xl">{title}</ThemedHeading>
         {description && (
-          <Text size="sm" style={{ color: mutedTextColor }}>
+          <ThemedText variant="muted" size="sm">
             {description}
-          </Text>
+          </ThemedText>
         )}
       </VStack>
-      <VStack space="md" className="mt-2">
+      <VStack space="md" sx={{ marginTop: '$2' }}>
         {children}
       </VStack>
     </VStack>

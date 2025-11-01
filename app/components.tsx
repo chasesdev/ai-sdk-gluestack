@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { ScrollView, View, Switch as RNSwitch, Platform, Dimensions } from 'react-native';
+import { ScrollView, View, Switch as RNSwitch, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Box,
@@ -85,18 +85,19 @@ import { CheckIcon, ChevronDownIcon, ChevronUpIcon, CircleIcon, CloseIcon, AddIc
 import { ThemeSwitcher } from '../components/ThemeSwitcher';
 import { useTheme } from '../contexts/ThemeContext';
 import { getThemeColors } from '../constants/theme';
+import {
+  ThemedHeading,
+  ThemedText,
+  ThemedCard,
+  ThemedBox,
+  ResponsiveContainer,
+} from '../components/themed';
 
 export default function ComponentsPage() {
+  // Theme-aware colors (still needed for some demo content)
   const { resolvedTheme } = useTheme();
-  const insets = useSafeAreaInsets();
-  const screenWidth = Dimensions.get('window').width;
-
-  // Responsive horizontal padding: smaller on mobile, larger on tablets/desktop
-  const horizontalPadding = screenWidth < 768 ? 8 : 16;
-
-  // Theme-aware colors
   const colors = getThemeColors(resolvedTheme === 'dark');
-  const { background: bgColor, text: textColor, mutedText: mutedTextColor, tintedBg } = colors;
+  const { text: textColor, mutedText: mutedTextColor, tintedBg } = colors;
 
   // State for interactive components
   const [inputValue, setInputValue] = useState('');
@@ -163,72 +164,57 @@ export default function ComponentsPage() {
 
   return (
     <>
-      <ScrollView
-        ref={scrollViewRef}
-        className="flex-1 bg-background"
-        style={{ backgroundColor: bgColor }}
-        contentInsetAdjustmentBehavior="automatic"
-      >
-        <View
-          ref={containerRef}
-          className="max-w-4xl mx-auto w-full"
-          style={{
-            backgroundColor: bgColor,
-            paddingTop: Math.max(insets.top, Platform.OS === 'ios' ? 10 : 24),
-            paddingBottom: 24,
-            paddingHorizontal: horizontalPadding,
-          }}
-        >
-        {/* Header */}
-        <Animated.View entering={FadeIn.duration(400)}>
-          <VStack className="mb-6">
-            <VStack space="sm">
-              <Heading size="xl" style={{ color: textColor }}>
-                Gluestack UI Showcase
-              </Heading>
-              <Text size="lg" style={{ color: mutedTextColor }}>
-                Interactive demo of all 35+ components
-              </Text>
-            </VStack>
-            <Divider />
-          </VStack>
-        </Animated.View>
-
-        {/* Table of Contents */}
-        <Animated.View entering={FadeInDown.delay(100).duration(400)}>
-          {tocExpanded ? (
-            <Box className="mb-4">
-              <Button variant="link" onPress={() => setTocExpanded(false)}>
-                <ButtonText style={{ color: textColor }}>Table of Contents</ButtonText>
-                <Icon as={ChevronUpIcon} size="sm" />
-              </Button>
-              <VStack space="sm" className="py-2 mt-2">
-                {sections.map((section, index) => (
-                  <HStack key={section.id} space="sm" className="items-center">
-                    <Text size="sm" style={{ color: mutedTextColor, minWidth: 30 }}>
-                      {index + 1}.
-                    </Text>
-                    <Button
-                      variant="link"
-                      size="sm"
-                      onPress={() => {
-                        scrollToSection(section.id);
-                        setTocExpanded(false);
-                      }}
-                    >
-                      <ButtonText style={{ color: textColor }}>{section.title}</ButtonText>
-                    </Button>
-                  </HStack>
-                ))}
+      <ScrollView ref={scrollViewRef} className="flex-1" contentInsetAdjustmentBehavior="automatic">
+        <ResponsiveContainer>
+          <View ref={containerRef}>
+            {/* Header */}
+            <Animated.View entering={FadeIn.duration(400)}>
+              <VStack sx={{ marginBottom: '$6' }}>
+                <VStack space="sm">
+                  <ThemedHeading size="xl">Gluestack UI Showcase</ThemedHeading>
+                  <ThemedText variant="muted" size="lg">
+                    Interactive demo of all 35+ components
+                  </ThemedText>
+                </VStack>
+                <Divider />
               </VStack>
-            </Box>
-          ) : (
-            <Button variant="link" onPress={() => setTocExpanded(true)} className="mb-4">
-              <ButtonText style={{ color: textColor }}>Table of Contents</ButtonText>
-              <Icon as={ChevronDownIcon} size="sm" />
-            </Button>
-          )}
-        </Animated.View>
+            </Animated.View>
+
+            {/* Table of Contents */}
+            <Animated.View entering={FadeInDown.delay(100).duration(400)}>
+              {tocExpanded ? (
+                <Box sx={{ marginBottom: '$4' }}>
+                  <Button variant="link" onPress={() => setTocExpanded(false)}>
+                    <ThemedText>Table of Contents</ThemedText>
+                    <Icon as={ChevronUpIcon} size="sm" />
+                  </Button>
+                  <VStack space="sm" sx={{ paddingVertical: '$2', marginTop: '$2' }}>
+                    {sections.map((section, index) => (
+                      <HStack key={section.id} space="sm" className="items-center">
+                        <ThemedText variant="muted" size="sm" sx={{ minWidth: 30 }}>
+                          {index + 1}.
+                        </ThemedText>
+                        <Button
+                          variant="link"
+                          size="sm"
+                          onPress={() => {
+                            scrollToSection(section.id);
+                            setTocExpanded(false);
+                          }}
+                        >
+                          <ThemedText>{section.title}</ThemedText>
+                        </Button>
+                      </HStack>
+                    ))}
+                  </VStack>
+                </Box>
+              ) : (
+                <Button variant="link" onPress={() => setTocExpanded(true)} sx={{ marginBottom: '$4' }}>
+                  <ThemedText>Table of Contents</ThemedText>
+                  <Icon as={ChevronDownIcon} size="sm" />
+                </Button>
+              )}
+            </Animated.View>
 
         {/* Foundation */}
         <View
@@ -925,9 +911,10 @@ export default function ComponentsPage() {
             </VStack>
           </Box>
         </Animated.View>
-      </View>
-    </ScrollView>
-    <ThemeSwitcher />
+          </View>
+        </ResponsiveContainer>
+      </ScrollView>
+      <ThemeSwitcher />
     </>
   );
 }

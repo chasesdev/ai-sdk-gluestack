@@ -1,6 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import { useColorScheme, Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
+import * as SplashScreen from 'expo-splash-screen';
+
+// Prevent splash screen from auto-hiding on mobile
+if (Platform.OS !== 'web') {
+  SplashScreen.preventAutoHideAsync().catch(() => {
+    // Splash screen might already be hidden, ignore error
+  });
+}
 
 export type ThemeMode = 'light' | 'dark' | 'system';
 export type ResolvedTheme = 'light' | 'dark';
@@ -65,6 +73,15 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       console.error('Failed to load theme preference:', error);
     } finally {
       setIsLoaded(true);
+
+      // Hide splash screen on mobile after theme is loaded
+      if (Platform.OS !== 'web') {
+        setTimeout(() => {
+          SplashScreen.hideAsync().catch(() => {
+            // Ignore errors if splash already hidden
+          });
+        }, 100); // Small delay to ensure theme is applied
+      }
     }
   };
 

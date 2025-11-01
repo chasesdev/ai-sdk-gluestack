@@ -1,138 +1,81 @@
 import React from 'react';
-import { ScrollView, View, Platform } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ScrollView } from 'react-native';
 import { Link } from 'expo-router';
-import {
-  Box,
-  VStack,
-  HStack,
-  Heading,
-  Text,
-  Button,
-  ButtonText,
-} from '@gluestack-ui/themed';
+import { VStack } from '@gluestack-ui/themed';
 import { WorkflowPlanner, exampleNodes, exampleEdges } from '../components/workflow';
 import { AIChatbot } from '../components/ai-sdk/AIChatbot';
 import { ThemeSwitcher } from '../components/ThemeSwitcher';
-import { useTheme } from '../contexts/ThemeContext';
-import { getThemeColors } from '../constants/theme';
+import {
+  ThemedHeading,
+  ThemedText,
+  ThemedCard,
+  ThemedButton,
+  ResponsiveContainer,
+} from '../components/themed';
 
 export default function HomePage() {
-  const { resolvedTheme } = useTheme();
-  const insets = useSafeAreaInsets();
-  const colors = getThemeColors(resolvedTheme === 'dark');
-  const { background: bgColor, text: textColor, mutedText: mutedTextColor, card: cardBg, border: borderColor } = colors;
-
   return (
     <>
-      <ScrollView
-        className="flex-1"
-        style={{ 
-          backgroundColor: bgColor,
-          flex: 1,
-          ...(Platform.OS === 'android' && {
-            // Ensure proper rendering on Android
-            flexGrow: 1,
-          }),
-        }}
-        contentInsetAdjustmentBehavior="automatic"
-      >
-        <View
-          style={{
-            backgroundColor: bgColor,
-            paddingTop: Platform.OS === 'android' ? Math.max(insets.top, 24) : Math.max(insets.top, 20),
-            paddingBottom: 24,
-            paddingHorizontal: 6,
-          }}
-        >
+      <ScrollView className="flex-1" contentInsetAdjustmentBehavior="automatic">
+        <ResponsiveContainer>
           {/* Header */}
-          <View>
-            <VStack space="md" className="mb-6">
-              <VStack space="sm">
-                <Heading size="xl" style={{ color: textColor }}>
-                  AI SDK Components
-                </Heading>
-                <Text size="lg" style={{ color: mutedTextColor }}>
-                  Interactive workflow and chat demonstrations
-                </Text>
-              </VStack>
-              <Link href="/components" asChild>
-                <Button variant="outline" size="lg">
-                  <ButtonText style={{ color: textColor }}>View All Components</ButtonText>
-                </Button>
-              </Link>
+          <VStack space="md" sx={{ marginBottom: '$6' }}>
+            <VStack space="sm">
+              <ThemedHeading size="xl">AI SDK Components</ThemedHeading>
+              <ThemedText variant="muted" size="lg">
+                Interactive workflow and chat demonstrations
+              </ThemedText>
             </VStack>
-          </View>
+            <Link href="/components" asChild>
+              <ThemedButton variant="outline" size="lg" text="View All Components" />
+            </Link>
+          </VStack>
 
           {/* Workflow Section */}
-          <View>
-            <VStack space="md" className="mb-8">
-              <VStack space="xs">
-                <Heading size="lg" style={{ color: textColor }}>
-                  Workflow Planner
-                </Heading>
-                <Text size="sm" style={{ color: mutedTextColor }}>
-                  Interactive workflow visualization with drag-and-drop nodes
-                </Text>
-              </VStack>
-              <Box
-                style={{
-                  height: 500,
-                  borderRadius: 12,
-                  overflow: 'hidden',
-                  borderWidth: 1,
-                  borderColor: borderColor,
-                  backgroundColor: cardBg,
-                }}
-              >
-                <WorkflowPlanner
-                  initialNodes={exampleNodes}
-                  initialEdges={exampleEdges}
-                />
-              </Box>
+          <VStack space="md" sx={{ marginBottom: '$8' }}>
+            <VStack space="xs">
+              <ThemedHeading size="lg">Workflow Planner</ThemedHeading>
+              <ThemedText variant="muted" size="sm">
+                Interactive workflow visualization with drag-and-drop nodes
+              </ThemedText>
             </VStack>
-          </View>
+            <ThemedCard
+              sx={{
+                height: 500,
+                overflow: 'hidden',
+                padding: '$0',
+              }}
+            >
+              <WorkflowPlanner initialNodes={exampleNodes} initialEdges={exampleEdges} />
+            </ThemedCard>
+          </VStack>
 
           {/* Chat Section */}
-          <View>
-            <VStack space="md" className="mb-8">
-              <VStack space="xs">
-                <Heading size="lg" style={{ color: textColor }}>
-                  AI Chatbot
-                </Heading>
-                <Text size="sm" style={{ color: mutedTextColor }}>
-                  Full-featured conversation interface with message history
-                </Text>
-              </VStack>
-              <Box
-                style={{
-                  height: 500,
-                  borderRadius: 12,
-                  overflow: 'hidden',
-                  borderWidth: 1,
-                  borderColor: borderColor,
-                  backgroundColor: cardBg,
-                }}
-              >
-                <AIChatbot
-                  title="AI Assistant"
-                  placeholder="Ask me anything..."
-                />
-              </Box>
+          <VStack space="md" sx={{ marginBottom: '$8' }}>
+            <VStack space="xs">
+              <ThemedHeading size="lg">AI Chatbot</ThemedHeading>
+              <ThemedText variant="muted" size="sm">
+                Full-featured conversation interface with message history
+              </ThemedText>
             </VStack>
-          </View>
+            <ThemedCard
+              sx={{
+                height: 500,
+                overflow: 'hidden',
+                padding: '$0',
+              }}
+            >
+              <AIChatbot title="AI Assistant" placeholder="Ask me anything..." />
+            </ThemedCard>
+          </VStack>
 
           {/* Footer */}
-          <View>
-            <Box className="mt-8">
-              <VStack space="sm" className="items-center">
-                <Text size="sm" style={{ color: mutedTextColor }} className="text-center">
-                  Built with Expo 54, Gluestack UI v3, NativeWind v4 & Reanimated v3
-                </Text>
-              </VStack>
-            </Box>
-          </View>
-        </View>
+          <VStack space="sm" sx={{ marginTop: '$8', alignItems: 'center' }}>
+            <ThemedText variant="muted" size="sm" className="text-center">
+              Built with Expo 54, Gluestack UI v3, NativeWind v4 & Reanimated v3
+            </ThemedText>
+          </VStack>
+        </ResponsiveContainer>
       </ScrollView>
       <ThemeSwitcher />
     </>

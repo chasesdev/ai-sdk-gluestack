@@ -60,7 +60,7 @@ export default function HomePage() {
             </VStack>
             <ThemedCard
               sx={{
-                height: 500,
+                height: 700,
                 overflow: 'hidden',
                 padding: '$0',
               }}

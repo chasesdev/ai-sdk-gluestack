@@ -6,7 +6,7 @@ html,
 body {
   height: 100%;
   background-color: hsl(var(--background));
-  background: black;
+  background: hsl(var(--background));
   color: hsl(var(--foreground));
 }
 

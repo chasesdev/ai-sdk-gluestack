@@ -45,6 +45,7 @@
     "@babel/core": "^7.26.0",
     "@types/react": "~19.1.10",
     "eslint": "^9.18.0",
+    "prettier": "^3.6.2",
     "typescript": "~5.9.2"
   },
   "private": true,

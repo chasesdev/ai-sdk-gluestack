@@ -130,6 +130,8 @@ export function AIChatbot({
         onContentSizeChange={() => {
           scrollViewRef.current?.scrollToEnd({ animated: true });
         }}
+        accessibilityRole="list"
+        accessibilityLabel="Chat messages"
       >
         <VStack space="sm" className="px-4 pb-4 pt-4">
           {messages.length === 0 ? (
@@ -154,7 +156,7 @@ export function AIChatbot({
             justifyContent: 'flex-start',
           }}
         >
-          <Input 
+          <Input
             style={{ flex: 1 }}
             variant="outline"
           >
@@ -174,6 +176,8 @@ export function AIChatbot({
                 paddingBottom: Platform.OS === 'ios' ? 12 : 10,
                 color: textColor,
               }}
+              accessibilityLabel="Message input"
+              accessibilityHint="Type your message to send to the chatbot"
             />
           </Input>
           <Button
@@ -185,6 +189,9 @@ export function AIChatbot({
               minWidth: 44,
               minHeight: 44,
             }}
+            accessibilityLabel="Send message"
+            accessibilityHint="Sends your message to the chatbot"
+            accessibilityRole="button"
           >
             <Icon as={ChevronRightIcon} size="sm" />
           </Button>

@@ -8,6 +8,8 @@ import Animated, {
   Easing,
 } from 'react-native-reanimated';
 import type { WorkflowEdge as WorkflowEdgeType, WorkflowNode, Position } from './types';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../constants/theme';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
@@ -93,7 +95,10 @@ export const WorkflowEdge = memo(({
     };
   });
 
-  const strokeColor = edge.style?.stroke || '#94a3b8';
+  const { resolvedTheme } = useTheme();
+  const colors = getThemeColors(resolvedTheme === 'dark');
+
+  const strokeColor = edge.style?.stroke || colors.border;
   const strokeWidth = edge.style?.strokeWidth || 2;
 
   return (
@@ -124,7 +129,7 @@ export const WorkflowEdge = memo(({
           <SVGText
             x={(sourceX + targetX) / 2}
             y={(sourceY + targetY) / 2}
-            fill="#374151"
+            fill={colors.text}
             fontSize="12"
             fontWeight="600"
             textAnchor="middle"

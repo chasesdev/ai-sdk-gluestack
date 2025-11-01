@@ -19,13 +19,14 @@ export function Actions({ actions, layout = 'horizontal', size = 'md', className
 
   const renderAction = (action: ActionItem, index: number) => {
     // Determine text color based on button variant
-    let buttonTextColor = textColor;
+    // Solid buttons with colored backgrounds always use white for contrast
+    let buttonTextColor: string = textColor;
     if (action.variant === 'outline') {
       buttonTextColor = textColor;
     } else if (action.action === 'primary' || action.variant === 'primary') {
-      buttonTextColor = '#ffffff';
+      buttonTextColor = '#ffffff'; // Always white for colored button backgrounds
     } else if (action.action === 'positive' || action.action === 'negative') {
-      buttonTextColor = '#ffffff';
+      buttonTextColor = '#ffffff'; // Always white for colored button backgrounds
     }
 
     return (

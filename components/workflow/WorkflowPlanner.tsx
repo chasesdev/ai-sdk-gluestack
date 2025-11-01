@@ -296,7 +296,7 @@ export function WorkflowPlanner({
                   height="20"
                   patternUnits="userSpaceOnUse"
                 >
-                  <Circle cx="1" cy="1" r="1" fill={resolvedTheme === 'dark' ? '#374151' : '#d1d5db'} />
+                  <Circle cx="1" cy="1" r="1" fill={borderColor} />
                 </Pattern>
               </Defs>
               <Rect width={canvasWidth} height={canvasHeight} fill="url(#dots)" />

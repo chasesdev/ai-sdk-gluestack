@@ -52,14 +52,17 @@ export function ThemeSwitcher() {
         className="absolute bottom-6 right-6 w-14 h-14 rounded-full shadow-lg items-center justify-center z-50"
         style={{
           backgroundColor: ACCENT_COLOR,
-          shadowColor: '#000',
+          shadowColor: colors.text,
           shadowOffset: { width: 0, height: 4 },
           shadowOpacity: 0.3,
           shadowRadius: 4.65,
           elevation: 8,
         }}
+        accessibilityRole="button"
+        accessibilityLabel={`Change theme. Current theme: ${theme}`}
+        accessibilityHint="Opens theme selection menu"
       >
-        <Icon as={CurrentIcon} size="xl" style={{ color: '#ffffff' }} />
+        <Icon as={CurrentIcon} size="xl" style={{ color: colors.background }} />
       </Pressable>
 
       {/* Theme Selection Actionsheet */}
@@ -71,7 +74,12 @@ export function ThemeSwitcher() {
           </ActionsheetDragIndicatorWrapper>
 
           <View className="w-full px-4 py-2">
-            <ActionsheetItem onPress={() => selectTheme('light')}>
+            <ActionsheetItem
+              onPress={() => selectTheme('light')}
+              accessibilityRole="button"
+              accessibilityLabel="Light theme"
+              accessibilityState={{ selected: theme === 'light' }}
+            >
               <Icon as={SunIcon} size="lg" className="mr-3" style={{ color: textColor }} />
               <ActionsheetItemText style={{ color: textColor }}>
                 Light
@@ -81,7 +89,12 @@ export function ThemeSwitcher() {
               )}
             </ActionsheetItem>
 
-            <ActionsheetItem onPress={() => selectTheme('dark')}>
+            <ActionsheetItem
+              onPress={() => selectTheme('dark')}
+              accessibilityRole="button"
+              accessibilityLabel="Dark theme"
+              accessibilityState={{ selected: theme === 'dark' }}
+            >
               <Icon as={MoonIcon} size="lg" className="mr-3" style={{ color: textColor }} />
               <ActionsheetItemText style={{ color: textColor }}>
                 Dark
@@ -91,7 +104,12 @@ export function ThemeSwitcher() {
               )}
             </ActionsheetItem>
 
-            <ActionsheetItem onPress={() => selectTheme('system')}>
+            <ActionsheetItem
+              onPress={() => selectTheme('system')}
+              accessibilityRole="button"
+              accessibilityLabel="System theme"
+              accessibilityState={{ selected: theme === 'system' }}
+            >
               <Icon as={SettingsIcon} size="lg" className="mr-3" style={{ color: textColor }} />
               <ActionsheetItemText style={{ color: textColor }}>
                 System

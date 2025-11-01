@@ -13,22 +13,22 @@ interface ConnectionProps {
 
 const statusConfig = {
   connected: {
-    color: 'success',
+    color: 'success' as const,
     text: 'Connected',
     icon: CircleIcon,
   },
   connecting: {
-    color: 'warning',
+    color: 'warning' as const,
     text: 'Connecting',
     icon: CircleIcon,
   },
   disconnected: {
-    color: 'muted',
+    color: 'muted' as const,
     text: 'Disconnected',
     icon: CircleIcon,
   },
   error: {
-    color: 'error',
+    color: 'error' as const,
     text: 'Error',
     icon: CircleIcon,
   },
@@ -49,16 +49,18 @@ export function Connection({ status, message, showPulse = true }: ConnectionProp
               as={config.icon}
               size="md"
               style={{
-                color: status === 'connected' ? '#10b981' : 
-                       status === 'connecting' ? '#f59e0b' :
-                       status === 'error' ? '#ef4444' : '#94a3b8',
+                color: status === 'connected' ? colors.success :
+                       status === 'connecting' ? colors.warning :
+                       status === 'error' ? colors.error : colors.mutedText,
                 opacity: showPulse && status === 'connected' ? 0.75 : 1,
               }}
             />
             {showPulse && status === 'connected' && (
               <Box
-                className={`absolute inset-0 rounded-full bg-${config.color} opacity-20`}
+                className="absolute inset-0 rounded-full"
                 style={{
+                  backgroundColor: colors.success,
+                  opacity: 0.2,
                   transform: [{ scale: 1.5 }],
                 }}
               />
@@ -66,7 +68,7 @@ export function Connection({ status, message, showPulse = true }: ConnectionProp
           </Box>
           <VStack space="xs" className="flex-1">
             <HStack space="sm" className="items-center">
-              <Badge action={config.color as any} size="sm">
+              <Badge action={config.color} size="sm">
                 <BadgeText style={{ color: textColor }}>{config.text}</BadgeText>
               </Badge>
               {status === 'connecting' && (

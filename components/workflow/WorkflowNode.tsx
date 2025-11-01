@@ -56,22 +56,22 @@ const statusColors = {
   idle: {
     bg: '$backgroundLight100',
     border: '$borderLight300',
-    badge: 'muted',
+    badge: 'muted' as const,
   },
   running: {
     bg: '$blue50',
     border: '$blue500',
-    badge: 'info',
+    badge: 'info' as const,
   },
   success: {
     bg: '$green50',
     border: '$green500',
-    badge: 'success',
+    badge: 'success' as const,
   },
   error: {
     bg: '$red50',
     border: '$red500',
-    badge: 'error',
+    badge: 'error' as const,
   },
 };
 
@@ -179,13 +179,17 @@ export const WorkflowNode = memo(({
           styles.nodeContainer,
           animatedStyle,
         ]}
+        accessibilityRole="button"
+        accessibilityLabel={`${node.data.label} node, status: ${status}`}
+        accessibilityHint={disabled ? "Node is disabled" : "Double tap to select, drag to move"}
+        accessibilityState={{ selected: isSelected, disabled }}
       >
         <Box
           style={[
             styles.node,
             {
               borderWidth: isSelected ? 3 : 2,
-              borderColor: isSelected ? '#5a4fcf' : borderColor,
+              borderColor: isSelected ? themeColors.accent : borderColor,
               backgroundColor: cardBg,
             },
           ]}
@@ -197,13 +201,13 @@ export const WorkflowNode = memo(({
               <Box
                 className="rounded-lg p-2"
                 style={{
-                  backgroundColor: isSelected ? '#3b82f6' :
-                    status === 'running' ? '#3b82f6' :
-                    status === 'success' ? '#10b981' :
-                    status === 'error' ? '#ef4444' : '#6b7280'
+                  backgroundColor: isSelected ? themeColors.info :
+                    status === 'running' ? themeColors.info :
+                    status === 'success' ? themeColors.success :
+                    status === 'error' ? themeColors.error : themeColors.mutedText
                 }}
               >
-                {NodeIcon && <Icon as={NodeIcon} size="sm" style={{ color: '#ffffff' }} />}
+                {NodeIcon && <Icon as={NodeIcon} size="sm" style={{ color: themeColors.background }} />}
               </Box>
               <VStack flex={1}>
                 <Heading size="sm" style={{ color: textColor }}>
@@ -215,7 +219,7 @@ export const WorkflowNode = memo(({
                   </Text>
                 )}
               </VStack>
-              <Badge action={statusColorConfig.badge as any}>
+              <Badge action={statusColorConfig.badge}>
                 <BadgeText style={{ color: textColor }}>{status}</BadgeText>
               </Badge>
             </HStack>
@@ -244,22 +248,36 @@ export const WorkflowNode = memo(({
             {/* Connection Handles */}
             {node.data.icon === 'git-branch' && (
               <HStack space="xs" className="mt-1 justify-around">
-                <Box className="w-3 h-3 rounded-full bg-blue-500" />
-                <Box className="w-3 h-3 rounded-full bg-blue-500" />
+                <Box className="w-3 h-3 rounded-full" style={{ backgroundColor: themeColors.info }} />
+                <Box className="w-3 h-3 rounded-full" style={{ backgroundColor: themeColors.info }} />
               </HStack>
             )}
           </VStack>
 
           {/* Input Handle (top) */}
           <Box
-            style={styles.handleTop}
-            className="w-3 h-3 rounded-full bg-gray-400 border-2 border-white"
+            style={[
+              styles.handleTop,
+              {
+                backgroundColor: themeColors.mutedText,
+                borderWidth: 2,
+                borderColor: themeColors.background,
+              }
+            ]}
+            className="w-3 h-3 rounded-full"
           />
 
           {/* Output Handle (bottom) */}
           <Box
-            style={styles.handleBottom}
-            className="w-3 h-3 rounded-full bg-gray-400 border-2 border-white"
+            style={[
+              styles.handleBottom,
+              {
+                backgroundColor: themeColors.mutedText,
+                borderWidth: 2,
+                borderColor: themeColors.background,
+              }
+            ]}
+            className="w-3 h-3 rounded-full"
           />
         </Box>
       </Animated.View>

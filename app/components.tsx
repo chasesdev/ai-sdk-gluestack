@@ -255,10 +255,10 @@ export default function ComponentsPage() {
                 <HStack space="sm" className="p-4 rounded-lg" style={{ backgroundColor: tintedBg, borderWidth: 1, borderColor: colors.border }}>
                   <Text fontWeight="$semibold" style={{ color: textColor }}>HStack:</Text>
                   <Badge style={{ backgroundColor: colors.accent }}>
-                    <BadgeText style={{ color: '#ffffff' }}>Horizontal</BadgeText>
+                    <BadgeText style={{ color: colors.background }}>Horizontal</BadgeText>
                   </Badge>
                   <Badge style={{ backgroundColor: colors.accent }}>
-                    <BadgeText style={{ color: '#ffffff' }}>Layout</BadgeText>
+                    <BadgeText style={{ color: colors.background }}>Layout</BadgeText>
                   </Badge>
                 </HStack>
               </VStack>
@@ -559,16 +559,16 @@ export default function ComponentsPage() {
             <DemoCard title="Badge" description="Small status labels">
               <HStack space="sm" className="flex-wrap">
                 <Badge action="success">
-                  <BadgeText style={{ color: '#ffffff' }}>Success</BadgeText>
+                  <BadgeText style={{ color: colors.background }}>Success</BadgeText>
                 </Badge>
                 <Badge action="error">
-                  <BadgeText style={{ color: '#ffffff' }}>Error</BadgeText>
+                  <BadgeText style={{ color: colors.background }}>Error</BadgeText>
                 </Badge>
                 <Badge action="warning">
-                  <BadgeText style={{ color: '#ffffff' }}>Warning</BadgeText>
+                  <BadgeText style={{ color: colors.background }}>Warning</BadgeText>
                 </Badge>
                 <Badge action="info">
-                  <BadgeText style={{ color: '#ffffff' }}>Info</BadgeText>
+                  <BadgeText style={{ color: colors.background }}>Info</BadgeText>
                 </Badge>
                 <Badge action="muted">
                   <BadgeText style={{ color: textColor }}>Muted</BadgeText>
@@ -746,11 +746,11 @@ export default function ComponentsPage() {
             <DemoCard title="Icons" description="Various icon components">
               <HStack space="lg" className="items-center justify-around">
                 <VStack space="xs" className="items-center">
-                  <Icon as={CheckIcon} size="xl" style={{ color: '#10b981' }} />
+                  <Icon as={CheckIcon} size="xl" style={{ color: colors.success }} />
                   <Text size="xs" style={{ color: mutedTextColor }}>Check</Text>
                 </VStack>
                 <VStack space="xs" className="items-center">
-                  <Icon as={CloseIcon} size="xl" style={{ color: '#ef4444' }} />
+                  <Icon as={CloseIcon} size="xl" style={{ color: colors.error }} />
                   <Text size="xs" style={{ color: mutedTextColor }}>Close</Text>
                 </VStack>
                 <VStack space="xs" className="items-center">
@@ -758,7 +758,7 @@ export default function ComponentsPage() {
                   <Text size="xs" style={{ color: mutedTextColor }}>Add</Text>
                 </VStack>
                 <VStack space="xs" className="items-center">
-                  <Icon as={InfoIcon} size="xl" style={{ color: '#3b82f6' }} />
+                  <Icon as={InfoIcon} size="xl" style={{ color: colors.info }} />
                   <Text size="xs" style={{ color: mutedTextColor }}>Info</Text>
                 </VStack>
               </HStack>

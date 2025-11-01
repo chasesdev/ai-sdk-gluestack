@@ -1,4 +1,14 @@
 import type { WorkflowNode, WorkflowEdge } from './types';
+import { THEME_COLORS } from '../../constants/theme';
+
+// Use theme colors for edges (defaulting to light theme for static data)
+const EDGE_COLORS = {
+  success: THEME_COLORS.light.success,
+  info: THEME_COLORS.light.info,
+  muted: THEME_COLORS.light.mutedText,
+  purple: '#8b5cf6', // Custom workflow color
+  pink: '#ec4899', // Custom workflow color
+};
 
 // Example workflow demonstrating AI data processing pipeline
 export const exampleNodes: WorkflowNode[] = [
@@ -117,7 +127,7 @@ export const exampleEdges: WorkflowEdge[] = [
     target: 'fetch',
     type: 'animated',
     animated: true,
-    style: { stroke: '#10b981', strokeWidth: 2 },
+    style: { stroke: EDGE_COLORS.success, strokeWidth: 2 },
   },
   {
     id: 'e2',
@@ -125,7 +135,7 @@ export const exampleEdges: WorkflowEdge[] = [
     target: 'validate',
     type: 'animated',
     animated: true,
-    style: { stroke: '#3b82f6', strokeWidth: 2 },
+    style: { stroke: EDGE_COLORS.info, strokeWidth: 2 },
   },
   {
     id: 'e3',
@@ -133,7 +143,7 @@ export const exampleEdges: WorkflowEdge[] = [
     target: 'branch',
     type: 'animated',
     animated: false,
-    style: { stroke: '#94a3b8', strokeWidth: 2 },
+    style: { stroke: EDGE_COLORS.muted, strokeWidth: 2 },
   },
   {
     id: 'e4',
@@ -142,7 +152,7 @@ export const exampleEdges: WorkflowEdge[] = [
     type: 'animated',
     animated: false,
     label: 'Type A',
-    style: { stroke: '#8b5cf6', strokeWidth: 2 },
+    style: { stroke: EDGE_COLORS.purple, strokeWidth: 2 },
   },
   {
     id: 'e5',
@@ -151,7 +161,7 @@ export const exampleEdges: WorkflowEdge[] = [
     type: 'animated',
     animated: false,
     label: 'Type B',
-    style: { stroke: '#ec4899', strokeWidth: 2 },
+    style: { stroke: EDGE_COLORS.pink, strokeWidth: 2 },
   },
   {
     id: 'e6',
@@ -159,7 +169,7 @@ export const exampleEdges: WorkflowEdge[] = [
     target: 'complete',
     type: 'animated',
     animated: false,
-    style: { stroke: '#94a3b8', strokeWidth: 2 },
+    style: { stroke: EDGE_COLORS.muted, strokeWidth: 2 },
   },
   {
     id: 'e7',
@@ -167,6 +177,6 @@ export const exampleEdges: WorkflowEdge[] = [
     target: 'complete',
     type: 'animated',
     animated: false,
-    style: { stroke: '#94a3b8', strokeWidth: 2 },
+    style: { stroke: EDGE_COLORS.muted, strokeWidth: 2 },
   },
 ];

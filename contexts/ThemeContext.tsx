@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 import { useColorScheme, Platform } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import * as SplashScreen from 'expo-splash-screen';
+import { logger } from '../utils/logger';
 
 // Prevent splash screen from auto-hiding on mobile
 if (Platform.OS !== 'web') {
@@ -70,7 +71,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
         setThemeState(savedTheme as ThemeMode);
       }
     } catch (error) {
-      console.error('Failed to load theme preference:', error);
+      logger.error('Failed to load theme preference:', error);
     } finally {
       setIsLoaded(true);
 
@@ -89,7 +90,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     try {
       await storage.setItem(THEME_STORAGE_KEY, newTheme);
     } catch (error) {
-      console.error('Failed to save theme preference:', error);
+      logger.error('Failed to save theme preference:', error);
     }
   };
 

@@ -31,7 +31,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
         className={`mb-4 ${isUser ? 'flex-row-reverse' : ''}`}
       >
         <Avatar size="sm">
-          <AvatarFallbackText style={{ color: '#ffffff', backgroundColor: isUser ? accentColor : cardColor }}>
+          <AvatarFallbackText style={{ color: colors.background, backgroundColor: isUser ? accentColor : cardColor }}>
             {isUser ? 'U' : 'AI'}
           </AvatarFallbackText>
         </Avatar>
@@ -47,12 +47,12 @@ export function ChatMessage({ message }: ChatMessageProps) {
             {message.isLoading ? (
               <HStack space="sm" className="items-center">
                 <Spinner size="small" />
-                <Text size="sm" style={{ color: isUser ? '#ffffff' : textColor }}>Thinking...</Text>
+                <Text size="sm" style={{ color: isUser ? colors.background : textColor }}>Thinking...</Text>
               </HStack>
             ) : (
               <Text
                 size="md"
-                style={{ color: isUser ? '#ffffff' : textColor }}
+                style={{ color: isUser ? colors.background : textColor }}
               >
                 {message.content}
               </Text>

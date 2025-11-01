@@ -1,6 +1,6 @@
 import React from 'react';
 import { Input, InputField } from '@gluestack-ui/themed';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { ComponentProps } from 'react';
 
 type InputProps = ComponentProps<typeof Input>;

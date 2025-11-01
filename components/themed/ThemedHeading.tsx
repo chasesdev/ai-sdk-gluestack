@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Heading } from '@gluestack-ui/themed';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { ComponentProps } from 'react';
 
 type HeadingProps = ComponentProps<typeof Heading>;

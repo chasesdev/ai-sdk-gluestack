@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Text } from '@gluestack-ui/themed';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { ComponentProps } from 'react';
 
 type TextProps = ComponentProps<typeof Text>;

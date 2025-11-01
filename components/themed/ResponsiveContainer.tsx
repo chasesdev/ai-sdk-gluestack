@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import { Box } from '@gluestack-ui/themed';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { Platform, useWindowDimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ComponentProps } from 'react';

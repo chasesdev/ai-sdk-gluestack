@@ -19,12 +19,27 @@ export interface ActionItem {
 
 export type ActionsLayout = 'horizontal' | 'vertical' | 'grid'
 
+export type AttachmentType = 'image' | 'document' | 'audio'
+
+export interface Attachment {
+  id: string
+  type: AttachmentType
+  uri: string
+  name: string
+  mimeType?: string
+  size?: number
+  duration?: number // For audio files
+  width?: number // For images
+  height?: number // For images
+}
+
 export interface Message {
   id: string
   role: 'user' | 'assistant' | 'system'
   content: string
   timestamp?: Date
   isLoading?: boolean
+  attachments?: Attachment[]
 }
 
 export interface WorkflowNode {

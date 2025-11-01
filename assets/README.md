@@ -41,7 +41,6 @@ To add custom assets:
 
 ```tsx
 import icon from '../assets/icon.png'
-
 ;<Image source={icon} />
 ```
 

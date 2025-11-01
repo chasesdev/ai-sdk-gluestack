@@ -12,11 +12,14 @@ import {
   Icon,
   ScrollView,
 } from '@gluestack-ui/themed'
-import { Message } from './types'
+import { Message, Attachment } from './types'
 import { ChatMessage } from './ChatMessage'
 import { ChevronRightIcon } from '@gluestack-ui/themed'
 import { useTheme } from '../../contexts/ThemeContext'
 import { getThemeColors } from '../../constants/theme'
+import { AttachmentButton } from './AttachmentButton'
+import { AttachmentPreview } from './AttachmentPreview'
+import { AudioRecorder } from './AudioRecorder'
 
 interface AIChatbotProps {
   initialMessages?: Message[]
@@ -44,20 +47,37 @@ export function AIChatbot({
   const [messages, setMessages] = useState<Message[]>(initialMessages)
   const [inputValue, setInputValue] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [selectedAttachments, setSelectedAttachments] = useState<Attachment[]>([])
+  const [showAudioRecorder, setShowAudioRecorder] = useState(false)
   const scrollViewRef = useRef<any>(null)
 
+  const handleAttachmentSelected = (attachment: Attachment) => {
+    setSelectedAttachments(prev => [...prev, attachment])
+  }
+
+  const handleRemoveAttachment = (attachmentId: string) => {
+    setSelectedAttachments(prev => prev.filter(a => a.id !== attachmentId))
+  }
+
+  const handleAudioRecordingComplete = (attachment: Attachment) => {
+    setSelectedAttachments(prev => [...prev, attachment])
+    setShowAudioRecorder(false)
+  }
+
   const handleSend = async () => {
-    if (!inputValue.trim() || disabled || isLoading) return
+    if ((!inputValue.trim() && selectedAttachments.length === 0) || disabled || isLoading) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: inputValue,
       timestamp: new Date(),
+      attachments: selectedAttachments.length > 0 ? selectedAttachments : undefined,
     }
 
     setMessages(prev => [...prev, userMessage])
     setInputValue('')
+    setSelectedAttachments([])
     setIsLoading(true)
 
     const assistantMessage: Message = {
@@ -158,54 +178,90 @@ export function AIChatbot({
       </ScrollView>
 
       <Box
-        className="border-t border-border pt-3 px-4 pb-3"
-        style={{ borderTopColor: borderColor }}
+        className="border-t border-border pt-4 px-4 pb-4"
+        style={{
+          borderTopColor: borderColor,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -2 },
+          shadowOpacity: 0.05,
+          shadowRadius: 4,
+          elevation: 3,
+        }}
       >
-        <HStack
-          space="sm"
-          style={{
-            alignItems: 'center',
-            justifyContent: 'flex-start',
-          }}
-        >
-          <Input style={{ flex: 1 }} variant="outline">
-            <InputField
-              placeholder={placeholder}
-              placeholderTextColor={mutedTextColor}
-              value={inputValue}
-              onChangeText={setInputValue}
-              onSubmitEditing={handleSend}
-              editable={!disabled && !isLoading}
-              multiline
-              style={{
-                minHeight: 44,
-                maxHeight: 120,
-                textAlignVertical: Platform.OS === 'android' ? 'center' : 'top',
-                paddingTop: Platform.OS === 'ios' ? 12 : 10,
-                paddingBottom: Platform.OS === 'ios' ? 12 : 10,
-                color: textColor,
-              }}
-              accessibilityLabel="Message input"
-              accessibilityHint="Type your message to send to the chatbot"
-            />
-          </Input>
-          <Button
-            onPress={handleSend}
-            isDisabled={!inputValue.trim() || disabled || isLoading}
-            size="md"
+        <VStack space="md">
+          {/* Attachment previews */}
+          {selectedAttachments.length > 0 && (
+            <HStack space="sm" className="flex-wrap">
+              {selectedAttachments.map(attachment => (
+                <AttachmentPreview
+                  key={attachment.id}
+                  attachment={attachment}
+                  onRemove={() => handleRemoveAttachment(attachment.id)}
+                  compact
+                />
+              ))}
+            </HStack>
+          )}
+
+          {/* Input area */}
+          <HStack
+            space="sm"
             style={{
-              alignSelf: 'center',
-              minWidth: 44,
-              minHeight: 44,
+              alignItems: 'center',
+              justifyContent: 'flex-start',
             }}
-            accessibilityLabel="Send message"
-            accessibilityHint="Sends your message to the chatbot"
-            accessibilityRole="button"
           >
-            <Icon as={ChevronRightIcon} size="sm" color="white" />
-          </Button>
-        </HStack>
+            <AttachmentButton
+              onAttachmentSelected={handleAttachmentSelected}
+              onAudioRecord={() => setShowAudioRecorder(true)}
+              disabled={disabled || isLoading}
+            />
+            <Input style={{ flex: 1 }} variant="outline">
+              <InputField
+                placeholder={placeholder}
+                placeholderTextColor={mutedTextColor}
+                value={inputValue}
+                onChangeText={setInputValue}
+                onSubmitEditing={handleSend}
+                editable={!disabled && !isLoading}
+                multiline
+                style={{
+                  minHeight: 44,
+                  maxHeight: 120,
+                  textAlignVertical: Platform.OS === 'android' ? 'center' : 'top',
+                  paddingTop: Platform.OS === 'ios' ? 12 : 10,
+                  paddingBottom: Platform.OS === 'ios' ? 12 : 10,
+                  color: textColor,
+                }}
+                accessibilityLabel="Message input"
+                accessibilityHint="Type your message to send to the chatbot"
+              />
+            </Input>
+            <Button
+              onPress={handleSend}
+              isDisabled={(!inputValue.trim() && selectedAttachments.length === 0) || disabled || isLoading}
+              size="md"
+              style={{
+                alignSelf: 'center',
+                minWidth: 44,
+                minHeight: 44,
+              }}
+              accessibilityLabel="Send message"
+              accessibilityHint="Sends your message to the chatbot"
+              accessibilityRole="button"
+            >
+              <Icon as={ChevronRightIcon} size="sm" color="white" />
+            </Button>
+          </HStack>
+        </VStack>
       </Box>
+
+      {/* Audio recorder modal */}
+      <AudioRecorder
+        visible={showAudioRecorder}
+        onClose={() => setShowAudioRecorder(false)}
+        onRecordingComplete={handleAudioRecordingComplete}
+      />
     </VStack>
   )
 }

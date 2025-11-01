@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "WebSearch",
+      "Bash(rm:*)",
+      "Bash(cat:*)",
+      "Bash(test:*)",
+      "Bash(yarn list:*)",
+      "Bash(yarn why:*)",
+      "Bash(cp:*)",
+      "Bash(yarn install:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

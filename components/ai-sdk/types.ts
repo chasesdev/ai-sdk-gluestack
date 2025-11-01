@@ -10,6 +10,7 @@ export interface ActionItem {
   disabled?: boolean;
   loading?: boolean;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  action?: 'primary' | 'secondary' | 'positive' | 'negative' | 'default';
 }
 
 export type ActionsLayout = 'horizontal' | 'vertical' | 'grid';

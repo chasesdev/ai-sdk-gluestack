@@ -1,6 +1,8 @@
 import { VStack, Box } from '@gluestack-ui/themed';
 import { Heading, Text } from '@gluestack-ui/themed';
 import { ReactNode } from 'react';
+import { useTheme } from '../contexts/ThemeContext';
+import { getThemeColors } from '../constants/theme';
 
 interface DemoCardProps {
   title: string;
@@ -9,15 +11,25 @@ interface DemoCardProps {
 }
 
 export function DemoCard({ title, description, children }: DemoCardProps) {
+  const { resolvedTheme } = useTheme();
+  const colors = getThemeColors(resolvedTheme === 'dark');
+  const { card: cardBg, text: textColor, mutedText: mutedTextColor, border: borderColor } = colors;
+
   return (
-    <Box className="bg-card border border-border rounded-xl p-5 shadow-sm" style={{ backgroundColor: '#ffffff' }}>
+    <Box 
+      className="bg-card border border-border rounded-xl p-5 shadow-sm" 
+      style={{ 
+        backgroundColor: cardBg,
+        borderColor: borderColor,
+      }}
+    >
       <VStack space="md">
         <VStack space="xs">
-          <Heading size="md" color="$textLight900" style={{ color: '#0f172a' }}>
+          <Heading size="md" color="$textLight900" style={{ color: textColor }}>
             {title}
           </Heading>
           {description && (
-            <Text size="sm" color="$textLight500" style={{ color: '#64748b' }}>
+            <Text size="sm" color="$textLight500" style={{ color: mutedTextColor }}>
               {description}
             </Text>
           )}

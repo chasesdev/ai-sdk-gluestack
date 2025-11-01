@@ -15,7 +15,7 @@ export function Actions({ actions, layout = 'horizontal', size = 'md', className
     return (
       <Animated.View key={action.id} entering={FadeInDown.delay(index * 100)}>
         <Button
-          action={action.variant === 'primary' ? 'primary' : action.variant === 'secondary' ? 'secondary' : 'muted'}
+          action={action.action || (action.variant === 'primary' ? 'primary' : action.variant === 'secondary' ? 'secondary' : 'default')}
           variant={action.variant === 'outline' ? 'outline' : action.variant === 'ghost' ? 'link' : 'solid'}
           size={size}
           onPress={action.onPress}
@@ -23,7 +23,7 @@ export function Actions({ actions, layout = 'horizontal', size = 'md', className
           className="min-w-[100px]"
         >
           {action.loading ? (
-            <Spinner size="sm" />
+            <Spinner size="small" />
           ) : (
             <>
               {action.icon && (

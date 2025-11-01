@@ -18,6 +18,8 @@ import { CloseIcon, AddIcon } from '@gluestack-ui/themed';
 import { WorkflowNode } from './WorkflowNode';
 import { WorkflowEdge } from './WorkflowEdge';
 import type { WorkflowNode as WorkflowNodeType, WorkflowEdge as WorkflowEdgeType, Position } from './types';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../constants/theme';
 
 const { width: screenWidth } = Dimensions.get('window');
 
@@ -31,6 +33,9 @@ export function WorkflowPlanner({
   initialNodes = [],
   initialEdges = [],
 }: WorkflowPlannerProps) {
+  const { resolvedTheme } = useTheme();
+  const colors = getThemeColors(resolvedTheme === 'dark');
+  const { background: bgColor, card: cardBg, text: textColor, mutedText: mutedTextColor, border: borderColor } = colors;
   const [nodes, setNodes] = useState<WorkflowNodeType[]>(initialNodes);
   const [edges, setEdges] = useState<WorkflowEdgeType[]>(initialEdges);
   const [selectedNodeId, setSelectedNodeId] = useState<string | undefined>();
@@ -81,9 +86,9 @@ export function WorkflowPlanner({
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Box style={styles.container}>
+      <Box style={[styles.container, { backgroundColor: bgColor }]}>
         {/* Toolbar */}
-        <HStack space="sm" className="p-3 bg-card border-b border-border">
+        <HStack space="sm" className="p-3 bg-card border-b border-border" style={{ backgroundColor: cardBg, borderBottomColor: borderColor }}>
           <Button
             size="sm"
             variant="outline"
@@ -125,6 +130,7 @@ export function WorkflowPlanner({
                 width: canvasWidth,
                 height: canvasHeight,
                 transform: [{ scale }],
+                backgroundColor: colors.muted || (resolvedTheme === 'dark' ? '#1f2937' : '#f9fafb'),
               },
             ]}
           >
@@ -139,7 +145,7 @@ export function WorkflowPlanner({
                   height="20"
                   patternUnits="userSpaceOnUse"
                 >
-                  <Circle cx="1" cy="1" r="1" fill="#d1d5db" />
+                  <Circle cx="1" cy="1" r="1" fill={resolvedTheme === 'dark' ? '#374151' : '#d1d5db'} />
                 </Pattern>
               </Defs>
               <Rect width={canvasWidth} height={canvasHeight} fill="url(#dots)" />
@@ -179,20 +185,20 @@ export function WorkflowPlanner({
         </ScrollView>
 
         {/* Stats Footer */}
-        <HStack space="md" className="p-3 bg-card border-t border-border items-center">
+        <HStack space="md" className="p-3 bg-card border-t border-border items-center" style={{ backgroundColor: cardBg, borderTopColor: borderColor }}>
           <VStack>
-            <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>
+            <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>
               Nodes
             </Text>
-            <Text size="sm" fontWeight="$semibold" color="$textLight900" style={{ color: '#0f172a' }}>
+            <Text size="sm" fontWeight="$semibold" color="$textLight900" style={{ color: textColor }}>
               {nodes.length}
             </Text>
           </VStack>
           <VStack>
-            <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>
+            <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>
               Connections
             </Text>
-            <Text size="sm" fontWeight="$semibold" color="$textLight900" style={{ color: '#0f172a' }}>
+            <Text size="sm" fontWeight="$semibold" color="$textLight900" style={{ color: textColor }}>
               {edges.length}
             </Text>
           </VStack>
@@ -209,17 +215,16 @@ export function WorkflowPlanner({
   );
 }
 
+// Note: Background colors are now set dynamically in the component
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
   },
   scrollView: {
     flex: 1,
   },
   canvas: {
     position: 'relative',
-    backgroundColor: '#f9fafb',
     transformOrigin: 'top left',
   },
 });

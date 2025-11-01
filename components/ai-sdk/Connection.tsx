@@ -2,6 +2,8 @@ import React from 'react';
 import { Box, HStack, VStack, Text, Badge, BadgeText, Icon, CircleIcon } from '@gluestack-ui/themed';
 import { ConnectionStatus } from './types';
 import Animated, { FadeIn, FadeOut } from 'react-native-reanimated';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../constants/theme';
 
 interface ConnectionProps {
   status: ConnectionStatus;
@@ -33,11 +35,14 @@ const statusConfig = {
 };
 
 export function Connection({ status, message, showPulse = true }: ConnectionProps) {
+  const { resolvedTheme } = useTheme();
+  const colors = getThemeColors(resolvedTheme === 'dark');
+  const { mutedText: mutedTextColor, card: cardBg, border: borderColor } = colors;
   const config = statusConfig[status];
 
   return (
     <Animated.View entering={FadeIn} exiting={FadeOut}>
-      <Box className="bg-card border border-border rounded-lg p-4">
+      <Box className="bg-card border border-border rounded-lg p-4" style={{ backgroundColor: cardBg, borderColor: borderColor }}>
         <HStack space="md" className="items-center">
           <Box className="relative">
             <Icon
@@ -61,14 +66,14 @@ export function Connection({ status, message, showPulse = true }: ConnectionProp
               </Badge>
               {status === 'connecting' && (
                 <Box className="animate-pulse">
-                  <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>
+                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>
                     ...
                   </Text>
                 </Box>
               )}
             </HStack>
             {message && (
-              <Text size="sm" color="$textLight500" style={{ color: '#64748b' }}>
+              <Text size="sm" color="$textLight500" style={{ color: mutedTextColor }}>
                 {message}
               </Text>
             )}

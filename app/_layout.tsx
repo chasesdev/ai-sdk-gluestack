@@ -3,6 +3,7 @@ import { config } from "../gluestack-ui.config";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { View, Platform } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider, useTheme } from "../contexts/ThemeContext";
 import { getThemeColors } from "../constants/theme";
 import "../global.css";
@@ -29,19 +30,21 @@ function RootLayoutContent() {
   const backgroundColor = colors.background;
 
   return (
-    <View style={{ flex: 1, backgroundColor: Platform.OS === 'android' ? backgroundColor : undefined }}>
-      <GluestackUIProvider config={config} colorMode={resolvedTheme}>
-        <StatusBar style={resolvedTheme === 'dark' ? 'light' : 'dark'} />
-        <Stack
-          screenOptions={{
-            headerShown: false,
-            contentStyle: { backgroundColor: Platform.OS === 'android' ? backgroundColor : "transparent" },
-          }}
-        >
-          <Stack.Screen name="index" />
-        </Stack>
-      </GluestackUIProvider>
-    </View>
+    <SafeAreaProvider>
+      <View style={{ flex: 1, backgroundColor: Platform.OS === 'android' ? backgroundColor : undefined }}>
+        <GluestackUIProvider config={config} colorMode={resolvedTheme}>
+          <StatusBar style={resolvedTheme === 'dark' ? 'light' : 'dark'} />
+          <Stack
+            screenOptions={{
+              headerShown: false,
+              contentStyle: { backgroundColor: Platform.OS === 'android' ? backgroundColor : "transparent" },
+            }}
+          >
+            <Stack.Screen name="index" />
+          </Stack>
+        </GluestackUIProvider>
+      </View>
+    </SafeAreaProvider>
   );
 }
 

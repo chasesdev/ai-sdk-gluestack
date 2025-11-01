@@ -15,6 +15,8 @@ import { Message } from './types';
 import { ChatMessage } from './ChatMessage';
 import { SendIcon } from '@gluestack-ui/themed';
 import Animated, { FadeIn } from 'react-native-reanimated';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../constants/theme';
 
 interface AIChatbotProps {
   initialMessages?: Message[];
@@ -31,6 +33,9 @@ export function AIChatbot({
   disabled = false,
   title = 'AI Chatbot',
 }: AIChatbotProps) {
+  const { resolvedTheme } = useTheme();
+  const colors = getThemeColors(resolvedTheme === 'dark');
+  const { text: textColor, mutedText: mutedTextColor, card: cardBg, border: borderColor } = colors;
   const [messages, setMessages] = useState<Message[]>(initialMessages);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -119,16 +124,16 @@ export function AIChatbot({
 
   return (
     <VStack space="md" className="h-full">
-      <Animated.View entering={FadeIn}>
-        <Box className="bg-card border-b border-border pb-4 pt-2">
-          <Text size="lg" fontWeight="$semibold" color="$textLight900" style={{ color: '#0f172a' }}>
-            {title}
-          </Text>
-          <Text size="sm" color="$textLight500" className="mt-1" style={{ color: '#64748b' }}>
-            Full-featured conversation interface
-          </Text>
-        </Box>
-      </Animated.View>
+            <Animated.View entering={FadeIn}>
+              <Box className="bg-card border-b border-border pb-4 pt-2" style={{ backgroundColor: cardBg, borderBottomColor: borderColor }}>
+                <Text size="lg" fontWeight="$semibold" color="$textLight900" style={{ color: textColor }}>
+                  {title}
+                </Text>
+                <Text size="sm" color="$textLight500" className="mt-1" style={{ color: mutedTextColor }}>
+                  Full-featured conversation interface
+                </Text>
+              </Box>
+            </Animated.View>
 
       <ScrollView
         ref={scrollViewRef}
@@ -137,22 +142,22 @@ export function AIChatbot({
           scrollViewRef.current?.scrollToEnd({ animated: true });
         }}
       >
-        <VStack space="sm" className="px-4 pb-4">
-          {messages.length === 0 ? (
-            <Box className="py-8">
-              <Text size="md" color="$textLight500" className="text-center" style={{ color: '#64748b' }}>
-                Start a conversation by typing a message below
-              </Text>
-            </Box>
-          ) : (
-            messages.map((message) => (
-              <ChatMessage key={message.id} message={message} />
-            ))
-          )}
-        </VStack>
+              <VStack space="sm" className="px-4 pb-4">
+                {messages.length === 0 ? (
+                  <Box className="py-8">
+                    <Text size="md" color="$textLight500" className="text-center" style={{ color: mutedTextColor }}>
+                      Start a conversation by typing a message below
+                    </Text>
+                  </Box>
+                ) : (
+                  messages.map((message) => (
+                    <ChatMessage key={message.id} message={message} />
+                  ))
+                )}
+              </VStack>
       </ScrollView>
 
-      <Box className="bg-card border-t border-border pt-4 px-4 pb-2">
+      <Box className="bg-card border-t border-border pt-4 px-4 pb-2" style={{ backgroundColor: cardBg, borderTopColor: borderColor }}>
         <HStack space="sm" className="items-center">
           <Input className="flex-1">
             <InputField

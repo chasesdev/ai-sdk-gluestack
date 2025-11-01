@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { ScrollView, View, Switch as RNSwitch } from 'react-native';
+import { ScrollView, View, Switch as RNSwitch, Platform } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import {
   Box,
   VStack,
@@ -87,6 +88,7 @@ import { getThemeColors } from '../constants/theme';
 
 export default function ComponentShowcase() {
   const { resolvedTheme } = useTheme();
+  const insets = useSafeAreaInsets();
 
   // Theme-aware colors
   const colors = getThemeColors(resolvedTheme === 'dark');
@@ -161,20 +163,26 @@ export default function ComponentShowcase() {
         ref={scrollViewRef}
         className="flex-1 bg-background"
         style={{ backgroundColor: bgColor }}
+        contentInsetAdjustmentBehavior="automatic"
       >
         <View
           ref={containerRef}
-          className="py-6 max-w-4xl mx-auto w-full"
-          style={{ backgroundColor: bgColor }}
+          className="max-w-4xl mx-auto w-full"
+          style={{
+            backgroundColor: bgColor,
+            paddingTop: Math.max(insets.top, Platform.OS === 'ios' ? 10 : 24),
+            paddingBottom: 24,
+            paddingHorizontal: 16,
+          }}
         >
         {/* Header */}
         <Animated.View entering={FadeIn.duration(400)}>
-          <VStack space="lg" className="mb-8">
+          <VStack className="mb-6">
             <VStack space="sm">
-              <Heading size="xl" color="$textLight900" style={{ color: textColor }}>
+              <Heading size="xl" style={{ color: textColor }}>
                 Gluestack UI Showcase
               </Heading>
-              <Text size="lg" color="$textLight500" style={{ color: mutedTextColor }}>
+              <Text size="lg" style={{ color: mutedTextColor }}>
                 Interactive demo of all 35+ components
               </Text>
             </VStack>
@@ -193,7 +201,7 @@ export default function ComponentShowcase() {
               <VStack space="sm" className="py-2 mt-2">
                 {sections.map((section, index) => (
                   <HStack key={section.id} space="sm" className="items-center">
-                    <Text size="sm" color="$textLight500" style={{ color: mutedTextColor, minWidth: 30 }}>
+                    <Text size="sm" style={{ color: mutedTextColor, minWidth: 30 }}>
                       {index + 1}.
                     </Text>
                     <Button
@@ -246,16 +254,16 @@ export default function ComponentShowcase() {
             <DemoCard title="Box, VStack & HStack" description="Flexible layout containers">
               <VStack space="md">
                 <Box className="bg-primary/10 p-4 rounded-lg">
-                  <Text color="$textLight900" style={{ color: textColor }}>Box: Flexible container component</Text>
+                  <Text style={{ color: textColor }}>Box: Flexible container component</Text>
                 </Box>
                 <VStack space="sm" className="bg-secondary/10 p-4 rounded-lg">
-                  <Text color="$textLight900" fontWeight="$semibold" style={{ color: textColor }}>VStack (Vertical)</Text>
-                  <Text color="$textLight500" size="sm" style={{ color: mutedTextColor }}>Item 1</Text>
-                  <Text color="$textLight500" size="sm" style={{ color: mutedTextColor }}>Item 2</Text>
-                  <Text color="$textLight500" size="sm" style={{ color: mutedTextColor }}>Item 3</Text>
+                  <Text fontWeight="$semibold" style={{ color: textColor }}>VStack (Vertical)</Text>
+                  <Text size="sm" style={{ color: mutedTextColor }}>Item 1</Text>
+                  <Text size="sm" style={{ color: mutedTextColor }}>Item 2</Text>
+                  <Text size="sm" style={{ color: mutedTextColor }}>Item 3</Text>
                 </VStack>
                 <HStack space="sm" className="bg-accent/10 p-4 rounded-lg">
-                  <Text color="$textLight900" fontWeight="$semibold" style={{ color: textColor }}>HStack:</Text>
+                  <Text fontWeight="$semibold" style={{ color: textColor }}>HStack:</Text>
                   <Badge className="bg-primary">
                     <BadgeText>Horizontal</BadgeText>
                   </Badge>
@@ -268,9 +276,9 @@ export default function ComponentShowcase() {
 
             <DemoCard title="Divider" description="Visual separator between sections">
               <VStack space="md">
-                <Text color="$textLight900" style={{ color: textColor }}>Content above divider</Text>
+                <Text style={{ color: textColor }}>Content above divider</Text>
                 <Divider />
-                <Text color="$textLight900" style={{ color: textColor }}>Content below divider</Text>
+                <Text style={{ color: textColor }}>Content below divider</Text>
               </VStack>
             </DemoCard>
                   </ComponentSection>
@@ -280,14 +288,14 @@ export default function ComponentShowcase() {
                   >
             <DemoCard title="Heading & Text" description="Text hierarchy components">
               <VStack space="md">
-                <Heading size="2xl" color="$textLight900" style={{ color: textColor }}>Heading 2XL</Heading>
-                <Heading size="xl" color="$textLight900" style={{ color: textColor }}>Heading XL</Heading>
-                <Heading size="lg" color="$textLight900" style={{ color: textColor }}>Heading Large</Heading>
-                <Heading size="md" color="$textLight900" style={{ color: textColor }}>Heading Medium</Heading>
-                <Text size="lg" color="$textLight900" style={{ color: textColor }}>Text Large</Text>
-                <Text size="md" color="$textLight900" style={{ color: textColor }}>Text Medium (default)</Text>
-                <Text size="sm" color="$textLight500" style={{ color: mutedTextColor }}>Text Small (muted)</Text>
-                <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Text Extra Small</Text>
+                <Heading size="2xl" style={{ color: textColor }}>Heading 2XL</Heading>
+                <Heading size="xl" style={{ color: textColor }}>Heading XL</Heading>
+                <Heading size="lg" style={{ color: textColor }}>Heading Large</Heading>
+                <Heading size="md" style={{ color: textColor }}>Heading Medium</Heading>
+                <Text size="lg" style={{ color: textColor }}>Text Large</Text>
+                <Text size="md" style={{ color: textColor }}>Text Medium (default)</Text>
+                <Text size="sm" style={{ color: mutedTextColor }}>Text Small (muted)</Text>
+                <Text size="xs" style={{ color: mutedTextColor }}>Text Extra Small</Text>
               </VStack>
             </DemoCard>
                   </ComponentSection>
@@ -385,7 +393,7 @@ export default function ComponentShowcase() {
                 />
               </Input>
               {inputValue && (
-                <Text size="sm" color="$textLight500" className="mt-2" style={{ color: mutedTextColor }}>
+                <Text size="sm" className="mt-2" style={{ color: mutedTextColor }}>
                   You typed: {inputValue}
                 </Text>
               )}
@@ -414,7 +422,7 @@ export default function ComponentShowcase() {
                   <Text>I agree to the terms and conditions</Text>
                 </CheckboxLabel>
               </Checkbox>
-              <Text size="sm" color="$textLight500" className="mt-2" style={{ color: mutedTextColor }}>
+              <Text size="sm" className="mt-2" style={{ color: mutedTextColor }}>
                 Status: {checkboxValue ? 'Checked ✓' : 'Unchecked'}
               </Text>
             </DemoCard>
@@ -448,7 +456,7 @@ export default function ComponentShowcase() {
                   </Radio>
                 </VStack>
               </RadioGroup>
-              <Text size="sm" color="$textLight500" className="mt-2" style={{ color: mutedTextColor }}>
+              <Text size="sm" className="mt-2" style={{ color: mutedTextColor }}>
                 Selected: {radioValue}
               </Text>
             </DemoCard>
@@ -466,7 +474,7 @@ export default function ComponentShowcase() {
                   </SliderTrack>
                   <SliderThumb />
                 </Slider>
-                <Text size="sm" color="$textLight500" className="text-center" style={{ color: mutedTextColor }}>
+                <Text size="sm" className="text-center" style={{ color: mutedTextColor }}>
                   Value: {Math.round(sliderValue)}
                 </Text>
               </VStack>
@@ -478,7 +486,7 @@ export default function ComponentShowcase() {
                   value={switchValue}
                   onValueChange={setSwitchValue}
                 />
-                <Text color="$textLight900" style={{ color: textColor }}>
+                <Text style={{ color: textColor }}>
                   {switchValue ? 'Enabled' : 'Disabled'}
                 </Text>
               </HStack>
@@ -526,15 +534,15 @@ export default function ComponentShowcase() {
               <HStack space="lg" className="items-center justify-around">
                 <VStack space="sm" className="items-center">
                   <Spinner size="small" />
-                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Small</Text>
+                  <Text size="xs" style={{ color: mutedTextColor }}>Small</Text>
                 </VStack>
                 <VStack space="sm" className="items-center">
                   <Spinner />
-                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Default</Text>
+                  <Text size="xs" style={{ color: mutedTextColor }}>Default</Text>
                 </VStack>
                 <VStack space="sm" className="items-center">
                   <Spinner size="large" />
-                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Large</Text>
+                  <Text size="xs" style={{ color: mutedTextColor }}>Large</Text>
                 </VStack>
               </HStack>
             </DemoCard>
@@ -551,7 +559,7 @@ export default function ComponentShowcase() {
                   <Button size="sm" onPress={() => setProgressValue(Math.min(100, progressValue + 10))}>
                     <ButtonText>+10%</ButtonText>
                   </Button>
-                  <Text size="sm" color="$textLight500" className="ml-auto" style={{ color: mutedTextColor }}>
+                  <Text size="sm" className="ml-auto" style={{ color: mutedTextColor }}>
                     {progressValue}%
                   </Text>
                 </HStack>
@@ -749,19 +757,19 @@ export default function ComponentShowcase() {
               <HStack space="lg" className="items-center justify-around">
                 <VStack space="xs" className="items-center">
                   <Icon as={CheckIcon} size="xl" className="text-success" />
-                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Check</Text>
+                  <Text size="xs" style={{ color: mutedTextColor }}>Check</Text>
                 </VStack>
                 <VStack space="xs" className="items-center">
                   <Icon as={CloseIcon} size="xl" className="text-error" />
-                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Close</Text>
+                  <Text size="xs" style={{ color: mutedTextColor }}>Close</Text>
                 </VStack>
                 <VStack space="xs" className="items-center">
                   <Icon as={AddIcon} size="xl" className="text-primary" />
-                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Add</Text>
+                  <Text size="xs" style={{ color: mutedTextColor }}>Add</Text>
                 </VStack>
                 <VStack space="xs" className="items-center">
                   <Icon as={InfoIcon} size="xl" className="text-info" />
-                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Info</Text>
+                  <Text size="xs" style={{ color: mutedTextColor }}>Info</Text>
                 </VStack>
               </HStack>
             </DemoCard>
@@ -896,7 +904,7 @@ export default function ComponentShowcase() {
           <Box className="mt-8 mb-6">
             <Divider className="mb-6" />
             <VStack space="sm" className="items-center">
-              <Text size="sm" color="$textLight500" className="text-center" style={{ color: mutedTextColor }}>
+              <Text size="sm" className="text-center" style={{ color: mutedTextColor }}>
                 Built with Expo 54, Gluestack UI v3, NativeWind v4 & Reanimated v3
               </Text>
               <HStack space="sm">

@@ -20,6 +20,8 @@ import {
   BadgeText,
   Icon,
 } from '@gluestack-ui/themed';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../constants/theme';
 import {
   PlayIcon,
   CpuIcon,
@@ -88,9 +90,22 @@ export const WorkflowNode = memo(({
   const isDragging = useSharedValue(false);
   const startX = useSharedValue(0);
   const startY = useSharedValue(0);
+  const isDraggingRef = React.useRef(false);
 
   // Pulse animation for running status
   const pulseScale = useSharedValue(1);
+
+  // Sync shared values with node position prop changes (but not during drag)
+  // Using setTimeout to ensure this runs after render phase
+  React.useEffect(() => {
+    if (!isDraggingRef.current) {
+      const timer = setTimeout(() => {
+        translateX.value = node.position.x;
+        translateY.value = node.position.y;
+      }, 0);
+      return () => clearTimeout(timer);
+    }
+  }, [node.position.x, node.position.y]);
 
   React.useEffect(() => {
     if (node.data.status === 'running') {
@@ -107,21 +122,28 @@ export const WorkflowNode = memo(({
   const panGesture = Gesture.Pan()
     .enabled(!disabled)
     .onStart(() => {
+      'worklet';
       isDragging.value = true;
+      isDraggingRef.current = true;
       startX.value = translateX.value;
       startY.value = translateY.value;
       runOnJS(onDragStart)(node.id);
     })
     .onUpdate((event) => {
-      translateX.value = startX.value + event.translationX / scale;
-      translateY.value = startY.value + event.translationY / scale;
+      'worklet';
+      const newX = startX.value + event.translationX / scale;
+      const newY = startY.value + event.translationY / scale;
+      translateX.value = newX;
+      translateY.value = newY;
       runOnJS(onDrag)(node.id, {
-        x: translateX.value,
-        y: translateY.value,
+        x: newX,
+        y: newY,
       });
     })
     .onEnd(() => {
+      'worklet';
       isDragging.value = false;
+      isDraggingRef.current = false;
       runOnJS(onDragEnd)(node.id);
     });
 
@@ -143,8 +165,11 @@ export const WorkflowNode = memo(({
     };
   });
 
+  const { resolvedTheme } = useTheme();
+  const themeColors = getThemeColors(resolvedTheme === 'dark');
+  const { text: textColor, mutedText: mutedTextColor, card: cardBg, border: borderColor } = themeColors;
   const status = node.data.status || 'idle';
-  const colors = statusColors[status];
+  const statusColorConfig = statusColors[status];
   const NodeIcon = node.data.icon ? iconMap[node.data.icon as keyof typeof iconMap] : CpuIcon;
 
   return (
@@ -160,10 +185,10 @@ export const WorkflowNode = memo(({
             styles.node,
             {
               borderWidth: isSelected ? 3 : 2,
-              borderColor: isSelected ? '#3b82f6' : colors.border,
+              borderColor: isSelected ? '#5a4fcf' : borderColor,
+              backgroundColor: cardBg,
             },
           ]}
-          bg={colors.bg}
           className="rounded-xl shadow-lg"
         >
           <VStack space="xs">
@@ -181,16 +206,16 @@ export const WorkflowNode = memo(({
                 {NodeIcon && <Icon as={NodeIcon} size="sm" color="$white" />}
               </Box>
               <VStack flex={1}>
-                <Heading size="sm" color="$textLight900" style={{ color: '#0f172a' }}>
+                <Heading size="sm" color="$textLight900" style={{ color: textColor }}>
                   {node.data.label}
                 </Heading>
                 {node.data.description && (
-                  <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>
+                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>
                     {node.data.description}
                   </Text>
                 )}
               </VStack>
-              <Badge action={colors.badge as any}>
+              <Badge action={statusColorConfig.badge as any}>
                 <BadgeText>{status}</BadgeText>
               </Badge>
             </HStack>
@@ -200,17 +225,21 @@ export const WorkflowNode = memo(({
               <Box
                 className="rounded-md p-2 mt-1"
                 bg="$backgroundLight50"
-                style={{ borderWidth: 1, borderColor: '#e5e7eb' }}
+                style={{ 
+                  borderWidth: 1, 
+                  borderColor: resolvedTheme === 'dark' ? '#374151' : '#e5e7eb',
+                  backgroundColor: resolvedTheme === 'dark' ? '#1f2937' : '#f9fafb',
+                }}
               >
-                <Text
-                  size="xs"
-                  fontFamily="$mono"
-                  color="$textLight700"
-                  numberOfLines={3}
-                  style={{ color: '#334155' }}
-                >
-                  {node.data.code}
-                </Text>
+                    <Text
+                      size="xs"
+                      fontFamily="$mono"
+                      color="$textLight700"
+                      numberOfLines={3}
+                      style={{ color: mutedTextColor }}
+                    >
+                      {node.data.code}
+                    </Text>
               </Box>
             )}
 

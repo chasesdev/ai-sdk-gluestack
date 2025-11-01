@@ -34,15 +34,13 @@ function RootLayoutContent() {
 
   return (
     <SafeAreaProvider>
-      <View 
+      <View
         style={{ 
           flex: 1, 
-          backgroundColor: Platform.OS === 'android' ? backgroundColor : undefined,
-          // Ensure Android doesn't have layout issues
-          ...(Platform.OS === 'android' && { 
-            minHeight: '100%',
-            width: '100%',
-          }),
+          backgroundColor: backgroundColor,
+          // Ensure full coverage on web and Android
+          minHeight: '100%',
+          width: '100%',
         }}
       >
         <GluestackUIProvider config={config} colorMode={resolvedTheme}>
@@ -51,11 +49,8 @@ function RootLayoutContent() {
             screenOptions={{
               headerShown: false,
               contentStyle: { 
-                backgroundColor: Platform.OS === 'android' ? backgroundColor : "transparent",
-                // Ensure proper rendering on Android
-                ...(Platform.OS === 'android' && {
-                  flex: 1,
-                }),
+                backgroundColor: backgroundColor,
+                flex: 1,
               },
             }}
           >

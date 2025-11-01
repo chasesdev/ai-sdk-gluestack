@@ -5,13 +5,18 @@
 html,
 body {
   height: 100%;
+  min-height: 100vh;
   background-color: hsl(var(--background));
   background: hsl(var(--background));
   color: hsl(var(--foreground));
+  margin: 0;
+  padding: 0;
 }
 
 #root {
   height: 100%;
+  min-height: 100vh;
+  background-color: hsl(var(--background));
 }
 
 :root {

@@ -25,11 +25,11 @@ export function DemoCard({ title, description, children }: DemoCardProps) {
     >
       <VStack space="md">
         <VStack space="xs">
-          <Heading size="md" color="$textLight900" style={{ color: textColor }}>
+          <Heading size="md" style={{ color: textColor }}>
             {title}
           </Heading>
           {description && (
-            <Text size="sm" color="$textLight500" style={{ color: mutedTextColor }}>
+            <Text size="sm" style={{ color: mutedTextColor }}>
               {description}
             </Text>
           )}

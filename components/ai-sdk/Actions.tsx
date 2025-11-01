@@ -2,6 +2,8 @@ import React from 'react';
 import { VStack, HStack, Box, Button, ButtonText, Spinner, Icon } from '@gluestack-ui/themed';
 import { ActionItem, ActionsLayout } from './types';
 import Animated, { FadeInDown } from 'react-native-reanimated';
+import { useTheme } from '../../contexts/ThemeContext';
+import { getThemeColors } from '../../constants/theme';
 
 interface ActionsProps {
   actions: ActionItem[];
@@ -11,7 +13,21 @@ interface ActionsProps {
 }
 
 export function Actions({ actions, layout = 'horizontal', size = 'md', className }: ActionsProps) {
+  const { resolvedTheme } = useTheme();
+  const colors = getThemeColors(resolvedTheme === 'dark');
+  const { text: textColor } = colors;
+
   const renderAction = (action: ActionItem, index: number) => {
+    // Determine text color based on button variant
+    let buttonTextColor = textColor;
+    if (action.variant === 'outline') {
+      buttonTextColor = textColor;
+    } else if (action.action === 'primary' || action.variant === 'primary') {
+      buttonTextColor = '#ffffff';
+    } else if (action.action === 'positive' || action.action === 'negative') {
+      buttonTextColor = '#ffffff';
+    }
+
     return (
       <Animated.View key={action.id} entering={FadeInDown.delay(index * 100)}>
         <Button
@@ -29,7 +45,7 @@ export function Actions({ actions, layout = 'horizontal', size = 'md', className
               {action.icon && (
                 <Icon as={action.icon} size="sm" className="mr-2" />
               )}
-              <ButtonText>{action.label}</ButtonText>
+              <ButtonText style={{ color: buttonTextColor }}>{action.label}</ButtonText>
             </>
           )}
         </Button>

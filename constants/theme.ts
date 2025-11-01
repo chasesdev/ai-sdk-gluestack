@@ -7,15 +7,17 @@ export const THEME_COLORS = {
     accent: '#5a4fcf',
     border: '#e5e7eb',
     muted: '#f9fafb',
+    tintedBg: '#f0f0ff', // primary50
   },
   dark: {
-    background: '#010101',
-    card: '#1e293b',
+    background: '#000000',
+    card: '#000000',
     text: '#ffffff',
-    mutedText: '#94a3b8',
+    mutedText: '#999999',
     accent: '#5a4fcf',
-    border: '#334155',
-    muted: '#1f2937',
+    border: '#1f1f1f',
+    muted: '#0a0a0a',
+    tintedBg: '#000000', // black for dark mode panels
   },
 } as const;
 

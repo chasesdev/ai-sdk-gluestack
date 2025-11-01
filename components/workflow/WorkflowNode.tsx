@@ -203,20 +203,20 @@ export const WorkflowNode = memo(({
                     status === 'error' ? '#ef4444' : '#6b7280'
                 }}
               >
-                {NodeIcon && <Icon as={NodeIcon} size="sm" color="$white" />}
+                {NodeIcon && <Icon as={NodeIcon} size="sm" style={{ color: '#ffffff' }} />}
               </Box>
               <VStack flex={1}>
-                <Heading size="sm" color="$textLight900" style={{ color: textColor }}>
+                <Heading size="sm" style={{ color: textColor }}>
                   {node.data.label}
                 </Heading>
                 {node.data.description && (
-                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>
+                  <Text size="xs" style={{ color: mutedTextColor }}>
                     {node.data.description}
                   </Text>
                 )}
               </VStack>
               <Badge action={statusColorConfig.badge as any}>
-                <BadgeText>{status}</BadgeText>
+                <BadgeText style={{ color: textColor }}>{status}</BadgeText>
               </Badge>
             </HStack>
 
@@ -224,17 +224,15 @@ export const WorkflowNode = memo(({
             {node.data.code && (
               <Box
                 className="rounded-md p-2 mt-1"
-                bg="$backgroundLight50"
-                style={{ 
-                  borderWidth: 1, 
-                  borderColor: resolvedTheme === 'dark' ? '#374151' : '#e5e7eb',
-                  backgroundColor: resolvedTheme === 'dark' ? '#1f2937' : '#f9fafb',
+                style={{
+                  borderWidth: 1,
+                  borderColor: borderColor,
+                  backgroundColor: cardBg,
                 }}
               >
                     <Text
                       size="xs"
                       fontFamily="$mono"
-                      color="$textLight700"
                       numberOfLines={3}
                       style={{ color: mutedTextColor }}
                     >

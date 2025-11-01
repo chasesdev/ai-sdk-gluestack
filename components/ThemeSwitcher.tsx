@@ -14,13 +14,15 @@ import {
   SettingsIcon,
 } from '@gluestack-ui/themed';
 import { useTheme, ThemeMode } from '../contexts/ThemeContext';
-import { THEME_COLORS } from '../constants/theme';
+import { THEME_COLORS, getThemeColors } from '../constants/theme';
 
 const ACCENT_COLOR = THEME_COLORS.light.accent;
 
 export function ThemeSwitcher() {
-  const { theme, setTheme } = useTheme();
+  const { theme, setTheme, resolvedTheme } = useTheme();
   const [showActionsheet, setShowActionsheet] = useState(false);
+  const colors = getThemeColors(resolvedTheme === 'dark');
+  const { text: textColor } = colors;
 
   const handleClose = () => setShowActionsheet(false);
 
@@ -57,7 +59,7 @@ export function ThemeSwitcher() {
           elevation: 8,
         }}
       >
-        <Icon as={CurrentIcon} size="xl" className="text-white" />
+        <Icon as={CurrentIcon} size="xl" style={{ color: '#ffffff' }} />
       </Pressable>
 
       {/* Theme Selection Actionsheet */}
@@ -70,8 +72,8 @@ export function ThemeSwitcher() {
 
           <View className="w-full px-4 py-2">
             <ActionsheetItem onPress={() => selectTheme('light')}>
-              <Icon as={SunIcon} size="lg" className="mr-3 text-foreground" />
-              <ActionsheetItemText className="text-foreground">
+              <Icon as={SunIcon} size="lg" className="mr-3" style={{ color: textColor }} />
+              <ActionsheetItemText style={{ color: textColor }}>
                 Light
               </ActionsheetItemText>
               {theme === 'light' && (
@@ -80,8 +82,8 @@ export function ThemeSwitcher() {
             </ActionsheetItem>
 
             <ActionsheetItem onPress={() => selectTheme('dark')}>
-              <Icon as={MoonIcon} size="lg" className="mr-3 text-foreground" />
-              <ActionsheetItemText className="text-foreground">
+              <Icon as={MoonIcon} size="lg" className="mr-3" style={{ color: textColor }} />
+              <ActionsheetItemText style={{ color: textColor }}>
                 Dark
               </ActionsheetItemText>
               {theme === 'dark' && (
@@ -90,8 +92,8 @@ export function ThemeSwitcher() {
             </ActionsheetItem>
 
             <ActionsheetItem onPress={() => selectTheme('system')}>
-              <Icon as={SettingsIcon} size="lg" className="mr-3 text-foreground" />
-              <ActionsheetItemText className="text-foreground">
+              <Icon as={SettingsIcon} size="lg" className="mr-3" style={{ color: textColor }} />
+              <ActionsheetItemText style={{ color: textColor }}>
                 System
               </ActionsheetItemText>
               {theme === 'system' && (

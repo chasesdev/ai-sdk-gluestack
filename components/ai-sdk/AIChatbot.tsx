@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { Platform } from 'react-native';
 import {
   VStack,
   HStack,
@@ -13,8 +14,7 @@ import {
 } from '@gluestack-ui/themed';
 import { Message } from './types';
 import { ChatMessage } from './ChatMessage';
-import { SendIcon } from '@gluestack-ui/themed';
-import Animated, { FadeIn } from 'react-native-reanimated';
+import { ChevronRightIcon } from '@gluestack-ui/themed';
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeColors } from '../../constants/theme';
 
@@ -124,17 +124,6 @@ export function AIChatbot({
 
   return (
     <VStack space="md" className="h-full">
-            <Animated.View entering={FadeIn}>
-              <Box className="bg-card border-b border-border pb-4 pt-2" style={{ backgroundColor: cardBg, borderBottomColor: borderColor }}>
-                <Text size="lg" fontWeight="$semibold" color="$textLight900" style={{ color: textColor }}>
-                  {title}
-                </Text>
-                <Text size="sm" color="$textLight500" className="mt-1" style={{ color: mutedTextColor }}>
-                  Full-featured conversation interface
-                </Text>
-              </Box>
-            </Animated.View>
-
       <ScrollView
         ref={scrollViewRef}
         className="flex-1"
@@ -142,40 +131,62 @@ export function AIChatbot({
           scrollViewRef.current?.scrollToEnd({ animated: true });
         }}
       >
-              <VStack space="sm" className="px-4 pb-4">
-                {messages.length === 0 ? (
-                  <Box className="py-8">
-                    <Text size="md" color="$textLight500" className="text-center" style={{ color: mutedTextColor }}>
-                      Start a conversation by typing a message below
-                    </Text>
-                  </Box>
-                ) : (
-                  messages.map((message) => (
-                    <ChatMessage key={message.id} message={message} />
-                  ))
-                )}
-              </VStack>
+        <VStack space="sm" className="px-4 pb-4 pt-4">
+          {messages.length === 0 ? (
+            <Box className="py-8">
+              <Text size="sm" className="text-center" style={{ color: mutedTextColor }}>
+                Start a conversation
+              </Text>
+            </Box>
+          ) : (
+            messages.map((message) => (
+              <ChatMessage key={message.id} message={message} />
+            ))
+          )}
+        </VStack>
       </ScrollView>
 
-      <Box className="bg-card border-t border-border pt-4 px-4 pb-2" style={{ backgroundColor: cardBg, borderTopColor: borderColor }}>
-        <HStack space="sm" className="items-center">
-          <Input className="flex-1">
+      <Box className="border-t border-border pt-3 px-4 pb-3" style={{ borderTopColor: borderColor }}>
+        <HStack 
+          space="sm" 
+          style={{ 
+            alignItems: 'center',
+            justifyContent: 'flex-start',
+          }}
+        >
+          <Input 
+            style={{ flex: 1 }}
+            variant="outline"
+          >
             <InputField
               placeholder={placeholder}
+              placeholderTextColor={mutedTextColor}
               value={inputValue}
               onChangeText={setInputValue}
               onSubmitEditing={handleSend}
               editable={!disabled && !isLoading}
               multiline
-              className="min-h-[44px] max-h-[120px]"
+              style={{
+                minHeight: 44,
+                maxHeight: 120,
+                textAlignVertical: Platform.OS === 'android' ? 'center' : 'top',
+                paddingTop: Platform.OS === 'ios' ? 12 : 10,
+                paddingBottom: Platform.OS === 'ios' ? 12 : 10,
+                color: textColor,
+              }}
             />
           </Input>
           <Button
             onPress={handleSend}
             isDisabled={!inputValue.trim() || disabled || isLoading}
             size="md"
+            style={{
+              alignSelf: 'center',
+              minWidth: 44,
+              minHeight: 44,
+            }}
           >
-            <Icon as={SendIcon} size="sm" />
+            <Icon as={ChevronRightIcon} size="sm" />
           </Button>
         </HStack>
       </Box>

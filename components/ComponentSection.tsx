@@ -19,11 +19,11 @@ export function ComponentSection({ title, description, children }: ComponentSect
   return (
     <VStack space="md" className="mb-8">
       <VStack space="xs">
-        <Heading size="xl" color="$textLight900" style={{ color: textColor }}>
+        <Heading size="xl" style={{ color: textColor }}>
           {title}
         </Heading>
         {description && (
-          <Text size="sm" color="$textLight500" style={{ color: mutedTextColor }}>
+          <Text size="sm" style={{ color: mutedTextColor }}>
             {description}
           </Text>
         )}

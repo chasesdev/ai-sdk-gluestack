@@ -37,7 +37,7 @@ const statusConfig = {
 export function Connection({ status, message, showPulse = true }: ConnectionProps) {
   const { resolvedTheme } = useTheme();
   const colors = getThemeColors(resolvedTheme === 'dark');
-  const { mutedText: mutedTextColor, card: cardBg, border: borderColor } = colors;
+  const { text: textColor, mutedText: mutedTextColor, card: cardBg, border: borderColor } = colors;
   const config = statusConfig[status];
 
   return (
@@ -48,7 +48,12 @@ export function Connection({ status, message, showPulse = true }: ConnectionProp
             <Icon
               as={config.icon}
               size="md"
-              className={`text-${config.color}${showPulse && status === 'connected' ? ' opacity-75' : ''}`}
+              style={{
+                color: status === 'connected' ? '#10b981' : 
+                       status === 'connecting' ? '#f59e0b' :
+                       status === 'error' ? '#ef4444' : '#94a3b8',
+                opacity: showPulse && status === 'connected' ? 0.75 : 1,
+              }}
             />
             {showPulse && status === 'connected' && (
               <Box
@@ -62,18 +67,18 @@ export function Connection({ status, message, showPulse = true }: ConnectionProp
           <VStack space="xs" className="flex-1">
             <HStack space="sm" className="items-center">
               <Badge action={config.color as any} size="sm">
-                <BadgeText>{config.text}</BadgeText>
+                <BadgeText style={{ color: textColor }}>{config.text}</BadgeText>
               </Badge>
               {status === 'connecting' && (
                 <Box className="animate-pulse">
-                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>
+                  <Text size="xs" style={{ color: mutedTextColor }}>
                     ...
                   </Text>
                 </Box>
               )}
             </HStack>
             {message && (
-              <Text size="sm" color="$textLight500" style={{ color: mutedTextColor }}>
+              <Text size="sm" style={{ color: mutedTextColor }}>
                 {message}
               </Text>
             )}

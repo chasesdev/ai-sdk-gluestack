@@ -31,16 +31,33 @@ function RootLayoutContent() {
 
   return (
     <SafeAreaProvider>
-      <View style={{ flex: 1, backgroundColor: Platform.OS === 'android' ? backgroundColor : undefined }}>
+      <View 
+        style={{ 
+          flex: 1, 
+          backgroundColor: Platform.OS === 'android' ? backgroundColor : undefined,
+          // Ensure Android doesn't have layout issues
+          ...(Platform.OS === 'android' && { 
+            minHeight: '100%',
+            width: '100%',
+          }),
+        }}
+      >
         <GluestackUIProvider config={config} colorMode={resolvedTheme}>
           <StatusBar style={resolvedTheme === 'dark' ? 'light' : 'dark'} />
           <Stack
             screenOptions={{
               headerShown: false,
-              contentStyle: { backgroundColor: Platform.OS === 'android' ? backgroundColor : "transparent" },
+              contentStyle: { 
+                backgroundColor: Platform.OS === 'android' ? backgroundColor : "transparent",
+                // Ensure proper rendering on Android
+                ...(Platform.OS === 'android' && {
+                  flex: 1,
+                }),
+              },
             }}
           >
             <Stack.Screen name="index" />
+            <Stack.Screen name="components" />
           </Stack>
         </GluestackUIProvider>
       </View>

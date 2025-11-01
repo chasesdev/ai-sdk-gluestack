@@ -20,7 +20,7 @@ interface ChatMessageProps {
 export function ChatMessage({ message }: ChatMessageProps) {
   const { resolvedTheme } = useTheme();
   const colors = getThemeColors(resolvedTheme === 'dark');
-  const { text: textColor, mutedText: mutedTextColor } = colors;
+  const { text: textColor, mutedText: mutedTextColor, card: cardColor, border: borderColor, accent: accentColor } = colors;
   const isUser = message.role === 'user';
   const isAssistant = message.role === 'assistant';
 
@@ -31,27 +31,27 @@ export function ChatMessage({ message }: ChatMessageProps) {
         className={`mb-4 ${isUser ? 'flex-row-reverse' : ''}`}
       >
         <Avatar size="sm">
-          <AvatarFallbackText>
+          <AvatarFallbackText style={{ color: '#ffffff', backgroundColor: isUser ? accentColor : cardColor }}>
             {isUser ? 'U' : 'AI'}
           </AvatarFallbackText>
         </Avatar>
         <VStack space="xs" className={`flex-1 ${isUser ? 'items-end' : 'items-start'}`}>
           <Box
-            className={`rounded-xl px-4 py-3 max-w-[85%] ${
-              isUser
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-muted text-foreground'
-            }`}
+            className="rounded-xl px-4 py-3 max-w-[85%]"
+            style={{
+              backgroundColor: isUser ? accentColor : cardColor,
+              borderWidth: isUser ? 0 : 1,
+              borderColor: isUser ? 'transparent' : borderColor,
+            }}
           >
             {message.isLoading ? (
               <HStack space="sm" className="items-center">
                 <Spinner size="small" />
-                <Text size="sm" color={isUser ? '$white' : '$textLight900'} style={{ color: isUser ? '#ffffff' : textColor }}>Thinking...</Text>
+                <Text size="sm" style={{ color: isUser ? '#ffffff' : textColor }}>Thinking...</Text>
               </HStack>
             ) : (
               <Text
                 size="md"
-                color={isUser ? '$white' : '$textLight900'}
                 style={{ color: isUser ? '#ffffff' : textColor }}
               >
                 {message.content}
@@ -59,7 +59,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
             )}
           </Box>
           {message.timestamp && (
-            <Text size="xs" color="$textLight500" className="px-2" style={{ color: mutedTextColor }}>
+            <Text size="xs" className="px-2" style={{ color: mutedTextColor }}>
               {formatTime(message.timestamp)}
             </Text>
           )}

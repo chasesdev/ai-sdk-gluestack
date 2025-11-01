@@ -23,9 +23,9 @@ import {
 import { useTheme } from '../../contexts/ThemeContext';
 import { getThemeColors } from '../../constants/theme';
 import {
-  PlayIcon,
-  CpuIcon,
-  GitBranchIcon,
+  AddIcon,
+  CircleIcon,
+  InfoIcon,
   CheckCircleIcon,
   AlertCircleIcon,
   CheckIcon,
@@ -44,9 +44,9 @@ interface WorkflowNodeProps {
 }
 
 const iconMap = {
-  play: PlayIcon,
-  cpu: CpuIcon,
-  'git-branch': GitBranchIcon,
+  play: AddIcon,
+  cpu: CircleIcon,
+  'git-branch': InfoIcon,
   'check-circle': CheckCircleIcon,
   'alert-circle': AlertCircleIcon,
   check: CheckIcon,
@@ -170,7 +170,7 @@ export const WorkflowNode = memo(({
   const { text: textColor, mutedText: mutedTextColor, card: cardBg, border: borderColor } = themeColors;
   const status = node.data.status || 'idle';
   const statusColorConfig = statusColors[status];
-  const NodeIcon = node.data.icon ? iconMap[node.data.icon as keyof typeof iconMap] : CpuIcon;
+  const NodeIcon = node.data.icon ? iconMap[node.data.icon as keyof typeof iconMap] : CircleIcon;
 
   return (
     <GestureDetector gesture={composed}>

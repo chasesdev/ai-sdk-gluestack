@@ -193,7 +193,7 @@ export function AIChatbot({
             accessibilityHint="Sends your message to the chatbot"
             accessibilityRole="button"
           >
-            <Icon as={ChevronRightIcon} size="sm" />
+            <Icon as={ChevronRightIcon} size="sm" color="white" />
           </Button>
         </HStack>
       </Box>

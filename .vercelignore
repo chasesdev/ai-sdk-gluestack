@@ -1,0 +1,43 @@
+# Native build artifacts (not needed for web)
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+android/
+ios/
+
+# Expo
+.expo/
+
+# Metro bundler
+.metro-health-check*
+
+# Debug logs
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+# macOS
+.DS_Store
+*.pem
+
+# Editor configs
+.vscode/
+.idea/
+
+# Tests (if you have them)
+**/__tests__/
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+
+# Documentation
+*.md
+!README.md
+
+# Git
+.git/
+.gitignore

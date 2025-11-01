@@ -1,13 +1,13 @@
-import React, { ReactNode } from 'react';
-import { Box } from '@gluestack-ui/themed';
-import { useTheme } from '../../contexts/ThemeContext';
-import { ComponentProps } from 'react';
+import React, { ReactNode } from 'react'
+import { Box } from '@gluestack-ui/themed'
+import { useTheme } from '../../contexts/ThemeContext'
+import { ComponentProps } from 'react'
 
-type BoxProps = ComponentProps<typeof Box>;
+type BoxProps = ComponentProps<typeof Box>
 
 interface ThemedCardProps extends Omit<BoxProps, 'children'> {
-  variant?: 'elevated' | 'flat' | 'outlined';
-  children?: ReactNode;
+  variant?: 'elevated' | 'flat' | 'outlined'
+  children?: ReactNode
 }
 
 /**
@@ -25,20 +25,20 @@ export function ThemedCard({
   sx,
   ...props
 }: ThemedCardProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
 
-  const bgColor = isDark ? '$cardDark' : '$cardLight';
-  const borderColor = isDark ? '$borderDark' : '$borderLight';
+  const bgColor = isDark ? '$cardDark' : '$cardLight'
+  const borderColor = isDark ? '$borderDark' : '$borderLight'
 
   // Build className based on variant
   const variantClasses = {
     elevated: 'shadow-sm',
     flat: '',
     outlined: 'border-2',
-  };
+  }
 
-  const combinedClassName = `${variantClasses[variant]} ${className}`.trim();
+  const combinedClassName = `${variantClasses[variant]} ${className}`.trim()
 
   return (
     <Box
@@ -55,5 +55,5 @@ export function ThemedCard({
     >
       {children}
     </Box>
-  );
+  )
 }

@@ -85,18 +85,16 @@ The `babel.config.js` includes both NativeWind and Reanimated plugins:
 
 ```javascript
 module.exports = function (api) {
-  api.cache(true);
+  api.cache(true)
   return {
-    presets: [
-      ["babel-preset-expo", { jsxImportSource: "nativewind" }]
-    ],
+    presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }]],
     plugins: [
-      "nativewind/babel",
+      'nativewind/babel',
       // Reanimated plugin must be listed last
-      "react-native-reanimated/plugin",
+      'react-native-reanimated/plugin',
     ],
-  };
-};
+  }
+}
 ```
 
 **Important:** The Reanimated plugin must always be listed last in the plugins array.
@@ -106,12 +104,12 @@ module.exports = function (api) {
 Metro is configured to work with NativeWind v4:
 
 ```javascript
-const { getDefaultConfig } = require("expo/metro-config");
-const { withNativeWind } = require("nativewind/metro");
+const { getDefaultConfig } = require('expo/metro-config')
+const { withNativeWind } = require('nativewind/metro')
 
-const config = getDefaultConfig(__dirname);
+const config = getDefaultConfig(__dirname)
 
-module.exports = withNativeWind(config, { input: "./global.css" });
+module.exports = withNativeWind(config, { input: './global.css' })
 ```
 
 ### App Configuration
@@ -121,10 +119,7 @@ The `app.json` includes the Reanimated plugin:
 ```json
 {
   "expo": {
-    "plugins": [
-      "expo-router",
-      "react-native-reanimated/plugin"
-    ]
+    "plugins": ["expo-router", "react-native-reanimated/plugin"]
   }
 }
 ```
@@ -139,9 +134,9 @@ Reanimated v3 may have issues on web. The fix is included in `app/_layout.tsx`:
 
 ```typescript
 // Fix for Reanimated v3 on web
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   // @ts-ignore
-  window._frameTimestamp = null;
+  window._frameTimestamp = null
 }
 ```
 
@@ -162,10 +157,13 @@ npx expo start --clear
 
 ```typescript
 // ✅ Correct
-import Animated, { useSharedValue, useAnimatedStyle } from 'react-native-reanimated';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+} from 'react-native-reanimated'
 
 // ❌ Wrong
-import { Animated } from 'react-native';
+import { Animated } from 'react-native'
 ```
 
 ### NativeWind v4 / Tailwind Issues
@@ -173,6 +171,7 @@ import { Animated } from 'react-native';
 #### 1. Styles Not Applying
 
 **Solutions:**
+
 - Make sure `global.css` is imported in `app/_layout.tsx`
 - Clear Metro cache: `npx expo start --clear`
 - Ensure `nativewind-env.d.ts` exists for TypeScript support
@@ -272,9 +271,7 @@ This template supports multiple styling approaches:
 
 ```tsx
 <View className="flex-1 bg-background p-4">
-  <Text className="text-2xl font-bold text-foreground">
-    Hello World
-  </Text>
+  <Text className="text-2xl font-bold text-foreground">Hello World</Text>
 </View>
 ```
 
@@ -303,20 +300,20 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-} from 'react-native-reanimated';
+} from 'react-native-reanimated'
 
 function MyComponent() {
-  const scale = useSharedValue(1);
+  const scale = useSharedValue(1)
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [{ scale: scale.value }],
-    };
-  });
+    }
+  })
 
   const handlePress = () => {
-    scale.value = withSpring(scale.value === 1 ? 1.5 : 1);
-  };
+    scale.value = withSpring(scale.value === 1 ? 1.5 : 1)
+  }
 
   return (
     <Animated.View style={animatedStyle}>
@@ -324,7 +321,7 @@ function MyComponent() {
         <ButtonText>Animate</ButtonText>
       </Button>
     </Animated.View>
-  );
+  )
 }
 ```
 
@@ -335,7 +332,7 @@ function MyComponent() {
 Edit `gluestack-ui.config.ts`:
 
 ```typescript
-import { config as defaultConfig } from "@gluestack-ui/config";
+import { config as defaultConfig } from '@gluestack-ui/config'
 
 export const config = {
   ...defaultConfig,
@@ -343,10 +340,10 @@ export const config = {
     ...defaultConfig.tokens,
     colors: {
       ...defaultConfig.tokens.colors,
-      primary500: "#your-color",
+      primary500: '#your-color',
     },
   },
-};
+}
 ```
 
 ### Tailwind Theme

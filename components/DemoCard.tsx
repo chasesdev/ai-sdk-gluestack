@@ -1,11 +1,11 @@
-import { VStack, Box } from '@gluestack-ui/themed';
-import { ReactNode } from 'react';
-import { ThemedCard, ThemedHeading, ThemedText } from './themed';
+import { VStack, Box } from '@gluestack-ui/themed'
+import { ReactNode } from 'react'
+import { ThemedCard, ThemedHeading, ThemedText } from './themed'
 
 interface DemoCardProps {
-  title: string;
-  description?: string;
-  children: ReactNode;
+  title: string
+  description?: string
+  children: ReactNode
 }
 
 export function DemoCard({ title, description, children }: DemoCardProps) {
@@ -23,5 +23,5 @@ export function DemoCard({ title, description, children }: DemoCardProps) {
         <Box sx={{ paddingTop: '$2' }}>{children}</Box>
       </VStack>
     </ThemedCard>
-  );
+  )
 }

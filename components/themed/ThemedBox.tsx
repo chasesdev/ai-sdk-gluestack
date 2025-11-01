@@ -1,13 +1,13 @@
-import React, { ReactNode } from 'react';
-import { Box } from '@gluestack-ui/themed';
-import { useTheme } from '../../contexts/ThemeContext';
-import { ComponentProps } from 'react';
+import React, { ReactNode } from 'react'
+import { Box } from '@gluestack-ui/themed'
+import { useTheme } from '../../contexts/ThemeContext'
+import { ComponentProps } from 'react'
 
-type BoxProps = ComponentProps<typeof Box>;
+type BoxProps = ComponentProps<typeof Box>
 
 interface ThemedBoxProps extends Omit<BoxProps, 'children'> {
-  variant?: 'default' | 'card' | 'muted' | 'tinted';
-  children?: ReactNode;
+  variant?: 'default' | 'card' | 'muted' | 'tinted'
+  children?: ReactNode
 }
 
 /**
@@ -25,8 +25,8 @@ export function ThemedBox({
   sx,
   ...props
 }: ThemedBoxProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
 
   // Map variants to color tokens
   const bgColorMap = {
@@ -34,10 +34,10 @@ export function ThemedBox({
     card: isDark ? '$cardDark' : '$cardLight',
     muted: isDark ? '$mutedDark' : '$mutedLight',
     tinted: isDark ? '$tintedDark' : '$tintedLight',
-  };
+  }
 
-  const borderColorToken = isDark ? '$borderDark' : '$borderLight';
-  const bgColorToken = bgColorMap[variant];
+  const borderColorToken = isDark ? '$borderDark' : '$borderLight'
+  const bgColorToken = bgColorMap[variant]
 
   return (
     <Box
@@ -50,5 +50,5 @@ export function ThemedBox({
     >
       {children}
     </Box>
-  );
+  )
 }

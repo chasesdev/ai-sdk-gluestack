@@ -1,5 +1,5 @@
-import React, { useState, useRef } from 'react';
-import { Platform } from 'react-native';
+import React, { useState, useRef } from 'react'
+import { Platform } from 'react-native'
 import {
   VStack,
   HStack,
@@ -11,19 +11,19 @@ import {
   ButtonText,
   Icon,
   ScrollView,
-} from '@gluestack-ui/themed';
-import { Message } from './types';
-import { ChatMessage } from './ChatMessage';
-import { ChevronRightIcon } from '@gluestack-ui/themed';
-import { useTheme } from '../../contexts/ThemeContext';
-import { getThemeColors } from '../../constants/theme';
+} from '@gluestack-ui/themed'
+import { Message } from './types'
+import { ChatMessage } from './ChatMessage'
+import { ChevronRightIcon } from '@gluestack-ui/themed'
+import { useTheme } from '../../contexts/ThemeContext'
+import { getThemeColors } from '../../constants/theme'
 
 interface AIChatbotProps {
-  initialMessages?: Message[];
-  onSendMessage?: (message: string) => void | Promise<void>;
-  placeholder?: string;
-  disabled?: boolean;
-  title?: string;
+  initialMessages?: Message[]
+  onSendMessage?: (message: string) => void | Promise<void>
+  placeholder?: string
+  disabled?: boolean
+  title?: string
 }
 
 export function AIChatbot({
@@ -33,27 +33,32 @@ export function AIChatbot({
   disabled = false,
   title = 'AI Chatbot',
 }: AIChatbotProps) {
-  const { resolvedTheme } = useTheme();
-  const colors = getThemeColors(resolvedTheme === 'dark');
-  const { text: textColor, mutedText: mutedTextColor, card: cardBg, border: borderColor } = colors;
-  const [messages, setMessages] = useState<Message[]>(initialMessages);
-  const [inputValue, setInputValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const scrollViewRef = useRef<any>(null);
+  const { resolvedTheme } = useTheme()
+  const colors = getThemeColors(resolvedTheme === 'dark')
+  const {
+    text: textColor,
+    mutedText: mutedTextColor,
+    card: cardBg,
+    border: borderColor,
+  } = colors
+  const [messages, setMessages] = useState<Message[]>(initialMessages)
+  const [inputValue, setInputValue] = useState('')
+  const [isLoading, setIsLoading] = useState(false)
+  const scrollViewRef = useRef<any>(null)
 
   const handleSend = async () => {
-    if (!inputValue.trim() || disabled || isLoading) return;
+    if (!inputValue.trim() || disabled || isLoading) return
 
     const userMessage: Message = {
       id: Date.now().toString(),
       role: 'user',
       content: inputValue,
       timestamp: new Date(),
-    };
+    }
 
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue('');
-    setIsLoading(true);
+    setMessages(prev => [...prev, userMessage])
+    setInputValue('')
+    setIsLoading(true)
 
     const assistantMessage: Message = {
       id: (Date.now() + 1).toString(),
@@ -61,17 +66,17 @@ export function AIChatbot({
       content: '',
       timestamp: new Date(),
       isLoading: true,
-    };
+    }
 
-    setMessages((prev) => [...prev, assistantMessage]);
+    setMessages(prev => [...prev, assistantMessage])
 
     if (onSendMessage) {
       try {
-        await onSendMessage(userMessage.content);
+        await onSendMessage(userMessage.content)
         // Simulate AI response for demo
         setTimeout(() => {
-          setMessages((prev) =>
-            prev.map((msg) =>
+          setMessages(prev =>
+            prev.map(msg =>
               msg.id === assistantMessage.id
                 ? {
                     ...msg,
@@ -83,12 +88,12 @@ export function AIChatbot({
                   }
                 : msg
             )
-          );
-          setIsLoading(false);
-        }, 1500);
+          )
+          setIsLoading(false)
+        }, 1500)
       } catch (error) {
-        setMessages((prev) =>
-          prev.map((msg) =>
+        setMessages(prev =>
+          prev.map(msg =>
             msg.id === assistantMessage.id
               ? {
                   ...msg,
@@ -97,14 +102,14 @@ export function AIChatbot({
                 }
               : msg
           )
-        );
-        setIsLoading(false);
+        )
+        setIsLoading(false)
       }
     } else {
       // Demo mode
       setTimeout(() => {
-        setMessages((prev) =>
-          prev.map((msg) =>
+        setMessages(prev =>
+          prev.map(msg =>
             msg.id === assistantMessage.id
               ? {
                   ...msg,
@@ -116,11 +121,11 @@ export function AIChatbot({
                 }
               : msg
           )
-        );
-        setIsLoading(false);
-      }, 1500);
+        )
+        setIsLoading(false)
+      }, 1500)
     }
-  };
+  }
 
   return (
     <VStack space="md" className="h-full">
@@ -128,7 +133,7 @@ export function AIChatbot({
         ref={scrollViewRef}
         className="flex-1"
         onContentSizeChange={() => {
-          scrollViewRef.current?.scrollToEnd({ animated: true });
+          scrollViewRef.current?.scrollToEnd({ animated: true })
         }}
         accessibilityRole="list"
         accessibilityLabel="Chat messages"
@@ -136,30 +141,34 @@ export function AIChatbot({
         <VStack space="sm" className="px-4 pb-4 pt-4">
           {messages.length === 0 ? (
             <Box className="py-8">
-              <Text size="sm" className="text-center" style={{ color: mutedTextColor }}>
+              <Text
+                size="sm"
+                className="text-center"
+                style={{ color: mutedTextColor }}
+              >
                 Start a conversation
               </Text>
             </Box>
           ) : (
-            messages.map((message) => (
+            messages.map(message => (
               <ChatMessage key={message.id} message={message} />
             ))
           )}
         </VStack>
       </ScrollView>
 
-      <Box className="border-t border-border pt-3 px-4 pb-3" style={{ borderTopColor: borderColor }}>
-        <HStack 
-          space="sm" 
-          style={{ 
+      <Box
+        className="border-t border-border pt-3 px-4 pb-3"
+        style={{ borderTopColor: borderColor }}
+      >
+        <HStack
+          space="sm"
+          style={{
             alignItems: 'center',
             justifyContent: 'flex-start',
           }}
         >
-          <Input
-            style={{ flex: 1 }}
-            variant="outline"
-          >
+          <Input style={{ flex: 1 }} variant="outline">
             <InputField
               placeholder={placeholder}
               placeholderTextColor={mutedTextColor}
@@ -198,6 +207,5 @@ export function AIChatbot({
         </HStack>
       </Box>
     </VStack>
-  );
+  )
 }
-

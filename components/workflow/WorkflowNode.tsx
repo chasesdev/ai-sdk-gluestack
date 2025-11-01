@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
-import { StyleSheet } from 'react-native';
-import { Gesture, GestureDetector } from 'react-native-gesture-handler';
+import React, { memo } from 'react'
+import { StyleSheet } from 'react-native'
+import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -9,7 +9,7 @@ import Animated, {
   withTiming,
   Easing,
   runOnJS,
-} from 'react-native-reanimated';
+} from 'react-native-reanimated'
 import {
   Box,
   VStack,
@@ -19,9 +19,9 @@ import {
   Badge,
   BadgeText,
   Icon,
-} from '@gluestack-ui/themed';
-import { useTheme } from '../../contexts/ThemeContext';
-import { getThemeColors } from '../../constants/theme';
+} from '@gluestack-ui/themed'
+import { useTheme } from '../../contexts/ThemeContext'
+import { getThemeColors } from '../../constants/theme'
 import {
   AddIcon,
   CircleIcon,
@@ -29,18 +29,18 @@ import {
   CheckCircleIcon,
   AlertCircleIcon,
   CheckIcon,
-} from '@gluestack-ui/themed';
-import type { WorkflowNode as WorkflowNodeType, Position } from './types';
+} from '@gluestack-ui/themed'
+import type { WorkflowNode as WorkflowNodeType, Position } from './types'
 
 interface WorkflowNodeProps {
-  node: WorkflowNodeType;
-  isSelected: boolean;
-  onPress: (nodeId: string) => void;
-  onDragStart: (nodeId: string) => void;
-  onDrag: (nodeId: string, position: Position) => void;
-  onDragEnd: (nodeId: string) => void;
-  scale: number;
-  disabled?: boolean;
+  node: WorkflowNodeType
+  isSelected: boolean
+  onPress: (nodeId: string) => void
+  onDragStart: (nodeId: string) => void
+  onDrag: (nodeId: string, position: Position) => void
+  onDragEnd: (nodeId: string) => void
+  scale: number
+  disabled?: boolean
 }
 
 const iconMap = {
@@ -50,7 +50,7 @@ const iconMap = {
   'check-circle': CheckCircleIcon,
   'alert-circle': AlertCircleIcon,
   check: CheckIcon,
-};
+}
 
 const statusColors = {
   idle: {
@@ -73,217 +73,244 @@ const statusColors = {
     border: '$red500',
     badge: 'error' as const,
   },
-};
+}
 
-export const WorkflowNode = memo(({
-  node,
-  isSelected,
-  onPress,
-  onDragStart,
-  onDrag,
-  onDragEnd,
-  scale,
-  disabled = false,
-}: WorkflowNodeProps) => {
-  const translateX = useSharedValue(node.position.x);
-  const translateY = useSharedValue(node.position.y);
-  const isDragging = useSharedValue(false);
-  const startX = useSharedValue(0);
-  const startY = useSharedValue(0);
-  const isDraggingRef = React.useRef(false);
+export const WorkflowNode = memo(
+  ({
+    node,
+    isSelected,
+    onPress,
+    onDragStart,
+    onDrag,
+    onDragEnd,
+    scale,
+    disabled = false,
+  }: WorkflowNodeProps) => {
+    const translateX = useSharedValue(node.position.x)
+    const translateY = useSharedValue(node.position.y)
+    const isDragging = useSharedValue(false)
+    const startX = useSharedValue(0)
+    const startY = useSharedValue(0)
+    const isDraggingRef = React.useRef(false)
 
-  // Pulse animation for running status
-  const pulseScale = useSharedValue(1);
+    // Pulse animation for running status
+    const pulseScale = useSharedValue(1)
 
-  // Sync shared values with node position prop changes (but not during drag)
-  // Using setTimeout to ensure this runs after render phase
-  React.useEffect(() => {
-    if (!isDraggingRef.current) {
-      const timer = setTimeout(() => {
-        translateX.value = node.position.x;
-        translateY.value = node.position.y;
-      }, 0);
-      return () => clearTimeout(timer);
-    }
-  }, [node.position.x, node.position.y]);
+    // Sync shared values with node position prop changes (but not during drag)
+    // Using setTimeout to ensure this runs after render phase
+    React.useEffect(() => {
+      if (!isDraggingRef.current) {
+        const timer = setTimeout(() => {
+          translateX.value = node.position.x
+          translateY.value = node.position.y
+        }, 0)
+        return () => clearTimeout(timer)
+      }
+    }, [node.position.x, node.position.y])
 
-  React.useEffect(() => {
-    if (node.data.status === 'running') {
-      pulseScale.value = withRepeat(
-        withTiming(1.05, { duration: 1000, easing: Easing.inOut(Easing.ease) }),
-        -1,
-        true
-      );
-    } else {
-      pulseScale.value = withTiming(1, { duration: 200 });
-    }
-  }, [node.data.status]);
+    React.useEffect(() => {
+      if (node.data.status === 'running') {
+        pulseScale.value = withRepeat(
+          withTiming(1.05, {
+            duration: 1000,
+            easing: Easing.inOut(Easing.ease),
+          }),
+          -1,
+          true
+        )
+      } else {
+        pulseScale.value = withTiming(1, { duration: 200 })
+      }
+    }, [node.data.status])
 
-  const panGesture = Gesture.Pan()
-    .enabled(!disabled)
-    .onStart(() => {
-      'worklet';
-      isDragging.value = true;
-      isDraggingRef.current = true;
-      startX.value = translateX.value;
-      startY.value = translateY.value;
-      runOnJS(onDragStart)(node.id);
+    const panGesture = Gesture.Pan()
+      .enabled(!disabled)
+      .onStart(() => {
+        'worklet'
+        isDragging.value = true
+        isDraggingRef.current = true
+        startX.value = translateX.value
+        startY.value = translateY.value
+        runOnJS(onDragStart)(node.id)
+      })
+      .onUpdate(event => {
+        'worklet'
+        const newX = startX.value + event.translationX / scale
+        const newY = startY.value + event.translationY / scale
+        translateX.value = newX
+        translateY.value = newY
+        runOnJS(onDrag)(node.id, {
+          x: newX,
+          y: newY,
+        })
+      })
+      .onEnd(() => {
+        'worklet'
+        isDragging.value = false
+        isDraggingRef.current = false
+        runOnJS(onDragEnd)(node.id)
+      })
+
+    const tapGesture = Gesture.Tap().onEnd(() => {
+      runOnJS(onPress)(node.id)
     })
-    .onUpdate((event) => {
-      'worklet';
-      const newX = startX.value + event.translationX / scale;
-      const newY = startY.value + event.translationY / scale;
-      translateX.value = newX;
-      translateY.value = newY;
-      runOnJS(onDrag)(node.id, {
-        x: newX,
-        y: newY,
-      });
+
+    const composed = Gesture.Race(panGesture, tapGesture)
+
+    const animatedStyle = useAnimatedStyle(() => {
+      return {
+        transform: [
+          { translateX: translateX.value },
+          { translateY: translateY.value },
+          { scale: withSpring(isDragging.value ? 1.05 : pulseScale.value) },
+        ],
+        zIndex: isDragging.value ? 1000 : 1,
+      }
     })
-    .onEnd(() => {
-      'worklet';
-      isDragging.value = false;
-      isDraggingRef.current = false;
-      runOnJS(onDragEnd)(node.id);
-    });
 
-  const tapGesture = Gesture.Tap()
-    .onEnd(() => {
-      runOnJS(onPress)(node.id);
-    });
+    const { resolvedTheme } = useTheme()
+    const themeColors = getThemeColors(resolvedTheme === 'dark')
+    const {
+      text: textColor,
+      mutedText: mutedTextColor,
+      card: cardBg,
+      border: borderColor,
+    } = themeColors
+    const status = node.data.status || 'idle'
+    const statusColorConfig = statusColors[status]
+    const NodeIcon = node.data.icon
+      ? iconMap[node.data.icon as keyof typeof iconMap]
+      : CircleIcon
 
-  const composed = Gesture.Race(panGesture, tapGesture);
-
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateX: translateX.value },
-        { translateY: translateY.value },
-        { scale: withSpring(isDragging.value ? 1.05 : pulseScale.value) },
-      ],
-      zIndex: isDragging.value ? 1000 : 1,
-    };
-  });
-
-  const { resolvedTheme } = useTheme();
-  const themeColors = getThemeColors(resolvedTheme === 'dark');
-  const { text: textColor, mutedText: mutedTextColor, card: cardBg, border: borderColor } = themeColors;
-  const status = node.data.status || 'idle';
-  const statusColorConfig = statusColors[status];
-  const NodeIcon = node.data.icon ? iconMap[node.data.icon as keyof typeof iconMap] : CircleIcon;
-
-  return (
-    <GestureDetector gesture={composed}>
-      <Animated.View
-        style={[
-          styles.nodeContainer,
-          animatedStyle,
-        ]}
-        accessibilityRole="button"
-        accessibilityLabel={`${node.data.label} node, status: ${status}`}
-        accessibilityHint={disabled ? "Node is disabled" : "Double tap to select, drag to move"}
-        accessibilityState={{ selected: isSelected, disabled }}
-      >
-        <Box
-          style={[
-            styles.node,
-            {
-              borderWidth: isSelected ? 3 : 2,
-              borderColor: isSelected ? themeColors.accent : borderColor,
-              backgroundColor: cardBg,
-            },
-          ]}
-          className="rounded-xl shadow-lg"
+    return (
+      <GestureDetector gesture={composed}>
+        <Animated.View
+          style={[styles.nodeContainer, animatedStyle]}
+          accessibilityRole="button"
+          accessibilityLabel={`${node.data.label} node, status: ${status}`}
+          accessibilityHint={
+            disabled ? 'Node is disabled' : 'Double tap to select, drag to move'
+          }
+          accessibilityState={{ selected: isSelected, disabled }}
         >
-          <VStack space="xs">
-            {/* Header */}
-            <HStack space="sm" className="items-center">
-              <Box
-                className="rounded-lg p-2"
-                style={{
-                  backgroundColor: isSelected ? themeColors.info :
-                    status === 'running' ? themeColors.info :
-                    status === 'success' ? themeColors.success :
-                    status === 'error' ? themeColors.error : themeColors.mutedText
-                }}
-              >
-                {NodeIcon && <Icon as={NodeIcon} size="sm" style={{ color: themeColors.background }} />}
-              </Box>
-              <VStack flex={1}>
-                <Heading size="sm" style={{ color: textColor }}>
-                  {node.data.label}
-                </Heading>
-                {node.data.description && (
-                  <Text size="xs" style={{ color: mutedTextColor }}>
-                    {node.data.description}
-                  </Text>
-                )}
-              </VStack>
-              <Badge action={statusColorConfig.badge}>
-                <BadgeText style={{ color: textColor }}>{status}</BadgeText>
-              </Badge>
-            </HStack>
-
-            {/* Code Block */}
-            {node.data.code && (
-              <Box
-                className="rounded-md p-2 mt-1"
-                style={{
-                  borderWidth: 1,
-                  borderColor: borderColor,
-                  backgroundColor: cardBg,
-                }}
-              >
-                    <Text
-                      size="xs"
-                      fontFamily="$mono"
-                      numberOfLines={3}
-                      style={{ color: mutedTextColor }}
-                    >
-                      {node.data.code}
+          <Box
+            style={[
+              styles.node,
+              {
+                borderWidth: isSelected ? 3 : 2,
+                borderColor: isSelected ? themeColors.accent : borderColor,
+                backgroundColor: cardBg,
+              },
+            ]}
+            className="rounded-xl shadow-lg"
+          >
+            <VStack space="xs">
+              {/* Header */}
+              <HStack space="sm" className="items-center">
+                <Box
+                  className="rounded-lg p-2"
+                  style={{
+                    backgroundColor: isSelected
+                      ? themeColors.info
+                      : status === 'running'
+                        ? themeColors.info
+                        : status === 'success'
+                          ? themeColors.success
+                          : status === 'error'
+                            ? themeColors.error
+                            : themeColors.mutedText,
+                  }}
+                >
+                  {NodeIcon && (
+                    <Icon
+                      as={NodeIcon}
+                      size="sm"
+                      style={{ color: themeColors.background }}
+                    />
+                  )}
+                </Box>
+                <VStack flex={1}>
+                  <Heading size="sm" style={{ color: textColor }}>
+                    {node.data.label}
+                  </Heading>
+                  {node.data.description && (
+                    <Text size="xs" style={{ color: mutedTextColor }}>
+                      {node.data.description}
                     </Text>
-              </Box>
-            )}
-
-            {/* Connection Handles */}
-            {node.data.icon === 'git-branch' && (
-              <HStack space="xs" className="mt-1 justify-around">
-                <Box className="w-3 h-3 rounded-full" style={{ backgroundColor: themeColors.info }} />
-                <Box className="w-3 h-3 rounded-full" style={{ backgroundColor: themeColors.info }} />
+                  )}
+                </VStack>
+                <Badge action={statusColorConfig.badge}>
+                  <BadgeText style={{ color: textColor }}>{status}</BadgeText>
+                </Badge>
               </HStack>
-            )}
-          </VStack>
 
-          {/* Input Handle (top) */}
-          <Box
-            style={[
-              styles.handleTop,
-              {
-                backgroundColor: themeColors.mutedText,
-                borderWidth: 2,
-                borderColor: themeColors.background,
-              }
-            ]}
-            className="w-3 h-3 rounded-full"
-          />
+              {/* Code Block */}
+              {node.data.code && (
+                <Box
+                  className="rounded-md p-2 mt-1"
+                  style={{
+                    borderWidth: 1,
+                    borderColor: borderColor,
+                    backgroundColor: cardBg,
+                  }}
+                >
+                  <Text
+                    size="xs"
+                    fontFamily="$mono"
+                    numberOfLines={3}
+                    style={{ color: mutedTextColor }}
+                  >
+                    {node.data.code}
+                  </Text>
+                </Box>
+              )}
 
-          {/* Output Handle (bottom) */}
-          <Box
-            style={[
-              styles.handleBottom,
-              {
-                backgroundColor: themeColors.mutedText,
-                borderWidth: 2,
-                borderColor: themeColors.background,
-              }
-            ]}
-            className="w-3 h-3 rounded-full"
-          />
-        </Box>
-      </Animated.View>
-    </GestureDetector>
-  );
-});
+              {/* Connection Handles */}
+              {node.data.icon === 'git-branch' && (
+                <HStack space="xs" className="mt-1 justify-around">
+                  <Box
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: themeColors.info }}
+                  />
+                  <Box
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: themeColors.info }}
+                  />
+                </HStack>
+              )}
+            </VStack>
+
+            {/* Input Handle (top) */}
+            <Box
+              style={[
+                styles.handleTop,
+                {
+                  backgroundColor: themeColors.mutedText,
+                  borderWidth: 2,
+                  borderColor: themeColors.background,
+                },
+              ]}
+              className="w-3 h-3 rounded-full"
+            />
+
+            {/* Output Handle (bottom) */}
+            <Box
+              style={[
+                styles.handleBottom,
+                {
+                  backgroundColor: themeColors.mutedText,
+                  borderWidth: 2,
+                  borderColor: themeColors.background,
+                },
+              ]}
+              className="w-3 h-3 rounded-full"
+            />
+          </Box>
+        </Animated.View>
+      </GestureDetector>
+    )
+  }
+)
 
 const styles = StyleSheet.create({
   nodeContainer: {
@@ -307,6 +334,6 @@ const styles = StyleSheet.create({
     left: '50%',
     marginLeft: -6,
   },
-});
+})
 
-WorkflowNode.displayName = 'WorkflowNode';
+WorkflowNode.displayName = 'WorkflowNode'

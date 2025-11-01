@@ -1,14 +1,18 @@
-import { VStack } from '@gluestack-ui/themed';
-import { ReactNode } from 'react';
-import { ThemedHeading, ThemedText } from './themed';
+import { VStack } from '@gluestack-ui/themed'
+import { ReactNode } from 'react'
+import { ThemedHeading, ThemedText } from './themed'
 
 interface ComponentSectionProps {
-  title: string;
-  description?: string;
-  children: ReactNode;
+  title: string
+  description?: string
+  children: ReactNode
 }
 
-export function ComponentSection({ title, description, children }: ComponentSectionProps) {
+export function ComponentSection({
+  title,
+  description,
+  children,
+}: ComponentSectionProps) {
   return (
     <VStack space="md" sx={{ marginBottom: '$8' }}>
       <VStack space="xs">
@@ -23,5 +27,5 @@ export function ComponentSection({ title, description, children }: ComponentSect
         {children}
       </VStack>
     </VStack>
-  );
+  )
 }

@@ -1,16 +1,16 @@
-import React, { ReactNode } from 'react';
-import { Box } from '@gluestack-ui/themed';
-import { useTheme } from '../../contexts/ThemeContext';
-import { Platform, useWindowDimensions } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { ComponentProps } from 'react';
+import React, { ReactNode } from 'react'
+import { Box } from '@gluestack-ui/themed'
+import { useTheme } from '../../contexts/ThemeContext'
+import { Platform, useWindowDimensions } from 'react-native'
+import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { ComponentProps } from 'react'
 
-type BoxProps = ComponentProps<typeof Box>;
+type BoxProps = ComponentProps<typeof Box>
 
 interface ResponsiveContainerProps extends Omit<BoxProps, 'children'> {
-  disableSafeArea?: boolean;
-  maxWidth?: number | 'sm' | 'md' | 'lg' | 'xl';
-  children?: ReactNode;
+  disableSafeArea?: boolean
+  maxWidth?: number | 'sm' | 'md' | 'lg' | 'xl'
+  children?: ReactNode
 }
 
 /**
@@ -29,13 +29,13 @@ export function ResponsiveContainer({
   sx,
   ...props
 }: ResponsiveContainerProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
-  const insets = useSafeAreaInsets();
-  const { width: screenWidth } = useWindowDimensions();
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
+  const insets = useSafeAreaInsets()
+  const { width: screenWidth } = useWindowDimensions()
 
   // Responsive horizontal padding
-  const horizontalPadding = screenWidth < 768 ? '$2' : '$4';
+  const horizontalPadding = screenWidth < 768 ? '$2' : '$4'
 
   // Max width mapping
   const maxWidthMap = {
@@ -43,21 +43,21 @@ export function ResponsiveContainer({
     md: 768,
     lg: 1024,
     xl: 1280,
-  };
+  }
 
   const resolvedMaxWidth =
-    typeof maxWidth === 'string' ? maxWidthMap[maxWidth] : maxWidth;
+    typeof maxWidth === 'string' ? maxWidthMap[maxWidth] : maxWidth
 
   // Safe area padding
   const paddingTop = disableSafeArea
     ? 0
     : Platform.OS === 'android'
       ? Math.max(insets.top, 24)
-      : Math.max(insets.top, 20);
+      : Math.max(insets.top, 20)
 
-  const paddingBottom = disableSafeArea ? 0 : 24;
+  const paddingBottom = disableSafeArea ? 0 : 24
 
-  const bgColor = isDark ? '$backgroundDark' : '$backgroundLight';
+  const bgColor = isDark ? '$backgroundDark' : '$backgroundLight'
 
   return (
     <Box
@@ -76,5 +76,5 @@ export function ResponsiveContainer({
     >
       {children}
     </Box>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-import type { WorkflowNode, WorkflowEdge } from './types';
-import { THEME_COLORS } from '../../constants/theme';
+import type { WorkflowNode, WorkflowEdge } from './types'
+import { THEME_COLORS } from '../../constants/theme'
 
 // Use theme colors for edges (defaulting to light theme for static data)
 const EDGE_COLORS = {
@@ -8,7 +8,7 @@ const EDGE_COLORS = {
   muted: THEME_COLORS.light.mutedText,
   purple: '#8b5cf6', // Custom workflow color
   pink: '#ec4899', // Custom workflow color
-};
+}
 
 // Example workflow demonstrating AI data processing pipeline
 export const exampleNodes: WorkflowNode[] = [
@@ -118,7 +118,7 @@ export const exampleNodes: WorkflowNode[] = [
       status: 'idle',
     },
   },
-];
+]
 
 export const exampleEdges: WorkflowEdge[] = [
   {
@@ -179,4 +179,4 @@ export const exampleEdges: WorkflowEdge[] = [
     animated: false,
     style: { stroke: EDGE_COLORS.muted, strokeWidth: 2 },
   },
-];
+]

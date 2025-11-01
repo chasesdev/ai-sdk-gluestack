@@ -1,17 +1,21 @@
-import React from 'react';
-import { ScrollView } from 'react-native';
-import { Link } from 'expo-router';
-import { VStack } from '@gluestack-ui/themed';
-import { WorkflowPlanner, exampleNodes, exampleEdges } from '../components/workflow';
-import { AIChatbot } from '../components/ai-sdk/AIChatbot';
-import { ThemeSwitcher } from '../components/ThemeSwitcher';
+import React from 'react'
+import { ScrollView } from 'react-native'
+import { Link } from 'expo-router'
+import { VStack } from '@gluestack-ui/themed'
+import {
+  WorkflowPlanner,
+  exampleNodes,
+  exampleEdges,
+} from '../components/workflow'
+import { AIChatbot } from '../components/ai-sdk/AIChatbot'
+import { ThemeSwitcher } from '../components/ThemeSwitcher'
 import {
   ThemedHeading,
   ThemedText,
   ThemedCard,
   ThemedButton,
   ResponsiveContainer,
-} from '../components/themed';
+} from '../components/themed'
 
 export default function HomePage() {
   return (
@@ -27,7 +31,11 @@ export default function HomePage() {
               </ThemedText>
             </VStack>
             <Link href="/components" asChild>
-              <ThemedButton variant="outline" size="lg" text="View All Components" />
+              <ThemedButton
+                variant="outline"
+                size="lg"
+                text="View All Components"
+              />
             </Link>
           </VStack>
 
@@ -46,7 +54,10 @@ export default function HomePage() {
                 padding: '$0',
               }}
             >
-              <WorkflowPlanner initialNodes={exampleNodes} initialEdges={exampleEdges} />
+              <WorkflowPlanner
+                initialNodes={exampleNodes}
+                initialEdges={exampleEdges}
+              />
             </ThemedCard>
           </VStack>
 
@@ -65,7 +76,10 @@ export default function HomePage() {
                 padding: '$0',
               }}
             >
-              <AIChatbot title="AI Assistant" placeholder="Ask me anything..." />
+              <AIChatbot
+                title="AI Assistant"
+                placeholder="Ask me anything..."
+              />
             </ThemedCard>
           </VStack>
 
@@ -79,5 +93,5 @@ export default function HomePage() {
       </ScrollView>
       <ThemeSwitcher />
     </>
-  );
+  )
 }

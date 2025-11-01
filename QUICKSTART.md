@@ -27,24 +27,31 @@ This opens the Expo development tools in your terminal.
 Choose one of the following:
 
 ### iOS (macOS only)
+
 Press `i` in the terminal, or run:
+
 ```bash
 npm run ios
 ```
 
 ### Android
+
 Press `a` in the terminal, or run:
+
 ```bash
 npm run android
 ```
 
 ### Web
+
 Press `w` in the terminal, or run:
+
 ```bash
 npm run web
 ```
 
 ### Physical Device
+
 1. Install "Expo Go" app from App Store or Play Store
 2. Scan the QR code shown in terminal
 
@@ -53,6 +60,7 @@ npm run web
 ### Issue: Metro bundler fails to start
 
 **Solution:**
+
 ```bash
 npx expo start --clear
 ```
@@ -60,6 +68,7 @@ npx expo start --clear
 ### Issue: "Unable to resolve module react-native-reanimated"
 
 **Solution:**
+
 ```bash
 rm -rf node_modules
 npm install
@@ -69,12 +78,14 @@ npx expo start --clear
 ### Issue: Changes not reflecting
 
 **Solution:**
+
 1. In the Expo terminal, press `r` to reload
 2. Or press `Shift + r` to reload and clear cache
 
 ### Issue: Type errors
 
 **Solution:**
+
 ```bash
 npm run type-check
 ```

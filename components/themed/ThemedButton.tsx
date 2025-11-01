@@ -1,13 +1,13 @@
-import React, { ReactNode } from 'react';
-import { Button, ButtonText } from '@gluestack-ui/themed';
-import { ComponentProps } from 'react';
+import React, { ReactNode } from 'react'
+import { Button, ButtonText } from '@gluestack-ui/themed'
+import { ComponentProps } from 'react'
 
-type ButtonComponentProps = ComponentProps<typeof Button>;
+type ButtonComponentProps = ComponentProps<typeof Button>
 
 interface ThemedButtonProps extends Omit<ButtonComponentProps, 'children'> {
-  variant?: 'solid' | 'outline';
-  text?: string;
-  children?: ReactNode;
+  variant?: 'solid' | 'outline'
+  text?: string
+  children?: ReactNode
 }
 
 /**
@@ -24,7 +24,7 @@ export function ThemedButton({
   sx,
   ...props
 }: ThemedButtonProps) {
-  const isSolid = variant === 'solid';
+  const isSolid = variant === 'solid'
 
   return (
     <Button
@@ -45,5 +45,5 @@ export function ThemedButton({
         {text || children}
       </ButtonText>
     </Button>
-  );
+  )
 }

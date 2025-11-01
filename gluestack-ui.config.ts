@@ -1,4 +1,4 @@
-import { config as defaultConfig } from "@gluestack-ui/config";
+import { config as defaultConfig } from '@gluestack-ui/config'
 
 export const config = {
   ...defaultConfig,
@@ -71,4 +71,4 @@ export const config = {
       bold: '700',
     },
   },
-};
+}

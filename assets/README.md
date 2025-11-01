@@ -40,9 +40,9 @@ To add custom assets:
 2. Import them in your components:
 
 ```tsx
-import icon from '../assets/icon.png';
+import icon from '../assets/icon.png'
 
-<Image source={icon} />
+;<Image source={icon} />
 ```
 
 Or use them with require:

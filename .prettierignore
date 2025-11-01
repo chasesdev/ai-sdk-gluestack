@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+.yarn
+
+# Build outputs
+dist
+build
+.next
+.expo
+.expo-shared
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# IDE
+.vscode
+.idea
+
+# Env files
+.env
+.env.local
+
+# Lock files
+yarn.lock
+package-lock.json
+pnpm-lock.yaml
+
+# Generated files
+coverage
+.turbo

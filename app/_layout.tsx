@@ -1,42 +1,42 @@
-import React from "react";
-import { GluestackUIProvider } from "@gluestack-ui/themed";
-import { config } from "../gluestack-ui.config";
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { View, Platform } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
-import { ThemeProvider, useTheme } from "../contexts/ThemeContext";
-import { getThemeColors } from "../constants/theme";
-import "../global.css";
+import React from 'react'
+import { GluestackUIProvider } from '@gluestack-ui/themed'
+import { config } from '../gluestack-ui.config'
+import { Stack } from 'expo-router'
+import { StatusBar } from 'expo-status-bar'
+import { View, Platform } from 'react-native'
+import { SafeAreaProvider } from 'react-native-safe-area-context'
+import { ThemeProvider, useTheme } from '../contexts/ThemeContext'
+import { getThemeColors } from '../constants/theme'
+import '../global.css'
 
 // Fix for Reanimated on web
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   // @ts-ignore
-  window._frameTimestamp = null;
+  window._frameTimestamp = null
 }
 
 function RootLayoutContent() {
-  const { resolvedTheme } = useTheme();
+  const { resolvedTheme } = useTheme()
 
   // Apply dark class to document in web using useLayoutEffect (runs synchronously before paint)
   React.useLayoutEffect(() => {
     if (Platform.OS === 'web' && typeof document !== 'undefined') {
       if (resolvedTheme === 'dark') {
-        document.documentElement.classList.add('dark');
+        document.documentElement.classList.add('dark')
       } else {
-        document.documentElement.classList.remove('dark');
+        document.documentElement.classList.remove('dark')
       }
     }
-  }, [resolvedTheme]);
+  }, [resolvedTheme])
 
-  const colors = getThemeColors(resolvedTheme === 'dark');
-  const backgroundColor = colors.background;
+  const colors = getThemeColors(resolvedTheme === 'dark')
+  const backgroundColor = colors.background
 
   return (
     <SafeAreaProvider>
       <View
-        style={{ 
-          flex: 1, 
+        style={{
+          flex: 1,
           backgroundColor: backgroundColor,
           // Ensure full coverage on web and Android
           minHeight: '100%',
@@ -48,7 +48,7 @@ function RootLayoutContent() {
           <Stack
             screenOptions={{
               headerShown: false,
-              contentStyle: { 
+              contentStyle: {
                 backgroundColor: backgroundColor,
                 flex: 1,
               },
@@ -60,7 +60,7 @@ function RootLayoutContent() {
         </GluestackUIProvider>
       </View>
     </SafeAreaProvider>
-  );
+  )
 }
 
 export default function RootLayout() {
@@ -68,5 +68,5 @@ export default function RootLayout() {
     <ThemeProvider>
       <RootLayoutContent />
     </ThemeProvider>
-  );
+  )
 }

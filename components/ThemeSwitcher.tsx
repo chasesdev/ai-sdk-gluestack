@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Pressable } from 'react-native';
+import React, { useState } from 'react'
+import { View, Pressable } from 'react-native'
 import {
   Actionsheet,
   ActionsheetBackdrop,
@@ -12,37 +12,37 @@ import {
   SunIcon,
   MoonIcon,
   SettingsIcon,
-} from '@gluestack-ui/themed';
-import { useTheme, ThemeMode } from '../contexts/ThemeContext';
-import { THEME_COLORS, getThemeColors } from '../constants/theme';
+} from '@gluestack-ui/themed'
+import { useTheme, ThemeMode } from '../contexts/ThemeContext'
+import { THEME_COLORS, getThemeColors } from '../constants/theme'
 
-const ACCENT_COLOR = THEME_COLORS.light.accent;
+const ACCENT_COLOR = THEME_COLORS.light.accent
 
 export function ThemeSwitcher() {
-  const { theme, setTheme, resolvedTheme } = useTheme();
-  const [showActionsheet, setShowActionsheet] = useState(false);
-  const colors = getThemeColors(resolvedTheme === 'dark');
-  const { text: textColor } = colors;
+  const { theme, setTheme, resolvedTheme } = useTheme()
+  const [showActionsheet, setShowActionsheet] = useState(false)
+  const colors = getThemeColors(resolvedTheme === 'dark')
+  const { text: textColor } = colors
 
-  const handleClose = () => setShowActionsheet(false);
+  const handleClose = () => setShowActionsheet(false)
 
   const selectTheme = (selectedTheme: ThemeMode) => {
-    setTheme(selectedTheme);
-    handleClose();
-  };
+    setTheme(selectedTheme)
+    handleClose()
+  }
 
   const getCurrentIcon = () => {
     switch (theme) {
       case 'light':
-        return SunIcon;
+        return SunIcon
       case 'dark':
-        return MoonIcon;
+        return MoonIcon
       case 'system':
-        return SettingsIcon;
+        return SettingsIcon
     }
-  };
+  }
 
-  const CurrentIcon = getCurrentIcon();
+  const CurrentIcon = getCurrentIcon()
 
   return (
     <>
@@ -80,12 +80,20 @@ export function ThemeSwitcher() {
               accessibilityLabel="Light theme"
               accessibilityState={{ selected: theme === 'light' }}
             >
-              <Icon as={SunIcon} size="lg" className="mr-3" style={{ color: textColor }} />
+              <Icon
+                as={SunIcon}
+                size="lg"
+                className="mr-3"
+                style={{ color: textColor }}
+              />
               <ActionsheetItemText style={{ color: textColor }}>
                 Light
               </ActionsheetItemText>
               {theme === 'light' && (
-                <View className="ml-auto w-2 h-2 rounded-full" style={{ backgroundColor: ACCENT_COLOR }} />
+                <View
+                  className="ml-auto w-2 h-2 rounded-full"
+                  style={{ backgroundColor: ACCENT_COLOR }}
+                />
               )}
             </ActionsheetItem>
 
@@ -95,12 +103,20 @@ export function ThemeSwitcher() {
               accessibilityLabel="Dark theme"
               accessibilityState={{ selected: theme === 'dark' }}
             >
-              <Icon as={MoonIcon} size="lg" className="mr-3" style={{ color: textColor }} />
+              <Icon
+                as={MoonIcon}
+                size="lg"
+                className="mr-3"
+                style={{ color: textColor }}
+              />
               <ActionsheetItemText style={{ color: textColor }}>
                 Dark
               </ActionsheetItemText>
               {theme === 'dark' && (
-                <View className="ml-auto w-2 h-2 rounded-full" style={{ backgroundColor: ACCENT_COLOR }} />
+                <View
+                  className="ml-auto w-2 h-2 rounded-full"
+                  style={{ backgroundColor: ACCENT_COLOR }}
+                />
               )}
             </ActionsheetItem>
 
@@ -110,17 +126,25 @@ export function ThemeSwitcher() {
               accessibilityLabel="System theme"
               accessibilityState={{ selected: theme === 'system' }}
             >
-              <Icon as={SettingsIcon} size="lg" className="mr-3" style={{ color: textColor }} />
+              <Icon
+                as={SettingsIcon}
+                size="lg"
+                className="mr-3"
+                style={{ color: textColor }}
+              />
               <ActionsheetItemText style={{ color: textColor }}>
                 System
               </ActionsheetItemText>
               {theme === 'system' && (
-                <View className="ml-auto w-2 h-2 rounded-full" style={{ backgroundColor: ACCENT_COLOR }} />
+                <View
+                  className="ml-auto w-2 h-2 rounded-full"
+                  style={{ backgroundColor: ACCENT_COLOR }}
+                />
               )}
             </ActionsheetItem>
           </View>
         </ActionsheetContent>
       </Actionsheet>
     </>
-  );
+  )
 }

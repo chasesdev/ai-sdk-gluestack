@@ -1,7 +1,7 @@
-import React, { useState, useCallback } from 'react';
-import { ScrollView, StyleSheet, Dimensions } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import Svg, { Defs, Pattern, Rect, Circle } from 'react-native-svg';
+import React, { useState, useCallback } from 'react'
+import { ScrollView, StyleSheet, Dimensions } from 'react-native'
+import { GestureHandlerRootView } from 'react-native-gesture-handler'
+import Svg, { Defs, Pattern, Rect, Circle } from 'react-native-svg'
 import {
   Box,
   VStack,
@@ -19,211 +19,263 @@ import {
   ActionsheetDragIndicator,
   ActionsheetDragIndicatorWrapper,
   ActionsheetItem,
-} from '@gluestack-ui/themed';
-import { CloseIcon, AddIcon, CheckCircleIcon } from '@gluestack-ui/themed';
-import { WorkflowNode } from './WorkflowNode';
-import { WorkflowEdge } from './WorkflowEdge';
-import type { WorkflowNode as WorkflowNodeType, WorkflowEdge as WorkflowEdgeType, Position, NodeStatus } from './types';
-import { useTheme } from '../../contexts/ThemeContext';
-import { getThemeColors } from '../../constants/theme';
+} from '@gluestack-ui/themed'
+import { CloseIcon, AddIcon, CheckCircleIcon } from '@gluestack-ui/themed'
+import { WorkflowNode } from './WorkflowNode'
+import { WorkflowEdge } from './WorkflowEdge'
+import type {
+  WorkflowNode as WorkflowNodeType,
+  WorkflowEdge as WorkflowEdgeType,
+  Position,
+  NodeStatus,
+} from './types'
+import { useTheme } from '../../contexts/ThemeContext'
+import { getThemeColors } from '../../constants/theme'
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth } = Dimensions.get('window')
 
 interface WorkflowPlannerProps {
-  initialNodes?: WorkflowNodeType[];
-  initialEdges?: WorkflowEdgeType[];
-  className?: string;
+  initialNodes?: WorkflowNodeType[]
+  initialEdges?: WorkflowEdgeType[]
+  className?: string
 }
 
 export function WorkflowPlanner({
   initialNodes = [],
   initialEdges = [],
 }: WorkflowPlannerProps) {
-  const { resolvedTheme } = useTheme();
-  const colors = getThemeColors(resolvedTheme === 'dark');
-  const { background: bgColor, card: cardBg, text: textColor, mutedText: mutedTextColor, border: borderColor } = colors;
-  const [nodes, setNodes] = useState<WorkflowNodeType[]>(initialNodes);
-  const [edges, setEdges] = useState<WorkflowEdgeType[]>(initialEdges);
-  const [selectedNodeId, setSelectedNodeId] = useState<string | undefined>();
-  const [isLocked, setIsLocked] = useState(false);
-  const [scale, setScale] = useState(1);
-  const [showAddNodeModal, setShowAddNodeModal] = useState(false);
-  const [isRunning, setIsRunning] = useState(false);
+  const { resolvedTheme } = useTheme()
+  const colors = getThemeColors(resolvedTheme === 'dark')
+  const {
+    background: bgColor,
+    card: cardBg,
+    text: textColor,
+    mutedText: mutedTextColor,
+    border: borderColor,
+  } = colors
+  const [nodes, setNodes] = useState<WorkflowNodeType[]>(initialNodes)
+  const [edges, setEdges] = useState<WorkflowEdgeType[]>(initialEdges)
+  const [selectedNodeId, setSelectedNodeId] = useState<string | undefined>()
+  const [isLocked, setIsLocked] = useState(false)
+  const [scale, setScale] = useState(1)
+  const [showAddNodeModal, setShowAddNodeModal] = useState(false)
+  const [isRunning, setIsRunning] = useState(false)
 
   const nodeTypes = [
-    { id: 'process', label: 'Process', icon: 'cpu', description: 'Data processing node' },
-    { id: 'decision', label: 'Decision', icon: 'git-branch', description: 'Conditional branching' },
-    { id: 'validation', label: 'Validation', icon: 'check-circle', description: 'Data validation step' },
-  ];
+    {
+      id: 'process',
+      label: 'Process',
+      icon: 'cpu',
+      description: 'Data processing node',
+    },
+    {
+      id: 'decision',
+      label: 'Decision',
+      icon: 'git-branch',
+      description: 'Conditional branching',
+    },
+    {
+      id: 'validation',
+      label: 'Validation',
+      icon: 'check-circle',
+      description: 'Data validation step',
+    },
+  ]
 
   // Topological sort to get execution order (BFS from start node)
-  const getExecutionOrder = useCallback((nodes: WorkflowNodeType[], edges: WorkflowEdgeType[]): string[] => {
-    const order: string[] = [];
-    const visited = new Set<string>();
-    const queue: string[] = [];
-    
-    // Start from the start node
-    const startNode = nodes.find(n => n.id === 'start');
-    if (!startNode) return [];
-    
-    queue.push(startNode.id);
-    visited.add(startNode.id);
-    
-    while (queue.length > 0) {
-      const currentNodeId = queue.shift()!;
-      order.push(currentNodeId);
-      
-      // Add all connected nodes that haven't been visited
-      edges
-        .filter(e => e.source === currentNodeId)
-        .forEach(edge => {
-          if (!visited.has(edge.target)) {
-            visited.add(edge.target);
-            queue.push(edge.target);
-          }
-        });
-    }
-    
-    return order;
-  }, []);
+  const getExecutionOrder = useCallback(
+    (nodes: WorkflowNodeType[], edges: WorkflowEdgeType[]): string[] => {
+      const order: string[] = []
+      const visited = new Set<string>()
+      const queue: string[] = []
+
+      // Start from the start node
+      const startNode = nodes.find(n => n.id === 'start')
+      if (!startNode) return []
+
+      queue.push(startNode.id)
+      visited.add(startNode.id)
+
+      while (queue.length > 0) {
+        const currentNodeId = queue.shift()!
+        order.push(currentNodeId)
+
+        // Add all connected nodes that haven't been visited
+        edges
+          .filter(e => e.source === currentNodeId)
+          .forEach(edge => {
+            if (!visited.has(edge.target)) {
+              visited.add(edge.target)
+              queue.push(edge.target)
+            }
+          })
+      }
+
+      return order
+    },
+    []
+  )
 
   const executeWorkflow = useCallback(() => {
-    if (isRunning) return;
-    
-    setIsRunning(true);
-    setSelectedNodeId('start');
+    if (isRunning) return
+
+    setIsRunning(true)
+    setSelectedNodeId('start')
 
     // Reset all nodes to idle
-    setNodes(prev => prev.map(node => ({
-      ...node,
-      data: { ...node.data, status: 'idle' as NodeStatus }
-    })));
+    setNodes(prev =>
+      prev.map(node => ({
+        ...node,
+        data: { ...node.data, status: 'idle' as NodeStatus },
+      }))
+    )
 
     // Execute nodes in sequence based on edges
-    const currentNodes = nodes;
-    const currentEdges = edges;
-    const executionOrder = getExecutionOrder(currentNodes, currentEdges);
-    
+    const currentNodes = nodes
+    const currentEdges = edges
+    const executionOrder = getExecutionOrder(currentNodes, currentEdges)
+
     if (executionOrder.length === 0) {
-      setIsRunning(false);
-      return;
+      setIsRunning(false)
+      return
     }
-    
+
     executionOrder.forEach((nodeId, index) => {
       setTimeout(() => {
-        setNodes(prev => prev.map(node => {
-          if (node.id === nodeId) {
-            // Mark as running
-            return {
-              ...node,
-              data: { ...node.data, status: 'running' as NodeStatus }
-            };
-          }
-          return node;
-        }));
-        
+        setNodes(prev =>
+          prev.map(node => {
+            if (node.id === nodeId) {
+              // Mark as running
+              return {
+                ...node,
+                data: { ...node.data, status: 'running' as NodeStatus },
+              }
+            }
+            return node
+          })
+        )
+
         // After a delay, mark as success
         setTimeout(() => {
-          setNodes(prev => prev.map(n => 
-            n.id === nodeId 
-              ? { ...n, data: { ...n.data, status: 'success' as NodeStatus } }
-              : n
-          ));
-          
+          setNodes(prev =>
+            prev.map(n =>
+              n.id === nodeId
+                ? { ...n, data: { ...n.data, status: 'success' as NodeStatus } }
+                : n
+            )
+          )
+
           // If this is the last node, reset execution state
           if (index === executionOrder.length - 1) {
             setTimeout(() => {
-              setIsRunning(false);
-              setSelectedNodeId(undefined);
-            }, 500);
+              setIsRunning(false)
+              setSelectedNodeId(undefined)
+            }, 500)
           }
-        }, 1500);
-      }, index * 2000);
-    });
-  }, [nodes, edges, isRunning, getExecutionOrder]);
+        }, 1500)
+      }, index * 2000)
+    })
+  }, [nodes, edges, isRunning, getExecutionOrder])
 
-  const handleNodePress = useCallback((nodeId: string) => {
-    const node = nodes.find(n => n.id === nodeId);
-    
-    // If it's the start node, execute the workflow
-    if (node?.id === 'start' && !isRunning) {
-      executeWorkflow();
-    } else {
-      setSelectedNodeId(nodeId);
-    }
-  }, [nodes, isRunning, executeWorkflow]);
+  const handleNodePress = useCallback(
+    (nodeId: string) => {
+      const node = nodes.find(n => n.id === nodeId)
 
-  const handleNodeDragStart = useCallback((nodeId: string) => {
-    if (isLocked) return;
-    setSelectedNodeId(nodeId);
-  }, [isLocked]);
+      // If it's the start node, execute the workflow
+      if (node?.id === 'start' && !isRunning) {
+        executeWorkflow()
+      } else {
+        setSelectedNodeId(nodeId)
+      }
+    },
+    [nodes, isRunning, executeWorkflow]
+  )
 
-  const handleNodeDrag = useCallback((nodeId: string, position: Position) => {
-    if (isLocked) return;
-    setNodes(prev => prev.map(node =>
-      node.id === nodeId ? { ...node, position } : node
-    ));
-  }, [isLocked]);
+  const handleNodeDragStart = useCallback(
+    (nodeId: string) => {
+      if (isLocked) return
+      setSelectedNodeId(nodeId)
+    },
+    [isLocked]
+  )
+
+  const handleNodeDrag = useCallback(
+    (nodeId: string, position: Position) => {
+      if (isLocked) return
+      setNodes(prev =>
+        prev.map(node => (node.id === nodeId ? { ...node, position } : node))
+      )
+    },
+    [isLocked]
+  )
 
   const handleNodeDragEnd = useCallback(() => {
     // Optional: Add snap-to-grid logic here
-  }, []);
+  }, [])
 
   const handleZoomIn = useCallback(() => {
-    setScale(prev => Math.min(prev + 0.1, 2));
-  }, []);
+    setScale(prev => Math.min(prev + 0.1, 2))
+  }, [])
 
   const handleZoomOut = useCallback(() => {
-    setScale(prev => Math.max(prev - 0.1, 0.5));
-  }, []);
+    setScale(prev => Math.max(prev - 0.1, 0.5))
+  }, [])
 
   const toggleLock = useCallback(() => {
-    setIsLocked(prev => !prev);
-  }, []);
+    setIsLocked(prev => !prev)
+  }, [])
 
-  const handleAddNode = useCallback((nodeType: string) => {
-    const nodeTypeConfig = nodeTypes.find(t => t.id === nodeType);
-    if (!nodeTypeConfig) return;
+  const handleAddNode = useCallback(
+    (nodeType: string) => {
+      const nodeTypeConfig = nodeTypes.find(t => t.id === nodeType)
+      if (!nodeTypeConfig) return
 
-    // Find a good position for the new node (bottom right of canvas)
-    const maxX = Math.max(...nodes.map(n => n.position.x), 0);
-    const maxY = Math.max(...nodes.map(n => n.position.y), 0);
-    
-    const newNode: WorkflowNodeType = {
-      id: `node-${Date.now()}`,
-      type: 'workflow',
-      position: { x: maxX + 50, y: maxY + 150 },
-      data: {
-        label: nodeTypeConfig.label,
-        description: nodeTypeConfig.description,
-        code: `// ${nodeTypeConfig.label}\n// Add your code here`,
-        language: 'typescript',
-        icon: nodeType === 'process' ? 'cpu' : nodeType === 'decision' ? 'git-branch' : 'check-circle',
-        status: 'idle',
-      },
-    };
+      // Find a good position for the new node (bottom right of canvas)
+      const maxX = Math.max(...nodes.map(n => n.position.x), 0)
+      const maxY = Math.max(...nodes.map(n => n.position.y), 0)
 
-    setNodes(prev => [...prev, newNode]);
-    setShowAddNodeModal(false);
-    setSelectedNodeId(newNode.id);
-  }, [nodes]);
+      const newNode: WorkflowNodeType = {
+        id: `node-${Date.now()}`,
+        type: 'workflow',
+        position: { x: maxX + 50, y: maxY + 150 },
+        data: {
+          label: nodeTypeConfig.label,
+          description: nodeTypeConfig.description,
+          code: `// ${nodeTypeConfig.label}\n// Add your code here`,
+          language: 'typescript',
+          icon:
+            nodeType === 'process'
+              ? 'cpu'
+              : nodeType === 'decision'
+                ? 'git-branch'
+                : 'check-circle',
+          status: 'idle',
+        },
+      }
 
+      setNodes(prev => [...prev, newNode])
+      setShowAddNodeModal(false)
+      setSelectedNodeId(newNode.id)
+    },
+    [nodes]
+  )
 
   // Calculate canvas size based on node positions
   const canvasWidth = Math.max(
     screenWidth,
     ...nodes.map(n => n.position.x + 250)
-  );
-  const canvasHeight = Math.max(
-    800,
-    ...nodes.map(n => n.position.y + 150)
-  );
+  )
+  const canvasHeight = Math.max(800, ...nodes.map(n => n.position.y + 150))
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Box style={[styles.container, { backgroundColor: bgColor }]}>
         {/* Toolbar */}
-        <HStack space="sm" className="p-3 bg-card border-b border-border" style={{ backgroundColor: cardBg, borderBottomColor: borderColor }}>
+        <HStack
+          space="sm"
+          className="p-3 bg-card border-b border-border"
+          style={{ backgroundColor: cardBg, borderBottomColor: borderColor }}
+        >
           <Button
             size="sm"
             variant="outline"
@@ -234,22 +286,18 @@ export function WorkflowPlanner({
             <ButtonText style={{ color: textColor }}>Add Node</ButtonText>
           </Button>
 
-          <Button
-            size="sm"
-            variant="outline"
-            onPress={toggleLock}
-          >
-            <ButtonText style={{ color: textColor }}>{isLocked ? '🔒' : '🔓'}</ButtonText>
+          <Button size="sm" variant="outline" onPress={toggleLock}>
+            <ButtonText style={{ color: textColor }}>
+              {isLocked ? '🔒' : '🔓'}
+            </ButtonText>
           </Button>
 
           <Button size="sm" variant="outline" onPress={handleZoomIn}>
             <ButtonIcon as={AddIcon} />
-
           </Button>
 
           <Button size="sm" variant="outline" onPress={handleZoomOut}>
             <ButtonIcon as={CloseIcon} />
-          
           </Button>
 
           {isRunning && (
@@ -259,7 +307,9 @@ export function WorkflowPlanner({
           )}
 
           <Badge className="ml-auto">
-            <BadgeText style={{ color: textColor }}>{Math.round(scale * 100)}%</BadgeText>
+            <BadgeText style={{ color: textColor }}>
+              {Math.round(scale * 100)}%
+            </BadgeText>
           </Badge>
         </HStack>
 
@@ -286,7 +336,11 @@ export function WorkflowPlanner({
             ]}
           >
             {/* Background Pattern */}
-            <Svg width={canvasWidth} height={canvasHeight} style={StyleSheet.absoluteFill}>
+            <Svg
+              width={canvasWidth}
+              height={canvasHeight}
+              style={StyleSheet.absoluteFill}
+            >
               <Defs>
                 <Pattern
                   id="dots"
@@ -299,13 +353,17 @@ export function WorkflowPlanner({
                   <Circle cx="1" cy="1" r="1" fill={borderColor} />
                 </Pattern>
               </Defs>
-              <Rect width={canvasWidth} height={canvasHeight} fill="url(#dots)" />
+              <Rect
+                width={canvasWidth}
+                height={canvasHeight}
+                fill="url(#dots)"
+              />
 
               {/* Edges */}
               {edges.map(edge => {
-                const sourceNode = nodes.find(n => n.id === edge.source);
-                const targetNode = nodes.find(n => n.id === edge.target);
-                if (!sourceNode || !targetNode) return null;
+                const sourceNode = nodes.find(n => n.id === edge.source)
+                const targetNode = nodes.find(n => n.id === edge.target)
+                if (!sourceNode || !targetNode) return null
 
                 return (
                   <WorkflowEdge
@@ -314,7 +372,7 @@ export function WorkflowPlanner({
                     sourceNode={sourceNode}
                     targetNode={targetNode}
                   />
-                );
+                )
               })}
             </Svg>
 
@@ -336,7 +394,11 @@ export function WorkflowPlanner({
         </ScrollView>
 
         {/* Stats Footer */}
-        <HStack space="md" className="p-3 bg-card border-t border-border items-center" style={{ backgroundColor: cardBg, borderTopColor: borderColor }}>
+        <HStack
+          space="md"
+          className="p-3 bg-card border-t border-border items-center"
+          style={{ backgroundColor: cardBg, borderTopColor: borderColor }}
+        >
           <VStack>
             <Text size="xs" style={{ color: mutedTextColor }}>
               Nodes
@@ -356,7 +418,8 @@ export function WorkflowPlanner({
           {selectedNodeId && (
             <Badge action="info" className="ml-auto">
               <BadgeText style={{ color: textColor }}>
-                {nodes.find(n => n.id === selectedNodeId)?.data.label || 'Selected'}
+                {nodes.find(n => n.id === selectedNodeId)?.data.label ||
+                  'Selected'}
               </BadgeText>
             </Badge>
           )}
@@ -364,7 +427,10 @@ export function WorkflowPlanner({
       </Box>
 
       {/* Add Node Modal */}
-      <Actionsheet isOpen={showAddNodeModal} onClose={() => setShowAddNodeModal(false)}>
+      <Actionsheet
+        isOpen={showAddNodeModal}
+        onClose={() => setShowAddNodeModal(false)}
+      >
         <ActionsheetBackdrop />
         <ActionsheetContent style={{ backgroundColor: cardBg }}>
           <ActionsheetDragIndicatorWrapper>
@@ -375,15 +441,22 @@ export function WorkflowPlanner({
               Add Node
             </Heading>
             <VStack space="sm">
-              {nodeTypes.map((nodeType) => {
+              {nodeTypes.map(nodeType => {
                 // Use emoji or text for icons since we don't have all icon components
-                const iconEmoji = nodeType.icon === 'cpu' ? '⚙️' : nodeType.icon === 'git-branch' ? '🌿' : '✓';
+                const iconEmoji =
+                  nodeType.icon === 'cpu'
+                    ? '⚙️'
+                    : nodeType.icon === 'git-branch'
+                      ? '🌿'
+                      : '✓'
                 return (
                   <ActionsheetItem
                     key={nodeType.id}
                     onPress={() => handleAddNode(nodeType.id)}
                   >
-                    <Text style={{ fontSize: 24, marginRight: 12 }}>{iconEmoji}</Text>
+                    <Text style={{ fontSize: 24, marginRight: 12 }}>
+                      {iconEmoji}
+                    </Text>
                     <VStack flex={1}>
                       <Text style={{ color: textColor, fontWeight: '600' }}>
                         {nodeType.label}
@@ -393,14 +466,14 @@ export function WorkflowPlanner({
                       </Text>
                     </VStack>
                   </ActionsheetItem>
-                );
+                )
               })}
             </VStack>
           </Box>
         </ActionsheetContent>
       </Actionsheet>
     </GestureHandlerRootView>
-  );
+  )
 }
 
 // Note: Background colors are now set dynamically in the component
@@ -415,4 +488,4 @@ const styles = StyleSheet.create({
     position: 'relative',
     transformOrigin: 'top left',
   },
-});
+})

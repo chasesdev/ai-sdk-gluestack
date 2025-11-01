@@ -1,16 +1,16 @@
-import React from 'react';
-import { Input, InputField } from '@gluestack-ui/themed';
-import { useTheme } from '../../contexts/ThemeContext';
-import { ComponentProps } from 'react';
+import React from 'react'
+import { Input, InputField } from '@gluestack-ui/themed'
+import { useTheme } from '../../contexts/ThemeContext'
+import { ComponentProps } from 'react'
 
-type InputProps = ComponentProps<typeof Input>;
-type InputFieldProps = ComponentProps<typeof InputField>;
+type InputProps = ComponentProps<typeof Input>
+type InputFieldProps = ComponentProps<typeof InputField>
 
 interface ThemedInputProps extends Omit<InputProps, 'children'> {
-  fieldProps?: InputFieldProps;
-  placeholder?: string;
-  value?: string;
-  onChangeText?: (text: string) => void;
+  fieldProps?: InputFieldProps
+  placeholder?: string
+  value?: string
+  onChangeText?: (text: string) => void
 }
 
 /**
@@ -29,12 +29,12 @@ export function ThemedInput({
   sx,
   ...props
 }: ThemedInputProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
 
-  const borderColor = isDark ? '$borderDark' : '$borderLight';
-  const textColor = isDark ? '$textDark' : '$textLight';
-  const bgColor = isDark ? '$cardDark' : '$cardLight';
+  const borderColor = isDark ? '$borderDark' : '$borderLight'
+  const textColor = isDark ? '$textDark' : '$textLight'
+  const bgColor = isDark ? '$cardDark' : '$cardLight'
 
   return (
     <Input
@@ -59,5 +59,5 @@ export function ThemedInput({
         {...fieldProps}
       />
     </Input>
-  );
+  )
 }

@@ -5,7 +5,7 @@ export const STATUS_COLORS = {
   error: '#ef4444',
   info: '#3b82f6',
   idle: '#6b7280',
-} as const;
+} as const
 
 export const THEME_COLORS = {
   light: {
@@ -30,8 +30,8 @@ export const THEME_COLORS = {
     tintedBg: '#000000', // black for dark mode panels
     ...STATUS_COLORS,
   },
-} as const;
+} as const
 
 export function getThemeColors(isDark: boolean) {
-  return isDark ? THEME_COLORS.dark : THEME_COLORS.light;
+  return isDark ? THEME_COLORS.dark : THEME_COLORS.light
 }

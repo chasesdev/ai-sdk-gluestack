@@ -1,13 +1,20 @@
-import React from 'react';
-import { Box, Text } from '@gluestack-ui/themed';
-import { ComponentProps } from 'react';
+import React from 'react'
+import { Box, Text } from '@gluestack-ui/themed'
+import { ComponentProps } from 'react'
 
-type BoxProps = ComponentProps<typeof Box>;
+type BoxProps = ComponentProps<typeof Box>
 
 interface StatusBadgeProps extends Omit<BoxProps, 'children'> {
-  status: 'connected' | 'connecting' | 'disconnected' | 'error' | 'success' | 'warning' | 'info';
-  label?: string;
-  showDot?: boolean;
+  status:
+    | 'connected'
+    | 'connecting'
+    | 'disconnected'
+    | 'error'
+    | 'success'
+    | 'warning'
+    | 'info'
+  label?: string
+  showDot?: boolean
 }
 
 /**
@@ -35,7 +42,7 @@ export function StatusBadge({
     error: '$error',
     warning: '$warning',
     disconnected: '$textMutedDark',
-  };
+  }
 
   const statusLabelMap = {
     connected: 'Connected',
@@ -45,10 +52,10 @@ export function StatusBadge({
     success: 'Success',
     warning: 'Warning',
     info: 'Info',
-  };
+  }
 
-  const color = statusColorMap[status];
-  const displayLabel = label || statusLabelMap[status];
+  const color = statusColorMap[status]
+  const displayLabel = label || statusLabelMap[status]
 
   return (
     <Box
@@ -80,5 +87,5 @@ export function StatusBadge({
         {displayLabel}
       </Text>
     </Box>
-  );
+  )
 }

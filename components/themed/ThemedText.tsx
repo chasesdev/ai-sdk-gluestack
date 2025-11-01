@@ -1,13 +1,13 @@
-import React, { ReactNode } from 'react';
-import { Text } from '@gluestack-ui/themed';
-import { useTheme } from '../../contexts/ThemeContext';
-import { ComponentProps } from 'react';
+import React, { ReactNode } from 'react'
+import { Text } from '@gluestack-ui/themed'
+import { useTheme } from '../../contexts/ThemeContext'
+import { ComponentProps } from 'react'
 
-type TextProps = ComponentProps<typeof Text>;
+type TextProps = ComponentProps<typeof Text>
 
 interface ThemedTextProps extends Omit<TextProps, 'children'> {
-  variant?: 'default' | 'muted' | 'accent';
-  children?: ReactNode;
+  variant?: 'default' | 'muted' | 'accent'
+  children?: ReactNode
 }
 
 /**
@@ -24,16 +24,16 @@ export function ThemedText({
   sx,
   ...props
 }: ThemedTextProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
 
   const colorMap = {
     default: isDark ? '$textDark' : '$textLight',
     muted: isDark ? '$textMutedDark' : '$textMutedLight',
     accent: '$accent',
-  };
+  }
 
-  const textColor = colorMap[variant];
+  const textColor = colorMap[variant]
 
   return (
     <Text
@@ -45,5 +45,5 @@ export function ThemedText({
     >
       {children}
     </Text>
-  );
+  )
 }

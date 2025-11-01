@@ -1,13 +1,13 @@
-import React, { ReactNode } from 'react';
-import { Heading } from '@gluestack-ui/themed';
-import { useTheme } from '../../contexts/ThemeContext';
-import { ComponentProps } from 'react';
+import React, { ReactNode } from 'react'
+import { Heading } from '@gluestack-ui/themed'
+import { useTheme } from '../../contexts/ThemeContext'
+import { ComponentProps } from 'react'
 
-type HeadingProps = ComponentProps<typeof Heading>;
+type HeadingProps = ComponentProps<typeof Heading>
 
 interface ThemedHeadingProps extends Omit<HeadingProps, 'children'> {
-  variant?: 'default' | 'muted' | 'accent';
-  children?: ReactNode;
+  variant?: 'default' | 'muted' | 'accent'
+  children?: ReactNode
 }
 
 /**
@@ -25,23 +25,23 @@ export function ThemedHeading({
   sx,
   ...props
 }: ThemedHeadingProps) {
-  const { resolvedTheme } = useTheme();
-  const isDark = resolvedTheme === 'dark';
+  const { resolvedTheme } = useTheme()
+  const isDark = resolvedTheme === 'dark'
 
   const colorMap = {
     default: isDark ? '$textDark' : '$textLight',
     muted: isDark ? '$textMutedDark' : '$textMutedLight',
     accent: '$accent',
-  };
+  }
 
   const fontWeightMap = {
     default: '$semibold',
     muted: '$medium',
     accent: '$bold',
-  };
+  }
 
-  const textColor = colorMap[variant];
-  const fontWeight = fontWeightMap[variant];
+  const textColor = colorMap[variant]
+  const fontWeight = fontWeightMap[variant]
 
   return (
     <Heading
@@ -55,5 +55,5 @@ export function ThemedHeading({
     >
       {children}
     </Heading>
-  );
+  )
 }

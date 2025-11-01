@@ -29,6 +29,7 @@ This repository has been migrated from Next.js to Expo 54 with Gluestack UI v3.
 The following Next.js files are no longer needed and can be safely deleted:
 
 ### Old Next.js App Directory
+
 ```
 src/app/
 ├── api/
@@ -38,6 +39,7 @@ src/app/
 ```
 
 ### Old UI Components (Shadcn/Radix)
+
 ```
 src/components/ui/
 ├── All Radix UI components (*.tsx)
@@ -45,17 +47,20 @@ src/components/ui/
 ```
 
 ### Old Utilities
+
 ```
 src/lib/
 src/hooks/
 ```
 
 ### Old Examples
+
 ```
 examples/
 ```
 
 ### Old Configs
+
 ```
 tailwind.config.ts (superseded by tailwind.config.js)
 eslint.config.mjs (optional cleanup)
@@ -92,6 +97,7 @@ rm -rf .next
 ## Tech Stack Comparison
 
 ### Before (Next.js)
+
 - Next.js 15.3.5
 - React 19
 - Shadcn UI (Radix UI components)
@@ -99,6 +105,7 @@ rm -rf .next
 - Next.js App Router
 
 ### After (Expo)
+
 - Expo 54
 - React Native 0.76.7
 - Gluestack UI v3
@@ -109,18 +116,22 @@ rm -rf .next
 ## Key Differences
 
 ### Routing
+
 - **Before:** Next.js App Router (`src/app/`)
 - **After:** Expo Router (`app/`)
 
 ### Styling
+
 - **Before:** Regular Tailwind CSS, Radix UI primitives
 - **After:** NativeWind (Tailwind), Gluestack UI components
 
 ### Components
+
 - **Before:** HTML elements (`div`, `button`, etc.)
 - **After:** React Native components (`View`, `Pressable`, etc.)
 
 ### Animations
+
 - **Before:** Framer Motion
 - **After:** Reanimated v4 (native thread animations)
 
@@ -164,24 +175,28 @@ Or use Gluestack UI:
 ## Important Notes
 
 ### Reanimated v4 Plugin Order
+
 The Reanimated plugin MUST be last in `babel.config.js`:
 
 ```javascript
 plugins: [
-  "nativewind/babel",
-  "react-native-reanimated/plugin", // Must be last!
+  'nativewind/babel',
+  'react-native-reanimated/plugin', // Must be last!
 ]
 ```
 
 ### NativeWind Setup
+
 Make sure `global.css` is imported in `app/_layout.tsx`:
 
 ```typescript
-import "../global.css";
+import '../global.css'
 ```
 
 ### Web Support
+
 This Expo setup supports web via Metro bundler. Run with:
+
 ```bash
 npm run web
 ```

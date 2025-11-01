@@ -7,10 +7,12 @@ This guide addresses common issues with Reanimated v4 and NativeWind v4 (Tailwin
 ### Issue #1: "Cannot find module 'react-native-reanimated/plugin'"
 
 **Symptoms:**
+
 - Babel crashes during metro bundling
 - Error mentions missing Reanimated plugin
 
 **Solution:**
+
 ```bash
 # Clear everything and reinstall
 rm -rf node_modules package-lock.json
@@ -25,6 +27,7 @@ npx expo start --clear
 ### Issue #2: Animations Don't Work
 
 **Symptoms:**
+
 - No errors, but animations don't run
 - Components don't animate on interaction
 
@@ -34,17 +37,15 @@ Verify `babel.config.js` has Reanimated plugin as the **last** plugin:
 
 ```javascript
 module.exports = function (api) {
-  api.cache(true);
+  api.cache(true)
   return {
-    presets: [
-      ["babel-preset-expo", { jsxImportSource: "nativewind" }]
-    ],
+    presets: [['babel-preset-expo', { jsxImportSource: 'nativewind' }]],
     plugins: [
-      "nativewind/babel",
-      "react-native-reanimated/plugin", // ← MUST BE LAST
+      'nativewind/babel',
+      'react-native-reanimated/plugin', // ← MUST BE LAST
     ],
-  };
-};
+  }
+}
 ```
 
 **Solution 2 - Restart Metro with Cache Clear:**
@@ -67,10 +68,10 @@ import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
-} from 'react-native-reanimated';
+} from 'react-native-reanimated'
 
 // ❌ WRONG
-import { Animated } from 'react-native';
+import { Animated } from 'react-native'
 ```
 
 ---
@@ -78,8 +79,9 @@ import { Animated } from 'react-native';
 ### Issue #3: Web Platform Crashes with Reanimated
 
 **Symptoms:**
+
 - App works on iOS/Android but crashes on web
-- Error: "_frameTimestamp is not defined"
+- Error: "\_frameTimestamp is not defined"
 
 **Solution:**
 
@@ -87,21 +89,19 @@ Add this fix to `app/_layout.tsx` (already included):
 
 ```typescript
 // Fix for Reanimated v4 on web
-if (typeof window !== "undefined") {
+if (typeof window !== 'undefined') {
   // @ts-ignore
-  window._frameTimestamp = null;
+  window._frameTimestamp = null
 }
 ```
 
 **Alternative:** Use platform-specific code:
 
 ```typescript
-import { Platform } from 'react-native';
+import { Platform } from 'react-native'
 
 // Only use Reanimated on native
-const AnimatedComponent = Platform.OS === 'web'
-  ? View
-  : Animated.View;
+const AnimatedComponent = Platform.OS === 'web' ? View : Animated.View
 ```
 
 ---
@@ -109,10 +109,12 @@ const AnimatedComponent = Platform.OS === 'web'
 ### Issue #4: "react-native-reanimated has been initialized with incorrect jsEngine"
 
 **Symptoms:**
+
 - Error on app startup mentioning jsEngine
 - App crashes immediately
 
 **Solution:**
+
 ```bash
 # iOS
 cd ios && pod install && cd ..
@@ -128,24 +130,25 @@ npx expo run:android
 ### Issue #5: Animations Lag or Stutter
 
 **Symptoms:**
+
 - Animations run but not smoothly
 - FPS drops during animation
 
 **Solution 1 - Use runOnJS correctly:**
 
 ```typescript
-import { runOnJS } from 'react-native-reanimated';
+import { runOnJS } from 'react-native-reanimated'
 
 const animatedStyle = useAnimatedStyle(() => {
   // ✅ CORRECT - Use runOnJS for JS callbacks
   if (someCondition) {
-    runOnJS(myJsFunction)();
+    runOnJS(myJsFunction)()
   }
 
   return {
     transform: [{ scale: scale.value }],
-  };
-});
+  }
+})
 ```
 
 **Solution 2 - Avoid heavy computations in animations:**
@@ -153,15 +156,15 @@ const animatedStyle = useAnimatedStyle(() => {
 ```typescript
 // ❌ WRONG - Heavy computation in animation
 const animatedStyle = useAnimatedStyle(() => {
-  const heavy = expensiveCalculation();
-  return { opacity: heavy };
-});
+  const heavy = expensiveCalculation()
+  return { opacity: heavy }
+})
 
 // ✅ CORRECT - Pre-calculate
-const preCalculated = useMemo(() => expensiveCalculation(), []);
+const preCalculated = useMemo(() => expensiveCalculation(), [])
 const animatedStyle = useAnimatedStyle(() => {
-  return { opacity: preCalculated };
-});
+  return { opacity: preCalculated }
+})
 ```
 
 ---
@@ -171,6 +174,7 @@ const animatedStyle = useAnimatedStyle(() => {
 ### Issue #1: Styles Not Applying
 
 **Symptoms:**
+
 - className is used but no styles appear
 - Components render without styling
 
@@ -179,7 +183,7 @@ const animatedStyle = useAnimatedStyle(() => {
 Check `app/_layout.tsx` imports global.css:
 
 ```typescript
-import "../global.css"; // ← Must be present
+import '../global.css' // ← Must be present
 ```
 
 **Solution 2 - Clear Metro Cache:**
@@ -193,12 +197,12 @@ npx expo start --clear
 Verify `metro.config.js` includes NativeWind:
 
 ```javascript
-const { getDefaultConfig } = require("expo/metro-config");
-const { withNativeWind } = require("nativewind/metro");
+const { getDefaultConfig } = require('expo/metro-config')
+const { withNativeWind } = require('nativewind/metro')
 
-const config = getDefaultConfig(__dirname);
+const config = getDefaultConfig(__dirname)
 
-module.exports = withNativeWind(config, { input: "./global.css" });
+module.exports = withNativeWind(config, { input: './global.css' })
 ```
 
 **Solution 4 - Verify Babel Config:**
@@ -217,6 +221,7 @@ plugins: [
 ### Issue #2: TypeScript Errors on className
 
 **Symptoms:**
+
 - TypeScript error: "Property 'className' does not exist"
 - Red squiggly lines under className
 
@@ -229,6 +234,7 @@ Ensure `nativewind-env.d.ts` exists in project root:
 ```
 
 Then restart TypeScript server:
+
 - VS Code: Cmd+Shift+P → "TypeScript: Restart TS Server"
 - Or restart your editor
 
@@ -237,6 +243,7 @@ Then restart TypeScript server:
 ### Issue #3: Custom Colors Not Working
 
 **Symptoms:**
+
 - Predefined colors work (bg-red-500) but custom colors don't
 - CSS variables not applied
 
@@ -279,6 +286,7 @@ theme: {
 ### Issue #4: Dark Mode Not Working
 
 **Symptoms:**
+
 - .dark classes defined but not applying
 - Theme doesn't change
 
@@ -312,6 +320,7 @@ module.exports = {
 ### Issue #5: Arbitrary Values Not Working
 
 **Symptoms:**
+
 - Can't use values like `w-[37px]` or `bg-[#ff0000]`
 
 **Solution:**
@@ -330,12 +339,14 @@ npx expo start --clear
 ### Issue #6: Some Tailwind Classes Don't Work
 
 **Symptoms:**
+
 - Common classes like `grid`, `backdrop-blur` don't work
 - No error, just no effect
 
 **Reason:** React Native doesn't support all CSS properties. Some Tailwind classes won't work.
 
 **Unsupported Features:**
+
 - Grid layout (use `flex` instead)
 - Backdrop filters
 - Some advanced CSS features
@@ -360,6 +371,7 @@ npx expo start --clear
 ### Issue: Animated Component with className Doesn't Style
 
 **Symptoms:**
+
 - Using `<Animated.View className="...">` but no styles apply
 
 **Solution:**
@@ -415,6 +427,7 @@ npx expo start --clear --reset-cache
 Use this checklist to verify your setup:
 
 ### Reanimated v4
+
 - [ ] `react-native-reanimated` installed
 - [ ] Reanimated plugin in `babel.config.js` (last position)
 - [ ] Metro cache cleared after babel changes
@@ -422,6 +435,7 @@ Use this checklist to verify your setup:
 - [ ] Web fix applied in `_layout.tsx` (if targeting web)
 
 ### NativeWind v4
+
 - [ ] `nativewind` and `tailwindcss` installed
 - [ ] `global.css` imported in `_layout.tsx`
 - [ ] `nativewind/babel` plugin in `babel.config.js`
@@ -430,6 +444,7 @@ Use this checklist to verify your setup:
 - [ ] Metro cache cleared after config changes
 
 ### Both
+
 - [ ] All config files use `.js` extension (not `.ts`)
 - [ ] TypeScript server restarted
 - [ ] App fully rebuilt (not just refreshed)
@@ -443,6 +458,7 @@ Use this checklist to verify your setup:
    - If no: Setup issue, revisit configs
 
 2. Check Expo logs:
+
 ```bash
 npx expo start
 # Look for red errors in terminal
@@ -451,6 +467,7 @@ npx expo start
 3. Check Metro bundler logs for warnings
 
 4. Create a minimal reproduction:
+
 ```typescript
 // Test Reanimated
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
@@ -464,12 +481,14 @@ scale.value = withSpring(2);
 ```
 
 5. Check versions match:
+
 ```bash
 npm list react-native-reanimated
 npm list nativewind
 ```
 
 Should show:
+
 - react-native-reanimated: ~3.16.5
 - nativewind: ^4.1.23
 

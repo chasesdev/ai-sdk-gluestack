@@ -1,10 +1,9 @@
 {
   "buildCommand": "expo export -p web",
   "outputDirectory": "dist",
-  "cleanUrls": true,
   "rewrites": [
     {
-      "source": "/:path*",
+      "source": "/((?!_expo|assets|favicon.ico).*)",
       "destination": "/index.html"
     }
   ]

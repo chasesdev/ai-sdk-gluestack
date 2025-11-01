@@ -40,7 +40,7 @@ export function ChatMessage({ message }: ChatMessageProps) {
           >
             {message.isLoading ? (
               <HStack space="sm" className="items-center">
-                <Spinner size="sm" />
+                <Spinner size="small" />
                 <Text size="sm" color={isUser ? '$white' : '$textLight900'} style={{ color: isUser ? '#ffffff' : '#0f172a' }}>Thinking...</Text>
               </HStack>
             ) : (

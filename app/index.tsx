@@ -81,8 +81,17 @@ import { AIChatbot } from '../components/ai-sdk/AIChatbot';
 import type { ActionItem, ConnectionStatus } from '../components/ai-sdk/types';
 import Animated, { FadeInDown, FadeIn } from 'react-native-reanimated';
 import { CheckIcon, ChevronDownIcon, ChevronUpIcon, CircleIcon, CloseIcon, AddIcon, InfoIcon } from '@gluestack-ui/themed';
+import { ThemeSwitcher } from '../components/ThemeSwitcher';
+import { useTheme } from '../contexts/ThemeContext';
+import { getThemeColors } from '../constants/theme';
 
 export default function ComponentShowcase() {
+  const { resolvedTheme } = useTheme();
+
+  // Theme-aware colors
+  const colors = getThemeColors(resolvedTheme === 'dark');
+  const { background: bgColor, text: textColor, mutedText: mutedTextColor } = colors;
+
   // State for interactive components
   const [inputValue, setInputValue] = useState('');
   const [textareaValue, setTextareaValue] = useState('');
@@ -104,16 +113,10 @@ export default function ComponentShowcase() {
   const toast = useToast();
 
   const sections = [
-    { id: 'layout', title: 'Layout & Container', description: 'Components for structuring and organizing your UI' },
-    { id: 'typography', title: 'Typography', description: 'Text components with various styles and sizes' },
-    { id: 'buttons', title: 'Buttons & Actions', description: 'Interactive button components' },
-    { id: 'forms', title: 'Form Components', description: 'Interactive form inputs with state' },
-    { id: 'feedback', title: 'Feedback & Loading', description: 'Components for showing status and loading states' },
-    { id: 'overlays', title: 'Overlays & Dialogs', description: 'Modal, dialog, and popover components' },
-    { id: 'navigation', title: 'Navigation & Disclosure', description: 'Components for organizing and revealing content' },
-    { id: 'media', title: 'Media & Display', description: 'Avatar, image, and icon components' },
-    { id: 'ai-sdk', title: 'AI SDK Components', description: 'Specialized components for AI/ML applications' },
-    { id: 'workflow', title: 'Workflow Visualization', description: 'Interactive workflow planner with drag-and-drop nodes' },
+    { id: 'foundation', title: 'Foundation', description: 'Layout, typography, and core building blocks' },
+    { id: 'interactions', title: 'Inputs & Actions', description: 'Buttons, forms, and user interactions' },
+    { id: 'feedback', title: 'Feedback & Navigation', description: 'Alerts, modals, navigation, and media components' },
+    { id: 'ai-sdk', title: 'AI Components', description: 'AI SDK components and workflow visualization' },
   ];
 
   const scrollToSection = (sectionId: string) => {
@@ -153,24 +156,25 @@ export default function ComponentShowcase() {
   };
 
   return (
-    <ScrollView 
-      ref={scrollViewRef}
-      className="flex-1 bg-background" 
-      style={{ backgroundColor: '#ffffff' }}
-    >
-      <View 
-        ref={containerRef}
-        className="px-4 py-6 max-w-4xl mx-auto w-full" 
-        style={{ backgroundColor: '#ffffff' }}
+    <>
+      <ScrollView
+        ref={scrollViewRef}
+        className="flex-1 bg-background"
+        style={{ backgroundColor: bgColor }}
       >
+        <View
+          ref={containerRef}
+          className="py-6 max-w-4xl mx-auto w-full"
+          style={{ backgroundColor: bgColor }}
+        >
         {/* Header */}
         <Animated.View entering={FadeIn.duration(400)}>
           <VStack space="lg" className="mb-8">
             <VStack space="sm">
-              <Heading size="3xl" color="$textLight900" style={{ color: '#0f172a' }}>
+              <Heading size="xl" color="$textLight900" style={{ color: textColor }}>
                 Gluestack UI Showcase
               </Heading>
-              <Text size="lg" color="$textLight500" style={{ color: '#64748b' }}>
+              <Text size="lg" color="$textLight500" style={{ color: mutedTextColor }}>
                 Interactive demo of all 35+ components
               </Text>
             </VStack>
@@ -183,13 +187,13 @@ export default function ComponentShowcase() {
           {tocExpanded ? (
             <Box className="mb-4">
               <Button variant="link" onPress={() => setTocExpanded(false)}>
-                <ButtonText style={{ color: '#0f172a' }}>Table of Contents</ButtonText>
+                <ButtonText style={{ color: textColor }}>Table of Contents</ButtonText>
                 <Icon as={ChevronUpIcon} size="sm" />
               </Button>
               <VStack space="sm" className="py-2 mt-2">
                 {sections.map((section, index) => (
                   <HStack key={section.id} space="sm" className="items-center">
-                    <Text size="sm" color="$textLight500" style={{ color: '#64748b', minWidth: 30 }}>
+                    <Text size="sm" color="$textLight500" style={{ color: mutedTextColor, minWidth: 30 }}>
                       {index + 1}.
                     </Text>
                     <Button
@@ -200,7 +204,7 @@ export default function ComponentShowcase() {
                         setTocExpanded(false);
                       }}
                     >
-                      <ButtonText style={{ color: '#0f172a' }}>{section.title}</ButtonText>
+                      <ButtonText style={{ color: textColor }}>{section.title}</ButtonText>
                     </Button>
                   </HStack>
                 ))}
@@ -208,26 +212,26 @@ export default function ComponentShowcase() {
             </Box>
           ) : (
             <Button variant="link" onPress={() => setTocExpanded(true)} className="mb-4">
-              <ButtonText style={{ color: '#0f172a' }}>Table of Contents</ButtonText>
+              <ButtonText style={{ color: textColor }}>Table of Contents</ButtonText>
               <Icon as={ChevronDownIcon} size="sm" />
             </Button>
           )}
         </Animated.View>
 
-        {/* Layout & Container Components */}
+        {/* Foundation */}
         <View
           ref={(ref) => {
-            if (ref) sectionRefs.current['layout'] = ref;
+            if (ref) sectionRefs.current['foundation'] = ref;
           }}
         >
           <Animated.View entering={FadeInDown.delay(200).duration(400)}>
-          <Accordion defaultValue={["layout"]} type="single" collapsable>
-            <AccordionItem value="layout">
+          <Accordion defaultValue={["foundation"]} type="single" collapsable>
+            <AccordionItem value="foundation">
               <AccordionHeader>
                 <AccordionTrigger>
                   {({ isExpanded }: { isExpanded: boolean }) => (
                     <>
-                      <AccordionTitleText>Layout & Container</AccordionTitleText>
+                      <AccordionTitleText>Foundation</AccordionTitleText>
                       <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
                     </>
                   )}
@@ -242,16 +246,16 @@ export default function ComponentShowcase() {
             <DemoCard title="Box, VStack & HStack" description="Flexible layout containers">
               <VStack space="md">
                 <Box className="bg-primary/10 p-4 rounded-lg">
-                  <Text color="$textLight900" style={{ color: '#0f172a' }}>Box: Flexible container component</Text>
+                  <Text color="$textLight900" style={{ color: textColor }}>Box: Flexible container component</Text>
                 </Box>
                 <VStack space="sm" className="bg-secondary/10 p-4 rounded-lg">
-                  <Text color="$textLight900" fontWeight="$semibold" style={{ color: '#0f172a' }}>VStack (Vertical)</Text>
-                  <Text color="$textLight500" size="sm" style={{ color: '#64748b' }}>Item 1</Text>
-                  <Text color="$textLight500" size="sm" style={{ color: '#64748b' }}>Item 2</Text>
-                  <Text color="$textLight500" size="sm" style={{ color: '#64748b' }}>Item 3</Text>
+                  <Text color="$textLight900" fontWeight="$semibold" style={{ color: textColor }}>VStack (Vertical)</Text>
+                  <Text color="$textLight500" size="sm" style={{ color: mutedTextColor }}>Item 1</Text>
+                  <Text color="$textLight500" size="sm" style={{ color: mutedTextColor }}>Item 2</Text>
+                  <Text color="$textLight500" size="sm" style={{ color: mutedTextColor }}>Item 3</Text>
                 </VStack>
                 <HStack space="sm" className="bg-accent/10 p-4 rounded-lg">
-                  <Text color="$textLight900" fontWeight="$semibold" style={{ color: '#0f172a' }}>HStack:</Text>
+                  <Text color="$textLight900" fontWeight="$semibold" style={{ color: textColor }}>HStack:</Text>
                   <Badge className="bg-primary">
                     <BadgeText>Horizontal</BadgeText>
                   </Badge>
@@ -264,54 +268,26 @@ export default function ComponentShowcase() {
 
             <DemoCard title="Divider" description="Visual separator between sections">
               <VStack space="md">
-                <Text color="$textLight900" style={{ color: '#0f172a' }}>Content above divider</Text>
+                <Text color="$textLight900" style={{ color: textColor }}>Content above divider</Text>
                 <Divider />
-                <Text color="$textLight900" style={{ color: '#0f172a' }}>Content below divider</Text>
+                <Text color="$textLight900" style={{ color: textColor }}>Content below divider</Text>
               </VStack>
             </DemoCard>
                   </ComponentSection>
-                </AccordionContentText>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          </Animated.View>
-        </View>
-
-        {/* Typography */}
-        <View
-          ref={(ref) => {
-            if (ref) sectionRefs.current['typography'] = ref;
-          }}
-        >
-          <Animated.View entering={FadeInDown.delay(300).duration(400)}>
-          <Accordion>
-            <AccordionItem value="typography">
-              <AccordionHeader>
-                <AccordionTrigger>
-                  {({ isExpanded }: { isExpanded: boolean }) => (
-                    <>
-                      <AccordionTitleText>Typography</AccordionTitleText>
-                      <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
-                    </>
-                  )}
-                </AccordionTrigger>
-              </AccordionHeader>
-              <AccordionContent>
-                <AccordionContentText>
                   <ComponentSection
                     title="Typography"
                     description="Text components with various styles and sizes"
                   >
             <DemoCard title="Heading & Text" description="Text hierarchy components">
               <VStack space="md">
-                <Heading size="2xl" color="$textLight900" style={{ color: '#0f172a' }}>Heading 2XL</Heading>
-                <Heading size="xl" color="$textLight900" style={{ color: '#0f172a' }}>Heading XL</Heading>
-                <Heading size="lg" color="$textLight900" style={{ color: '#0f172a' }}>Heading Large</Heading>
-                <Heading size="md" color="$textLight900" style={{ color: '#0f172a' }}>Heading Medium</Heading>
-                <Text size="lg" color="$textLight900" style={{ color: '#0f172a' }}>Text Large</Text>
-                <Text size="md" color="$textLight900" style={{ color: '#0f172a' }}>Text Medium (default)</Text>
-                <Text size="sm" color="$textLight500" style={{ color: '#64748b' }}>Text Small (muted)</Text>
-                <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>Text Extra Small</Text>
+                <Heading size="2xl" color="$textLight900" style={{ color: textColor }}>Heading 2XL</Heading>
+                <Heading size="xl" color="$textLight900" style={{ color: textColor }}>Heading XL</Heading>
+                <Heading size="lg" color="$textLight900" style={{ color: textColor }}>Heading Large</Heading>
+                <Heading size="md" color="$textLight900" style={{ color: textColor }}>Heading Medium</Heading>
+                <Text size="lg" color="$textLight900" style={{ color: textColor }}>Text Large</Text>
+                <Text size="md" color="$textLight900" style={{ color: textColor }}>Text Medium (default)</Text>
+                <Text size="sm" color="$textLight500" style={{ color: mutedTextColor }}>Text Small (muted)</Text>
+                <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Text Extra Small</Text>
               </VStack>
             </DemoCard>
                   </ComponentSection>
@@ -322,20 +298,20 @@ export default function ComponentShowcase() {
           </Animated.View>
         </View>
 
-        {/* Buttons & Actions */}
+        {/* Inputs & Actions */}
         <View
           ref={(ref) => {
-            if (ref) sectionRefs.current['buttons'] = ref;
+            if (ref) sectionRefs.current['interactions'] = ref;
           }}
         >
-          <Animated.View entering={FadeInDown.delay(400).duration(400)}>
+          <Animated.View entering={FadeInDown.delay(300).duration(400)}>
           <Accordion>
-            <AccordionItem value="buttons">
+            <AccordionItem value="interactions">
               <AccordionHeader>
                 <AccordionTrigger>
                   {({ isExpanded }: { isExpanded: boolean }) => (
                     <>
-                      <AccordionTitleText>Buttons & Actions</AccordionTitleText>
+                      <AccordionTitleText>Inputs & Actions</AccordionTitleText>
                       <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
                     </>
                   )}
@@ -396,34 +372,6 @@ export default function ComponentShowcase() {
               </Box>
             </DemoCard>
                   </ComponentSection>
-                </AccordionContentText>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          </Animated.View>
-        </View>
-
-        {/* Forms */}
-        <View
-          ref={(ref) => {
-            if (ref) sectionRefs.current['forms'] = ref;
-          }}
-        >
-          <Animated.View entering={FadeInDown.delay(500).duration(400)}>
-          <Accordion>
-            <AccordionItem value="forms">
-              <AccordionHeader>
-                <AccordionTrigger>
-                  {({ isExpanded }: { isExpanded: boolean }) => (
-                    <>
-                      <AccordionTitleText>Form Components</AccordionTitleText>
-                      <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
-                    </>
-                  )}
-                </AccordionTrigger>
-              </AccordionHeader>
-              <AccordionContent>
-                <AccordionContentText>
                   <ComponentSection
                     title="Form Components"
                     description="Interactive form inputs with state"
@@ -437,7 +385,7 @@ export default function ComponentShowcase() {
                 />
               </Input>
               {inputValue && (
-                <Text size="sm" color="$textLight500" className="mt-2" style={{ color: '#64748b' }}>
+                <Text size="sm" color="$textLight500" className="mt-2" style={{ color: mutedTextColor }}>
                   You typed: {inputValue}
                 </Text>
               )}
@@ -466,7 +414,7 @@ export default function ComponentShowcase() {
                   <Text>I agree to the terms and conditions</Text>
                 </CheckboxLabel>
               </Checkbox>
-              <Text size="sm" color="$textLight500" className="mt-2" style={{ color: '#64748b' }}>
+              <Text size="sm" color="$textLight500" className="mt-2" style={{ color: mutedTextColor }}>
                 Status: {checkboxValue ? 'Checked ✓' : 'Unchecked'}
               </Text>
             </DemoCard>
@@ -500,7 +448,7 @@ export default function ComponentShowcase() {
                   </Radio>
                 </VStack>
               </RadioGroup>
-              <Text size="sm" color="$textLight500" className="mt-2" style={{ color: '#64748b' }}>
+              <Text size="sm" color="$textLight500" className="mt-2" style={{ color: mutedTextColor }}>
                 Selected: {radioValue}
               </Text>
             </DemoCard>
@@ -518,7 +466,7 @@ export default function ComponentShowcase() {
                   </SliderTrack>
                   <SliderThumb />
                 </Slider>
-                <Text size="sm" color="$textLight500" className="text-center" style={{ color: '#64748b' }}>
+                <Text size="sm" color="$textLight500" className="text-center" style={{ color: mutedTextColor }}>
                   Value: {Math.round(sliderValue)}
                 </Text>
               </VStack>
@@ -530,7 +478,7 @@ export default function ComponentShowcase() {
                   value={switchValue}
                   onValueChange={setSwitchValue}
                 />
-                <Text color="$textLight900" style={{ color: '#0f172a' }}>
+                <Text color="$textLight900" style={{ color: textColor }}>
                   {switchValue ? 'Enabled' : 'Disabled'}
                 </Text>
               </HStack>
@@ -543,20 +491,20 @@ export default function ComponentShowcase() {
           </Animated.View>
         </View>
 
-        {/* Feedback Components */}
+        {/* Feedback & Navigation */}
         <View
           ref={(ref) => {
             if (ref) sectionRefs.current['feedback'] = ref;
           }}
         >
-          <Animated.View entering={FadeInDown.delay(600).duration(400)}>
+          <Animated.View entering={FadeInDown.delay(400).duration(400)}>
           <Accordion>
             <AccordionItem value="feedback">
               <AccordionHeader>
                 <AccordionTrigger>
                   {({ isExpanded }: { isExpanded: boolean }) => (
                     <>
-                      <AccordionTitleText>Feedback & Loading</AccordionTitleText>
+                      <AccordionTitleText>Feedback & Navigation</AccordionTitleText>
                       <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
                     </>
                   )}
@@ -578,15 +526,15 @@ export default function ComponentShowcase() {
               <HStack space="lg" className="items-center justify-around">
                 <VStack space="sm" className="items-center">
                   <Spinner size="small" />
-                  <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>Small</Text>
+                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Small</Text>
                 </VStack>
                 <VStack space="sm" className="items-center">
                   <Spinner />
-                  <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>Default</Text>
+                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Default</Text>
                 </VStack>
                 <VStack space="sm" className="items-center">
                   <Spinner size="large" />
-                  <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>Large</Text>
+                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Large</Text>
                 </VStack>
               </HStack>
             </DemoCard>
@@ -603,7 +551,7 @@ export default function ComponentShowcase() {
                   <Button size="sm" onPress={() => setProgressValue(Math.min(100, progressValue + 10))}>
                     <ButtonText>+10%</ButtonText>
                   </Button>
-                  <Text size="sm" color="$textLight500" className="ml-auto" style={{ color: '#64748b' }}>
+                  <Text size="sm" color="$textLight500" className="ml-auto" style={{ color: mutedTextColor }}>
                     {progressValue}%
                   </Text>
                 </HStack>
@@ -630,34 +578,6 @@ export default function ComponentShowcase() {
               </HStack>
             </DemoCard>
                   </ComponentSection>
-                </AccordionContentText>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          </Animated.View>
-        </View>
-
-        {/* Overlays */}
-        <View
-          ref={(ref) => {
-            if (ref) sectionRefs.current['overlays'] = ref;
-          }}
-        >
-          <Animated.View entering={FadeInDown.delay(700).duration(400)}>
-          <Accordion>
-            <AccordionItem value="overlays">
-              <AccordionHeader>
-                <AccordionTrigger>
-                  {({ isExpanded }: { isExpanded: boolean }) => (
-                    <>
-                      <AccordionTitleText>Overlays & Dialogs</AccordionTitleText>
-                      <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
-                    </>
-                  )}
-                </AccordionTrigger>
-              </AccordionHeader>
-              <AccordionContent>
-                <AccordionContentText>
                   <ComponentSection
                     title="Overlays & Dialogs"
                     description="Modal, dialog, and popover components"
@@ -744,34 +664,6 @@ export default function ComponentShowcase() {
               </Tooltip>
             </DemoCard>
                   </ComponentSection>
-                </AccordionContentText>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          </Animated.View>
-        </View>
-
-        {/* Navigation */}
-        <View
-          ref={(ref) => {
-            if (ref) sectionRefs.current['navigation'] = ref;
-          }}
-        >
-          <Animated.View entering={FadeInDown.delay(800).duration(400)}>
-          <Accordion>
-            <AccordionItem value="navigation">
-              <AccordionHeader>
-                <AccordionTrigger>
-                  {({ isExpanded }: { isExpanded: boolean }) => (
-                    <>
-                      <AccordionTitleText>Navigation & Disclosure</AccordionTitleText>
-                      <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
-                    </>
-                  )}
-                </AccordionTrigger>
-              </AccordionHeader>
-              <AccordionContent>
-                <AccordionContentText>
                   <ComponentSection
                     title="Navigation & Disclosure"
                     description="Components for organizing and revealing content"
@@ -832,34 +724,6 @@ export default function ComponentShowcase() {
               </Accordion>
             </DemoCard>
                   </ComponentSection>
-                </AccordionContentText>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          </Animated.View>
-        </View>
-
-        {/* Media */}
-        <View
-          ref={(ref) => {
-            if (ref) sectionRefs.current['media'] = ref;
-          }}
-        >
-          <Animated.View entering={FadeInDown.delay(900).duration(400)}>
-          <Accordion>
-            <AccordionItem value="media">
-              <AccordionHeader>
-                <AccordionTrigger>
-                  {({ isExpanded }: { isExpanded: boolean }) => (
-                    <>
-                      <AccordionTitleText>Media & Display</AccordionTitleText>
-                      <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
-                    </>
-                  )}
-                </AccordionTrigger>
-              </AccordionHeader>
-              <AccordionContent>
-                <AccordionContentText>
                   <ComponentSection
                     title="Media & Display"
                     description="Avatar, image, and icon components"
@@ -885,19 +749,19 @@ export default function ComponentShowcase() {
               <HStack space="lg" className="items-center justify-around">
                 <VStack space="xs" className="items-center">
                   <Icon as={CheckIcon} size="xl" className="text-success" />
-                  <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>Check</Text>
+                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Check</Text>
                 </VStack>
                 <VStack space="xs" className="items-center">
                   <Icon as={CloseIcon} size="xl" className="text-error" />
-                  <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>Close</Text>
+                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Close</Text>
                 </VStack>
                 <VStack space="xs" className="items-center">
                   <Icon as={AddIcon} size="xl" className="text-primary" />
-                  <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>Add</Text>
+                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Add</Text>
                 </VStack>
                 <VStack space="xs" className="items-center">
                   <Icon as={InfoIcon} size="xl" className="text-info" />
-                  <Text size="xs" color="$textLight500" style={{ color: '#64748b' }}>Info</Text>
+                  <Text size="xs" color="$textLight500" style={{ color: mutedTextColor }}>Info</Text>
                 </VStack>
               </HStack>
             </DemoCard>
@@ -909,20 +773,20 @@ export default function ComponentShowcase() {
           </Animated.View>
         </View>
 
-        {/* AI SDK Components */}
+        {/* AI Components */}
         <View
           ref={(ref) => {
             if (ref) sectionRefs.current['ai-sdk'] = ref;
           }}
         >
-          <Animated.View entering={FadeInDown.delay(1000).duration(400)}>
+          <Animated.View entering={FadeInDown.delay(500).duration(400)}>
           <Accordion>
             <AccordionItem value="ai-sdk">
               <AccordionHeader>
                 <AccordionTrigger>
                   {({ isExpanded }: { isExpanded: boolean }) => (
                     <>
-                      <AccordionTitleText>AI SDK Components</AccordionTitleText>
+                      <AccordionTitleText>AI Components</AccordionTitleText>
                       <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
                     </>
                   )}
@@ -1004,34 +868,6 @@ export default function ComponentShowcase() {
               </Box>
             </DemoCard>
                   </ComponentSection>
-                </AccordionContentText>
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-          </Animated.View>
-        </View>
-
-        {/* Workflow Visualization */}
-        <View
-          ref={(ref) => {
-            if (ref) sectionRefs.current['workflow'] = ref;
-          }}
-        >
-          <Animated.View entering={FadeInDown.delay(1100).duration(400)}>
-          <Accordion>
-            <AccordionItem value="workflow">
-              <AccordionHeader>
-                <AccordionTrigger>
-                  {({ isExpanded }: { isExpanded: boolean }) => (
-                    <>
-                      <AccordionTitleText>Workflow Visualization</AccordionTitleText>
-                      <AccordionIcon as={isExpanded ? ChevronUpIcon : ChevronDownIcon} />
-                    </>
-                  )}
-                </AccordionTrigger>
-              </AccordionHeader>
-              <AccordionContent>
-                <AccordionContentText>
                   <ComponentSection
                     title="Workflow Visualization"
                     description="Interactive workflow planner with drag-and-drop nodes and animated connections"
@@ -1056,11 +892,11 @@ export default function ComponentShowcase() {
         </View>
 
         {/* Footer */}
-        <Animated.View entering={FadeInDown.delay(1200).duration(400)}>
+        <Animated.View entering={FadeInDown.delay(600).duration(400)}>
           <Box className="mt-8 mb-6">
             <Divider className="mb-6" />
             <VStack space="sm" className="items-center">
-              <Text size="sm" color="$textLight500" className="text-center" style={{ color: '#64748b' }}>
+              <Text size="sm" color="$textLight500" className="text-center" style={{ color: mutedTextColor }}>
                 Built with Expo 54, Gluestack UI v3, NativeWind v4 & Reanimated v3
               </Text>
               <HStack space="sm">
@@ -1079,5 +915,7 @@ export default function ComponentShowcase() {
         </Animated.View>
       </View>
     </ScrollView>
+    <ThemeSwitcher />
+    </>
   );
 }

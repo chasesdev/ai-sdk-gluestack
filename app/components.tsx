@@ -139,14 +139,19 @@ export default function ComponentsPage() {
       description: 'Layout, typography, and core building blocks',
     },
     {
-      id: 'interactions',
-      title: 'Inputs & Actions',
-      description: 'Buttons, forms, and user interactions',
+      id: 'forms',
+      title: 'Forms & Inputs',
+      description: 'Buttons, inputs, and form controls',
     },
     {
       id: 'feedback',
-      title: 'Feedback & Navigation',
-      description: 'Alerts, modals, navigation, and media components',
+      title: 'Feedback & Status',
+      description: 'Loading states, progress, badges, and toasts',
+    },
+    {
+      id: 'overlays',
+      title: 'Overlays & Display',
+      description: 'Modals, dialogs, accordion, avatars, and icons',
     },
     {
       id: 'ai-sdk',
@@ -442,21 +447,21 @@ export default function ComponentsPage() {
               </Animated.View>
             </View>
 
-            {/* Inputs & Actions */}
+            {/* Forms & Inputs */}
             <View
               ref={ref => {
-                if (ref) sectionRefs.current['interactions'] = ref
+                if (ref) sectionRefs.current['forms'] = ref
               }}
             >
               <Animated.View entering={FadeInDown.delay(300).duration(400)}>
                 <Accordion>
-                  <AccordionItem value="interactions">
+                  <AccordionItem value="forms">
                     <AccordionHeader>
                       <AccordionTrigger>
                         {({ isExpanded }: { isExpanded: boolean }) => (
                           <>
                             <AccordionTitleText>
-                              Inputs & Actions
+                              Forms & Inputs
                             </AccordionTitleText>
                             <AccordionIcon
                               as={isExpanded ? ChevronUpIcon : ChevronDownIcon}
@@ -698,7 +703,7 @@ export default function ComponentsPage() {
               </Animated.View>
             </View>
 
-            {/* Feedback & Navigation */}
+            {/* Feedback & Status */}
             <View
               ref={ref => {
                 if (ref) sectionRefs.current['feedback'] = ref
@@ -712,7 +717,7 @@ export default function ComponentsPage() {
                         {({ isExpanded }: { isExpanded: boolean }) => (
                           <>
                             <AccordionTitleText>
-                              Feedback & Navigation
+                              Feedback & Status
                             </AccordionTitleText>
                             <AccordionIcon
                               as={isExpanded ? ChevronUpIcon : ChevronDownIcon}
@@ -850,6 +855,38 @@ export default function ComponentsPage() {
                             </HStack>
                           </DemoCard>
                         </ComponentSection>
+                      </AccordionContentText>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </Animated.View>
+            </View>
+
+            {/* Overlays & Display */}
+            <View
+              ref={ref => {
+                if (ref) sectionRefs.current['overlays'] = ref
+              }}
+            >
+              <Animated.View entering={FadeInDown.delay(500).duration(400)}>
+                <Accordion>
+                  <AccordionItem value="overlays">
+                    <AccordionHeader>
+                      <AccordionTrigger>
+                        {({ isExpanded }: { isExpanded: boolean }) => (
+                          <>
+                            <AccordionTitleText>
+                              Overlays & Display
+                            </AccordionTitleText>
+                            <AccordionIcon
+                              as={isExpanded ? ChevronUpIcon : ChevronDownIcon}
+                            />
+                          </>
+                        )}
+                      </AccordionTrigger>
+                    </AccordionHeader>
+                    <AccordionContent>
+                      <AccordionContentText>
                         <ComponentSection
                           title="Overlays & Dialogs"
                           description="Modal, dialog, and popover components"
@@ -1177,7 +1214,7 @@ export default function ComponentsPage() {
                 if (ref) sectionRefs.current['ai-sdk'] = ref
               }}
             >
-              <Animated.View entering={FadeInDown.delay(500).duration(400)}>
+              <Animated.View entering={FadeInDown.delay(600).duration(400)}>
                 <Accordion>
                   <AccordionItem value="ai-sdk">
                     <AccordionHeader>
@@ -1360,7 +1397,7 @@ export default function ComponentsPage() {
             </View>
 
             {/* Footer */}
-            <Animated.View entering={FadeInDown.delay(600).duration(400)}>
+            <Animated.View entering={FadeInDown.delay(700).duration(400)}>
               <Box className="mt-8 mb-6">
                 <Divider className="mb-6" />
                 <VStack space="sm" className="items-center">

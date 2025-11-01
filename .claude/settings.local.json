@@ -8,7 +8,8 @@
       "Bash(yarn list:*)",
       "Bash(yarn why:*)",
       "Bash(cp:*)",
-      "Bash(yarn install:*)"
+      "Bash(yarn install:*)",
+      "WebFetch(domain:github.com)"
     ],
     "deny": [],
     "ask": []

@@ -27,7 +27,7 @@ interface ChatMessageProps {
   message: Message
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export const ChatMessage = React.memo(function ChatMessage({ message }: ChatMessageProps) {
   const { resolvedTheme } = useTheme()
   const colors = getThemeColors(resolvedTheme === 'dark')
   const {
@@ -50,7 +50,13 @@ export function ChatMessage({ message }: ChatMessageProps) {
 
   return (
     <Animated.View entering={FadeIn}>
-      <HStack space="md" className={`mb-5 ${isUser ? 'flex-row-reverse' : ''}`}>
+      <HStack
+        space="md"
+        sx={{
+          marginBottom: '$5',
+          flexDirection: isUser ? 'row-reverse' : 'row',
+        }}
+      >
         <Avatar size="sm">
           <AvatarFallbackText
             style={{
@@ -63,15 +69,21 @@ export function ChatMessage({ message }: ChatMessageProps) {
         </Avatar>
         <VStack
           space="xs"
-          className={`flex-1 ${isUser ? 'items-end' : 'items-start'}`}
+          sx={{
+            flex: 1,
+            alignItems: isUser ? 'flex-end' : 'flex-start',
+          }}
         >
           <VStack
             space="xs"
-            className={`max-w-[85%] ${isUser ? 'items-end' : 'items-start'}`}
+            sx={{
+              maxWidth: '85%',
+              alignItems: isUser ? 'flex-end' : 'flex-start',
+            }}
           >
             {/* Render attachments */}
             {message.attachments && message.attachments.length > 0 && (
-              <VStack space="xs" className="w-full">
+              <VStack space="xs" sx={{ width: '100%' }}>
                 {message.attachments.map(attachment => (
                   <AttachmentPreview
                     key={attachment.id}
@@ -86,15 +98,17 @@ export function ChatMessage({ message }: ChatMessageProps) {
             {/* Render message content */}
             {message.content && (
               <Box
-                className="rounded-xl px-5 py-3.5"
                 style={{
+                  borderRadius: 12,
+                  paddingHorizontal: 20,
+                  paddingVertical: 14,
                   backgroundColor: isUser ? accentColor : cardColor,
                   borderWidth: isUser ? 0 : 1,
                   borderColor: isUser ? 'transparent' : borderColor,
                 }}
               >
                 {message.isLoading ? (
-                  <HStack space="sm" className="items-center">
+                  <HStack space="sm" sx={{ alignItems: 'center' }}>
                     <Spinner size="small" />
                     <Text
                       size="sm"
@@ -116,7 +130,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
           </VStack>
 
           {message.timestamp && (
-            <Text size="xs" className="px-2" style={{ color: mutedTextColor }}>
+            <Text
+              size="xs"
+              style={{ paddingHorizontal: 8, color: mutedTextColor }}
+            >
               {formatTime(message.timestamp)}
             </Text>
           )}
@@ -134,4 +151,4 @@ export function ChatMessage({ message }: ChatMessageProps) {
       )}
     </Animated.View>
   )
-}
+})

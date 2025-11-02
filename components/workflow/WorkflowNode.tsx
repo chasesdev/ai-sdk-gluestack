@@ -200,16 +200,21 @@ export const WorkflowNode = memo(
                 borderWidth: isSelected ? 3 : 2,
                 borderColor: isSelected ? themeColors.accent : borderColor,
                 backgroundColor: cardBg,
+                borderRadius: 12,
+                shadowColor: '#000',
+                shadowOffset: { width: 0, height: 2 },
+                shadowOpacity: 0.25,
+                shadowRadius: 3.84,
+                elevation: 5,
               },
             ]}
-            className="rounded-xl shadow-lg"
           >
             <VStack space="xs">
               {/* Header */}
-              <HStack space="sm" className="items-center">
+              <HStack space="sm" sx={{ alignItems: 'center' }}>
                 <Box
-                  className="rounded-lg p-2"
-                  style={{
+                  style={{ 
+                    borderRadius: 8, 
                     backgroundColor: isSelected
                       ? themeColors.info
                       : status === 'running'
@@ -247,8 +252,9 @@ export const WorkflowNode = memo(
               {/* Code Block */}
               {node.data.code && (
                 <Box
-                  className="rounded-md p-2 mt-1"
                   style={{
+                    borderRadius: 6,
+                    marginTop: 4,
                     borderWidth: 1,
                     borderColor: borderColor,
                     backgroundColor: cardBg,
@@ -267,14 +273,22 @@ export const WorkflowNode = memo(
 
               {/* Connection Handles */}
               {node.data.icon === 'git-branch' && (
-                <HStack space="xs" className="mt-1 justify-around">
+                <HStack space="xs" sx={{ marginTop: '$1', justifyContent: 'space-around' }}>
                   <Box
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: themeColors.info }}
+                    style={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: 9999,
+                      backgroundColor: themeColors.info,
+                    }}
                   />
                   <Box
-                    className="w-3 h-3 rounded-full"
-                    style={{ backgroundColor: themeColors.info }}
+                    style={{
+                      width: 12,
+                      height: 12,
+                      borderRadius: 9999,
+                      backgroundColor: themeColors.info,
+                    }}
                   />
                 </HStack>
               )}
@@ -288,9 +302,11 @@ export const WorkflowNode = memo(
                   backgroundColor: themeColors.mutedText,
                   borderWidth: 2,
                   borderColor: themeColors.background,
+                  width: 12,
+                  height: 12,
+                  borderRadius: 9999,
                 },
               ]}
-              className="w-3 h-3 rounded-full"
             />
 
             {/* Output Handle (bottom) */}
@@ -301,9 +317,11 @@ export const WorkflowNode = memo(
                   backgroundColor: themeColors.mutedText,
                   borderWidth: 2,
                   borderColor: themeColors.background,
+                  width: 12,
+                  height: 12,
+                  borderRadius: 9999,
                 },
               ]}
-              className="w-3 h-3 rounded-full"
             />
           </Box>
         </Animated.View>
@@ -315,10 +333,10 @@ export const WorkflowNode = memo(
 const styles = StyleSheet.create({
   nodeContainer: {
     position: 'absolute',
-    width: 220,
+    width: 200,
   },
   node: {
-    padding: 12,
+    padding: 4,
     minHeight: 100,
     position: 'relative',
   },

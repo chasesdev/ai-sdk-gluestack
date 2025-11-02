@@ -20,7 +20,7 @@ import {
 export default function HomePage() {
   return (
     <>
-      <ScrollView className="flex-1" contentInsetAdjustmentBehavior="automatic">
+      <ScrollView style={{ flex: 1 }} contentInsetAdjustmentBehavior="automatic">
         <ResponsiveContainer>
           {/* Header */}
           <VStack space="md" sx={{ marginBottom: '$6' }}>
@@ -85,8 +85,8 @@ export default function HomePage() {
 
           {/* Footer */}
           <VStack space="sm" sx={{ marginTop: '$8', alignItems: 'center' }}>
-            <ThemedText variant="muted" size="sm" className="text-center">
-              Built with Expo 54, Gluestack UI v3, NativeWind v4 & Reanimated v3
+            <ThemedText variant="muted" size="sm" sx={{ textAlign: 'center' }}>
+              Built with Expo 54, Gluestack UI & Reanimated v3
             </ThemedText>
           </VStack>
         </ResponsiveContainer>

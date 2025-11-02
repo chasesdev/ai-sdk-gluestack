@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useMemo } from 'react'
 import { ScrollView, View, Switch as RNSwitch, Platform } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import {
@@ -108,7 +108,10 @@ import {
 export default function ComponentsPage() {
   // Theme-aware colors (still needed for some demo content)
   const { resolvedTheme } = useTheme()
-  const colors = getThemeColors(resolvedTheme === 'dark')
+  const colors = useMemo(
+    () => getThemeColors(resolvedTheme === 'dark'),
+    [resolvedTheme]
+  )
   const { text: textColor, mutedText: mutedTextColor, tintedBg } = colors
 
   // State for interactive components
@@ -201,7 +204,7 @@ export default function ComponentsPage() {
     <>
       <ScrollView
         ref={scrollViewRef}
-        className="flex-1"
+        sx={{ flex: 1 }}
         contentInsetAdjustmentBehavior="automatic"
       >
         <ResponsiveContainer>
@@ -235,7 +238,7 @@ export default function ComponentsPage() {
                       <HStack
                         key={section.id}
                         space="sm"
-                        className="items-center"
+                        sx={{ alignItems: 'center' }}
                       >
                         <ThemedText
                           variant="muted"
@@ -307,7 +310,7 @@ export default function ComponentsPage() {
                           >
                             <VStack space="md">
                               <Box
-                                className="p-4 rounded-lg"
+                                sx={{ borderRadius: '$2' }}
                                 style={{
                                   backgroundColor: tintedBg,
                                   borderWidth: 1,
@@ -320,7 +323,7 @@ export default function ComponentsPage() {
                               </Box>
                               <VStack
                                 space="sm"
-                                className="p-4 rounded-lg"
+                                sx={{ padding: '$4', borderRadius: '$2' }}
                                 style={{
                                   backgroundColor: tintedBg,
                                   borderWidth: 1,
@@ -354,7 +357,7 @@ export default function ComponentsPage() {
                               </VStack>
                               <HStack
                                 space="sm"
-                                className="p-4 rounded-lg"
+                                sx={{ borderRadius: '$2' }}
                                 style={{
                                   backgroundColor: tintedBg,
                                   borderWidth: 1,
@@ -481,7 +484,7 @@ export default function ComponentsPage() {
                             description="Different button styles and sizes"
                           >
                             <VStack space="md">
-                              <HStack space="sm" className="flex-wrap">
+                              <HStack space="sm" sx={{ flexWrap: 'wrap' }}>
                                 <Button action="primary" onPress={showToast}>
                                   <ButtonText>Primary</ButtonText>
                                 </Button>
@@ -495,7 +498,7 @@ export default function ComponentsPage() {
                                   <ButtonText>Negative</ButtonText>
                                 </Button>
                               </HStack>
-                              <HStack space="sm" className="flex-wrap">
+                              <HStack space="sm" sx={{ flexWrap: 'wrap' }}>
                                 <Button size="xs">
                                   <ButtonText>Extra Small</ButtonText>
                                 </Button>
@@ -520,7 +523,7 @@ export default function ComponentsPage() {
                             description="Floating action button for primary actions"
                           >
                             <Box
-                              className="relative h-24 rounded-lg"
+                              sx={{ position: 'relative', height: 96, borderRadius: '$2' }}
                               style={{
                                 backgroundColor: colors.card,
                                 borderWidth: 1,
@@ -530,7 +533,7 @@ export default function ComponentsPage() {
                               <Fab
                                 size="md"
                                 placement="bottom right"
-                                className="absolute bottom-4 right-4"
+                                sx={{ position: 'absolute', bottom: '$4', right: '$4' }}
                                 onPress={showToast}
                               >
                                 <FabIcon as={AddIcon} />
@@ -556,7 +559,7 @@ export default function ComponentsPage() {
                             {inputValue && (
                               <Text
                                 size="sm"
-                                className="mt-2"
+                                sx={{ marginTop: '$2' }}
                                 style={{ color: mutedTextColor }}
                               >
                                 You typed: {inputValue}
@@ -597,7 +600,7 @@ export default function ComponentsPage() {
                             </Checkbox>
                             <Text
                               size="sm"
-                              className="mt-2"
+                              sx={{ marginTop: '$2' }}
                               style={{ color: mutedTextColor }}
                             >
                               Status:{' '}
@@ -648,7 +651,7 @@ export default function ComponentsPage() {
                             </RadioGroup>
                             <Text
                               size="sm"
-                              className="mt-2"
+                              sx={{ marginTop: '$2' }}
                               style={{ color: mutedTextColor }}
                             >
                               Selected: {radioValue}
@@ -673,7 +676,7 @@ export default function ComponentsPage() {
                               </Slider>
                               <Text
                                 size="sm"
-                                className="text-center"
+                                sx={{ textAlign: 'center' }}
                                 style={{ color: mutedTextColor }}
                               >
                                 Value: {Math.round(sliderValue)}
@@ -685,7 +688,7 @@ export default function ComponentsPage() {
                             title="Switch"
                             description="Toggle switch component"
                           >
-                            <HStack space="md" className="items-center">
+                            <HStack space="md" sx={{ alignItems: 'center' }}>
                               <RNSwitch
                                 value={switchValue}
                                 onValueChange={setSwitchValue}
@@ -747,9 +750,9 @@ export default function ComponentsPage() {
                           >
                             <HStack
                               space="lg"
-                              className="items-center justify-around"
+                              sx={{ alignItems: 'center', justifyContent: 'space-around' }}
                             >
-                              <VStack space="sm" className="items-center">
+                              <VStack space="sm" sx={{ alignItems: 'center' }}>
                                 <Spinner size="small" />
                                 <Text
                                   size="xs"
@@ -758,7 +761,7 @@ export default function ComponentsPage() {
                                   Small
                                 </Text>
                               </VStack>
-                              <VStack space="sm" className="items-center">
+                              <VStack space="sm" sx={{ alignItems: 'center' }}>
                                 <Spinner />
                                 <Text
                                   size="xs"
@@ -767,7 +770,7 @@ export default function ComponentsPage() {
                                   Default
                                 </Text>
                               </VStack>
-                              <VStack space="sm" className="items-center">
+                              <VStack space="sm" sx={{ alignItems: 'center' }}>
                                 <Spinner size="large" />
                                 <Text
                                   size="xs"
@@ -786,7 +789,7 @@ export default function ComponentsPage() {
                             <VStack space="md">
                               <Progress
                                 value={progressValue}
-                                className="w-full"
+                                sx={{ width: '100%' }}
                               >
                                 <ProgressFilledTrack />
                               </Progress>
@@ -813,7 +816,7 @@ export default function ComponentsPage() {
                                 </Button>
                                 <Text
                                   size="sm"
-                                  className="ml-auto"
+                                  sx={{ marginLeft: 'auto' }}
                                   style={{ color: mutedTextColor }}
                                 >
                                   {progressValue}%
@@ -826,7 +829,7 @@ export default function ComponentsPage() {
                             title="Badge"
                             description="Small status labels"
                           >
-                            <HStack space="sm" className="flex-wrap">
+                            <HStack space="sm" sx={{ flexWrap: 'wrap' }}>
                               <Badge action="success">
                                 <BadgeText style={{ color: colors.background }}>
                                   Success
@@ -1122,7 +1125,7 @@ export default function ComponentsPage() {
                             title="Avatar"
                             description="User profile pictures"
                           >
-                            <HStack space="md" className="items-center">
+                            <HStack space="md" sx={{ alignItems: 'center' }}>
                               <Avatar size="sm">
                                 <AvatarFallbackText>SM</AvatarFallbackText>
                               </Avatar>
@@ -1144,9 +1147,9 @@ export default function ComponentsPage() {
                           >
                             <HStack
                               space="lg"
-                              className="items-center justify-around"
+                              sx={{ alignItems: 'center', justifyContent: 'space-around' }}
                             >
-                              <VStack space="xs" className="items-center">
+                              <VStack space="xs" sx={{ alignItems: 'center' }}>
                                 <Icon
                                   as={CheckIcon}
                                   size="xl"
@@ -1159,7 +1162,7 @@ export default function ComponentsPage() {
                                   Check
                                 </Text>
                               </VStack>
-                              <VStack space="xs" className="items-center">
+                              <VStack space="xs" sx={{ alignItems: 'center' }}>
                                 <Icon
                                   as={CloseIcon}
                                   size="xl"
@@ -1172,7 +1175,7 @@ export default function ComponentsPage() {
                                   Close
                                 </Text>
                               </VStack>
-                              <VStack space="xs" className="items-center">
+                              <VStack space="xs" sx={{ alignItems: 'center' }}>
                                 <Icon
                                   as={AddIcon}
                                   size="xl"
@@ -1185,7 +1188,7 @@ export default function ComponentsPage() {
                                   Add
                                 </Text>
                               </VStack>
-                              <VStack space="xs" className="items-center">
+                              <VStack space="xs" sx={{ alignItems: 'center' }}>
                                 <Icon
                                   as={InfoIcon}
                                   size="xl"
@@ -1365,7 +1368,10 @@ export default function ComponentsPage() {
                             title="AI Chatbot"
                             description="Full-featured conversation interface with message history"
                           >
-                            <Box className="h-96 rounded-lg overflow-hidden border border-border">
+                            <Box
+                              sx={{ height: 384, borderRadius: '$2', overflow: 'hidden' }}
+                              style={{ borderWidth: 1, borderColor: colors.border }}
+                            >
                               <AIChatbot
                                 title="AI Assistant"
                                 placeholder="Ask me anything..."
@@ -1381,7 +1387,10 @@ export default function ComponentsPage() {
                             title="AI Processing Pipeline"
                             description="Drag nodes to reposition, lock/unlock editing, zoom in/out. Features animated edges and status indicators."
                           >
-                            <Box className="h-96 rounded-lg overflow-hidden border border-border">
+                            <Box
+                              sx={{ height: 384, borderRadius: '$2', overflow: 'hidden' }}
+                              style={{ borderWidth: 1, borderColor: colors.border }}
+                            >
                               <WorkflowPlanner
                                 initialNodes={exampleNodes}
                                 initialEdges={exampleEdges}
@@ -1398,12 +1407,12 @@ export default function ComponentsPage() {
 
             {/* Footer */}
             <Animated.View entering={FadeInDown.delay(700).duration(400)}>
-              <Box className="mt-8 mb-6">
-                <Divider className="mb-6" />
-                <VStack space="sm" className="items-center">
+              <Box sx={{ marginTop: '$8', marginBottom: '$6' }}>
+                <Divider sx={{ marginBottom: '$6' }} />
+                <VStack space="sm" sx={{ alignItems: 'center' }}>
                   <Text
                     size="sm"
-                    className="text-center"
+                    sx={{ textAlign: 'center' }}
                     style={{ color: mutedTextColor }}
                   >
                     Built with Expo 54, Gluestack UI v3, NativeWind v4 &

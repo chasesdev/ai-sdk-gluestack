@@ -17,14 +17,14 @@ interface ActionsProps {
   actions: ActionItem[]
   layout?: ActionsLayout
   size?: 'sm' | 'md' | 'lg'
-  className?: string
+  sx?: any
 }
 
 export function Actions({
   actions,
   layout = 'horizontal',
   size = 'md',
-  className,
+  sx,
 }: ActionsProps) {
   const { resolvedTheme } = useTheme()
   const colors = getThemeColors(resolvedTheme === 'dark')
@@ -63,14 +63,14 @@ export function Actions({
           size={size}
           onPress={action.onPress}
           isDisabled={action.disabled || action.loading}
-          className="min-w-[100px]"
+          sx={{ minWidth: 100 }}
         >
           {action.loading ? (
             <Spinner size="small" />
           ) : (
             <>
               {action.icon && (
-                <Icon as={action.icon} size="sm" className="mr-2" />
+                <Icon as={action.icon} size="sm" sx={{ marginRight: '$2' }} />
               )}
               <ButtonText style={{ color: buttonTextColor }}>
                 {action.label}
@@ -84,10 +84,10 @@ export function Actions({
 
   if (layout === 'grid') {
     return (
-      <Box className={className}>
-        <Box className="flex-row flex-wrap gap-2">
+      <Box sx={sx}>
+        <Box sx={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {actions.map((action, index) => (
-            <Box key={action.id} className="flex-1 min-w-[120px] max-w-[200px]">
+            <Box key={action.id} sx={{ flex: 1, minWidth: 120, maxWidth: 200 }}>
               {renderAction(action, index)}
             </Box>
           ))}
@@ -98,7 +98,7 @@ export function Actions({
 
   if (layout === 'vertical') {
     return (
-      <VStack space="sm" className={className}>
+      <VStack space="sm" sx={sx}>
         {actions.map((action, index) => renderAction(action, index))}
       </VStack>
     )
@@ -106,7 +106,7 @@ export function Actions({
 
   // horizontal (default)
   return (
-    <HStack space="sm" className={`flex-wrap ${className || ''}`}>
+    <HStack space="sm" sx={{ flexWrap: 'wrap', ...sx }}>
       {actions.map((action, index) => renderAction(action, index))}
     </HStack>
   )

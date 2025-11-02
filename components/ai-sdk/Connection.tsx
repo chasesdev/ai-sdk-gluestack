@@ -61,11 +61,16 @@ export function Connection({
   return (
     <Animated.View entering={FadeIn} exiting={FadeOut}>
       <Box
-        className="bg-card border border-border rounded-lg p-4"
-        style={{ backgroundColor: cardBg, borderColor: borderColor }}
+        style={{
+          backgroundColor: cardBg,
+          borderWidth: 1,
+          borderColor: borderColor,
+          borderRadius: 8,
+          padding: 16,
+        }}
       >
-        <HStack space="md" className="items-center">
-          <Box className="relative">
+        <HStack space="md" sx={{ alignItems: 'center' }}>
+          <Box sx={{ position: 'relative' }}>
             <Icon
               as={config.icon}
               size="md"
@@ -83,8 +88,13 @@ export function Connection({
             />
             {showPulse && status === 'connected' && (
               <Box
-                className="absolute inset-0 rounded-full"
                 style={{
+                  position: 'absolute',
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                  borderRadius: 9999,
                   backgroundColor: colors.success,
                   opacity: 0.2,
                   transform: [{ scale: 1.5 }],
@@ -92,15 +102,15 @@ export function Connection({
               />
             )}
           </Box>
-          <VStack space="xs" className="flex-1">
-            <HStack space="sm" className="items-center">
+          <VStack space="xs" sx={{ flex: 1 }}>
+            <HStack space="sm" sx={{ alignItems: 'center' }}>
               <Badge action={config.color} size="sm">
                 <BadgeText style={{ color: textColor }}>
                   {config.text}
                 </BadgeText>
               </Badge>
               {status === 'connecting' && (
-                <Box className="animate-pulse">
+                <Box>
                   <Text size="xs" style={{ color: mutedTextColor }}>
                     ...
                   </Text>

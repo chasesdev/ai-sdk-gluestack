@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useCallback } from 'react'
 import { Platform } from 'react-native'
 import {
   VStack,
@@ -51,20 +51,20 @@ export function AIChatbot({
   const [showAudioRecorder, setShowAudioRecorder] = useState(false)
   const scrollViewRef = useRef<any>(null)
 
-  const handleAttachmentSelected = (attachment: Attachment) => {
+  const handleAttachmentSelected = useCallback((attachment: Attachment) => {
     setSelectedAttachments(prev => [...prev, attachment])
-  }
+  }, [])
 
-  const handleRemoveAttachment = (attachmentId: string) => {
+  const handleRemoveAttachment = useCallback((attachmentId: string) => {
     setSelectedAttachments(prev => prev.filter(a => a.id !== attachmentId))
-  }
+  }, [])
 
-  const handleAudioRecordingComplete = (attachment: Attachment) => {
+  const handleAudioRecordingComplete = useCallback((attachment: Attachment) => {
     setSelectedAttachments(prev => [...prev, attachment])
     setShowAudioRecorder(false)
-  }
+  }, [])
 
-  const handleSend = async () => {
+  const handleSend = useCallback(async () => {
     if ((!inputValue.trim() && selectedAttachments.length === 0) || disabled || isLoading) return
 
     const userMessage: Message = {
@@ -145,25 +145,25 @@ export function AIChatbot({
         setIsLoading(false)
       }, 1500)
     }
-  }
+  }, [inputValue, selectedAttachments, disabled, isLoading, onSendMessage])
 
   return (
-    <VStack space="md" className="h-full">
+    <VStack space="md" sx={{ height: '100%' }}>
       <ScrollView
         ref={scrollViewRef}
-        className="flex-1"
+        style={{ flex: 1 }}
         onContentSizeChange={() => {
           scrollViewRef.current?.scrollToEnd({ animated: true })
         }}
         accessibilityRole="list"
         accessibilityLabel="Chat messages"
       >
-        <VStack space="sm" className="px-4 pb-4 pt-4">
+        <VStack space="sm" sx={{ paddingHorizontal: '$4', paddingBottom: '$4', paddingTop: '$4' }}>
           {messages.length === 0 ? (
-            <Box className="py-8">
+            <Box sx={{ paddingVertical: '$8' }}>
               <Text
                 size="sm"
-                className="text-center"
+                sx={{ textAlign: 'center' }}
                 style={{ color: mutedTextColor }}
               >
                 Start a conversation
@@ -178,9 +178,12 @@ export function AIChatbot({
       </ScrollView>
 
       <Box
-        className="border-t border-border pt-4 px-4 pb-4"
         style={{
+          borderTopWidth: 1,
           borderTopColor: borderColor,
+          paddingTop: 16,
+          paddingHorizontal: 16,
+          paddingBottom: 16,
           shadowColor: '#000',
           shadowOffset: { width: 0, height: -2 },
           shadowOpacity: 0.05,
@@ -191,7 +194,7 @@ export function AIChatbot({
         <VStack space="md">
           {/* Attachment previews */}
           {selectedAttachments.length > 0 && (
-            <HStack space="sm" className="flex-wrap">
+            <HStack space="sm" sx={{ flexWrap: 'wrap' }}>
               {selectedAttachments.map(attachment => (
                 <AttachmentPreview
                   key={attachment.id}

@@ -49,8 +49,16 @@ export function ThemeSwitcher() {
       {/* Floating Action Button */}
       <Pressable
         onPress={() => setShowActionsheet(true)}
-        className="absolute bottom-6 right-6 w-14 h-14 rounded-full shadow-lg items-center justify-center z-50"
         style={{
+          position: 'absolute',
+          bottom: 24,
+          right: 24,
+          width: 56,
+          height: 56,
+          borderRadius: 9999,
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 50,
           backgroundColor: ACCENT_COLOR,
           shadowColor: colors.text,
           shadowOffset: { width: 0, height: 4 },
@@ -68,12 +76,12 @@ export function ThemeSwitcher() {
       {/* Theme Selection Actionsheet */}
       <Actionsheet isOpen={showActionsheet} onClose={handleClose}>
         <ActionsheetBackdrop />
-        <ActionsheetContent className="bg-background">
+        <ActionsheetContent style={{ backgroundColor: colors.background }}>
           <ActionsheetDragIndicatorWrapper>
             <ActionsheetDragIndicator />
           </ActionsheetDragIndicatorWrapper>
 
-          <View className="w-full px-4 py-2">
+          <View style={{ width: '100%', paddingHorizontal: 16, paddingVertical: 8 }}>
             <ActionsheetItem
               onPress={() => selectTheme('light')}
               accessibilityRole="button"
@@ -83,7 +91,7 @@ export function ThemeSwitcher() {
               <Icon
                 as={SunIcon}
                 size="lg"
-                className="mr-3"
+                style={{ marginRight: 12 }}
                 style={{ color: textColor }}
               />
               <ActionsheetItemText style={{ color: textColor }}>
@@ -91,7 +99,7 @@ export function ThemeSwitcher() {
               </ActionsheetItemText>
               {theme === 'light' && (
                 <View
-                  className="ml-auto w-2 h-2 rounded-full"
+                  style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: 9999 }}
                   style={{ backgroundColor: ACCENT_COLOR }}
                 />
               )}
@@ -106,7 +114,7 @@ export function ThemeSwitcher() {
               <Icon
                 as={MoonIcon}
                 size="lg"
-                className="mr-3"
+                style={{ marginRight: 12 }}
                 style={{ color: textColor }}
               />
               <ActionsheetItemText style={{ color: textColor }}>
@@ -114,7 +122,7 @@ export function ThemeSwitcher() {
               </ActionsheetItemText>
               {theme === 'dark' && (
                 <View
-                  className="ml-auto w-2 h-2 rounded-full"
+                  style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: 9999 }}
                   style={{ backgroundColor: ACCENT_COLOR }}
                 />
               )}
@@ -129,7 +137,7 @@ export function ThemeSwitcher() {
               <Icon
                 as={SettingsIcon}
                 size="lg"
-                className="mr-3"
+                style={{ marginRight: 12 }}
                 style={{ color: textColor }}
               />
               <ActionsheetItemText style={{ color: textColor }}>
@@ -137,7 +145,7 @@ export function ThemeSwitcher() {
               </ActionsheetItemText>
               {theme === 'system' && (
                 <View
-                  className="ml-auto w-2 h-2 rounded-full"
+                  style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: 9999 }}
                   style={{ backgroundColor: ACCENT_COLOR }}
                 />
               )}

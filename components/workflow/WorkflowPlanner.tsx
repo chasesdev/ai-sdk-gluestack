@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { ScrollView, StyleSheet, Dimensions } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Svg, { Defs, Pattern, Rect, Circle } from 'react-native-svg'
@@ -260,12 +260,15 @@ export function WorkflowPlanner({
     [nodes]
   )
 
-  // Calculate canvas size based on node positions
-  const canvasWidth = Math.max(
-    screenWidth,
-    ...nodes.map(n => n.position.x + 250)
+  // Calculate canvas size based on node positions (memoized for performance)
+  const canvasWidth = useMemo(
+    () => Math.max(screenWidth, ...nodes.map(n => n.position.x + 250)),
+    [nodes, screenWidth]
   )
-  const canvasHeight = Math.max(800, ...nodes.map(n => n.position.y + 150))
+  const canvasHeight = useMemo(
+    () => Math.max(800, ...nodes.map(n => n.position.y + 150)),
+    [nodes]
+  )
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -273,8 +276,12 @@ export function WorkflowPlanner({
         {/* Toolbar */}
         <HStack
           space="sm"
-          className="p-3 bg-card border-b border-border"
-          style={{ backgroundColor: cardBg, borderBottomColor: borderColor }}
+          style={{
+            backgroundColor: cardBg,
+            borderBottomColor: borderColor,
+            borderBottomWidth: 1,
+            padding: 12,
+          }}
         >
           <Button
             size="sm"
@@ -306,7 +313,7 @@ export function WorkflowPlanner({
             </Badge>
           )}
 
-          <Badge className="ml-auto">
+          <Badge sx={{ marginLeft: 'auto' }}>
             <BadgeText style={{ color: textColor }}>
               {Math.round(scale * 100)}%
             </BadgeText>
@@ -396,8 +403,13 @@ export function WorkflowPlanner({
         {/* Stats Footer */}
         <HStack
           space="md"
-          className="p-3 bg-card border-t border-border items-center"
-          style={{ backgroundColor: cardBg, borderTopColor: borderColor }}
+          style={{
+            backgroundColor: cardBg,
+            borderTopColor: borderColor,
+            borderTopWidth: 1,
+            padding: 12,
+            alignItems: 'center',
+          }}
         >
           <VStack>
             <Text size="xs" style={{ color: mutedTextColor }}>
@@ -416,7 +428,7 @@ export function WorkflowPlanner({
             </Text>
           </VStack>
           {selectedNodeId && (
-            <Badge action="info" className="ml-auto">
+            <Badge action="info" sx={{ marginLeft: 'auto' }}>
               <BadgeText style={{ color: textColor }}>
                 {nodes.find(n => n.id === selectedNodeId)?.data.label ||
                   'Selected'}

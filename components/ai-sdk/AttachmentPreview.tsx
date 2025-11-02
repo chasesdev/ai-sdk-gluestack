@@ -53,7 +53,7 @@ export function AttachmentPreview({
     const maxHeight = isInMessage ? 300 : compact ? 80 : 200
 
     return (
-      <Box className="relative">
+      <Box sx={{ position: 'relative' }}>
         <TouchableOpacity onPress={onPress} disabled={!onPress}>
           <Image
             source={{ uri: attachment.uri }}
@@ -89,24 +89,26 @@ export function AttachmentPreview({
     return (
       <TouchableOpacity onPress={onPress} disabled={!onPress}>
         <Box
-          className={`rounded-lg ${compact ? 'p-2' : 'p-3'}`}
           style={{
+            borderRadius: 8,
+            padding: compact ? 8 : 12,
             backgroundColor: cardColor,
             borderWidth: 1,
             borderColor: border,
             maxWidth: compact ? 300 : undefined,
           }}
         >
-          <HStack space="sm" className="items-center">
+          <HStack space="sm" sx={{ alignItems: 'center' }}>
             <Box
-              className="rounded-md p-2"
               style={{
+                borderRadius: 6,
+                padding: 8,
                 backgroundColor: colors.accent + '20',
               }}
             >
               <Icon as={FileText} size={compact ? 'xs' : 'sm'} color={colors.accent} />
             </Box>
-            <VStack className="flex-1">
+            <VStack sx={{ flex: 1 }}>
               <Text
                 size={compact ? 'xs' : 'sm'}
                 style={{ color: textColor }}
@@ -135,24 +137,26 @@ export function AttachmentPreview({
     return (
       <TouchableOpacity onPress={onPress} disabled={!onPress}>
         <Box
-          className={`rounded-lg ${compact ? 'p-2' : 'p-3'}`}
           style={{
+            borderRadius: 8,
+            padding: compact ? 8 : 12,
             backgroundColor: cardColor,
             borderWidth: 1,
             borderColor: border,
             maxWidth: compact ? 300 : undefined,
           }}
         >
-          <HStack space="sm" className="items-center">
+          <HStack space="sm" sx={{ alignItems: 'center' }}>
             <Box
-              className="rounded-md p-2"
               style={{
+                borderRadius: 6,
+                padding: 8,
                 backgroundColor: colors.accent + '20',
               }}
             >
               <Icon as={Music} size={compact ? 'xs' : 'sm'} color={colors.accent} />
             </Box>
-            <VStack className="flex-1">
+            <VStack sx={{ flex: 1 }}>
               <Text
                 size={compact ? 'xs' : 'sm'}
                 style={{ color: textColor }}

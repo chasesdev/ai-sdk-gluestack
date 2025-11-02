@@ -21,7 +21,6 @@ interface ThemedCardProps extends Omit<BoxProps, 'children'> {
 export function ThemedCard({
   variant = 'elevated',
   children,
-  className = '',
   sx,
   ...props
 }: ThemedCardProps) {
@@ -31,24 +30,21 @@ export function ThemedCard({
   const bgColor = isDark ? '$cardDark' : '$cardLight'
   const borderColor = isDark ? '$borderDark' : '$borderLight'
 
-  // Build className based on variant
-  const variantClasses = {
-    elevated: 'shadow-sm',
-    flat: '',
-    outlined: 'border-2',
-  }
-
-  const combinedClassName = `${variantClasses[variant]} ${className}`.trim()
-
   return (
     <Box
-      className={combinedClassName}
       sx={{
         backgroundColor: bgColor,
         borderColor: borderColor,
         borderWidth: variant === 'outlined' ? 2 : 1,
         borderRadius: '$3',
         padding: '$5',
+        ...(variant === 'elevated' && {
+          shadowColor: '$shadowColor',
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: 0.1,
+          shadowRadius: 2,
+          elevation: 2,
+        }),
         ...sx,
       }}
       {...props}

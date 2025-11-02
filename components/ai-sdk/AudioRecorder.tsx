@@ -10,7 +10,11 @@ import {
   ButtonText,
 } from '@gluestack-ui/themed'
 import { Mic, Square, Play, Pause, Trash2, Check } from 'lucide-react-native'
-import { Audio } from 'expo-av'
+import { requestRecordingPermissionsAsync, RecordingPresets } from 'expo-audio'
+import {
+  AudioRecorder as ExpoAudioRecorder,
+  AudioPlayer as ExpoAudioPlayer,
+} from 'expo-audio/build/AudioModule.types'
 import { Attachment } from './types'
 import { useTheme } from '../../contexts/ThemeContext'
 import { getThemeColors } from '../../constants/theme'
@@ -35,8 +39,8 @@ export function AudioRecorder({
   const [duration, setDuration] = useState(0)
   const [recordingUri, setRecordingUri] = useState<string | null>(null)
 
-  const recordingRef = useRef<Audio.Recording | null>(null)
-  const soundRef = useRef<Audio.Sound | null>(null)
+  const recordingRef = useRef<ExpoAudioRecorder | null>(null)
+  const soundRef = useRef<ExpoAudioPlayer | null>(null)
   const intervalRef = useRef<number | null>(null)
 
   const formatTime = (milliseconds: number): string => {
@@ -48,7 +52,7 @@ export function AudioRecorder({
 
   const requestPermissions = async () => {
     try {
-      const { status } = await Audio.requestPermissionsAsync()
+      const { status } = await requestRecordingPermissionsAsync()
       if (status !== 'granted') {
         Alert.alert(
           'Permission Required',
@@ -68,14 +72,9 @@ export function AudioRecorder({
     if (!hasPermission) return
 
     try {
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: true,
-        playsInSilentModeIOS: true,
-      })
-
-      const { recording } = await Audio.Recording.createAsync(
-        Audio.RecordingOptionsPresets.HIGH_QUALITY
-      )
+      const recording = new ExpoAudioRecorder(RecordingPresets.HIGH_QUALITY)
+      await recording.prepareToRecordAsync()
+      recording.record()
 
       recordingRef.current = recording
       setIsRecording(true)
@@ -94,7 +93,7 @@ export function AudioRecorder({
   const pauseRecording = async () => {
     try {
       if (recordingRef.current) {
-        await recordingRef.current.pauseAsync()
+        recordingRef.current.pause()
         setIsPaused(true)
         if (intervalRef.current) {
           clearInterval(intervalRef.current)
@@ -108,7 +107,7 @@ export function AudioRecorder({
   const resumeRecording = async () => {
     try {
       if (recordingRef.current) {
-        await recordingRef.current.startAsync()
+        recordingRef.current.record()
         setIsPaused(false)
 
         intervalRef.current = setInterval(() => {
@@ -128,12 +127,8 @@ export function AudioRecorder({
         clearInterval(intervalRef.current)
       }
 
-      await recordingRef.current.stopAndUnloadAsync()
-      await Audio.setAudioModeAsync({
-        allowsRecordingIOS: false,
-      })
-
-      const uri = recordingRef.current.getURI()
+      await recordingRef.current.stop()
+      const uri = recordingRef.current.uri
       setRecordingUri(uri)
       setIsRecording(false)
       setIsPaused(false)
@@ -149,22 +144,20 @@ export function AudioRecorder({
 
     try {
       if (soundRef.current) {
-        await soundRef.current.unloadAsync()
+        soundRef.current.remove()
       }
 
-      const { sound } = await Audio.Sound.createAsync(
-        { uri: recordingUri },
-        { shouldPlay: true }
-      )
+      const player = new ExpoAudioPlayer({ uri: recordingUri }, 500, false)
+      soundRef.current = player
 
-      soundRef.current = sound
-      setIsPlaying(true)
-
-      sound.setOnPlaybackStatusUpdate(status => {
-        if (status.isLoaded && status.didJustFinish) {
+      player.addListener('playbackStatusUpdate', (status) => {
+        if (!status.playing && status.currentTime >= status.duration && status.duration > 0) {
           setIsPlaying(false)
         }
       })
+
+      player.play()
+      setIsPlaying(true)
     } catch (error) {
       Alert.alert('Error', 'Failed to play recording')
     }
@@ -173,7 +166,7 @@ export function AudioRecorder({
   const pausePlayback = async () => {
     try {
       if (soundRef.current) {
-        await soundRef.current.pauseAsync()
+        soundRef.current.pause()
         setIsPlaying(false)
       }
     } catch (error) {
@@ -183,7 +176,7 @@ export function AudioRecorder({
 
   const deleteRecording = () => {
     if (soundRef.current) {
-      soundRef.current.unloadAsync()
+      soundRef.current.remove()
       soundRef.current = null
     }
     setRecordingUri(null)
@@ -219,7 +212,7 @@ export function AudioRecorder({
       stopRecording()
     }
     if (soundRef.current) {
-      soundRef.current.unloadAsync()
+      soundRef.current.remove()
     }
     if (intervalRef.current) {
       clearInterval(intervalRef.current)
@@ -248,8 +241,14 @@ export function AudioRecorder({
         }}
       >
         <Box
-          className="rounded-2xl p-6 m-6 w-full max-w-md"
-          style={{ backgroundColor: colors.card }}
+          style={{
+            borderRadius: 16,
+            padding: 24,
+            margin: 24,
+            width: '100%',
+            maxWidth: 400,
+            backgroundColor: colors.card,
+          }}
         >
           <VStack space="lg">
             <Text size="xl" bold style={{ color: colors.text, textAlign: 'center' }}>
@@ -257,15 +256,19 @@ export function AudioRecorder({
             </Text>
 
             {/* Duration display */}
-            <Box className="items-center py-6">
+            <Box sx={{ alignItems: 'center', paddingVertical: '$6' }}>
               <Text size="3xl" bold style={{ color: colors.accent }}>
                 {formatTime(duration)}
               </Text>
               {isRecording && !isPaused && (
-                <HStack space="xs" className="items-center mt-2">
+                <HStack space="xs" sx={{ alignItems: 'center', marginTop: '$2' }}>
                   <Box
-                    className="w-2 h-2 rounded-full"
-                    style={{ backgroundColor: '#ef4444' }}
+                    style={{
+                      width: 8,
+                      height: 8,
+                      borderRadius: 9999,
+                      backgroundColor: '#ef4444',
+                    }}
                   />
                   <Text size="sm" style={{ color: colors.mutedText }}>
                     Recording...
@@ -273,7 +276,7 @@ export function AudioRecorder({
                 </HStack>
               )}
               {isPaused && (
-                <Text size="sm" style={{ color: colors.mutedText }} className="mt-2">
+                <Text size="sm" style={{ color: colors.mutedText }} sx={{ marginTop: '$2' }}>
                   Paused
                 </Text>
               )}
@@ -283,7 +286,7 @@ export function AudioRecorder({
             <VStack space="md">
               {!isRecording && !recordingUri && (
                 <Button onPress={startRecording} size="lg">
-                  <Icon as={Mic} size="md" className="mr-2" />
+                  <Icon as={Mic} size="md" sx={{ marginRight: '$2' }} />
                   <ButtonText>Start Recording</ButtonText>
                 </Button>
               )}
@@ -298,7 +301,7 @@ export function AudioRecorder({
                     <Icon as={isPaused ? Play : Pause} size="sm" />
                   </Button>
                   <Button onPress={stopRecording} action="negative" style={{ flex: 1 }}>
-                    <Icon as={Square} size="sm" className="mr-2" />
+                    <Icon as={Square} size="sm" sx={{ marginRight: '$2' }} />
                     <ButtonText>Stop</ButtonText>
                   </Button>
                 </HStack>
@@ -312,7 +315,7 @@ export function AudioRecorder({
                       variant="outline"
                       style={{ flex: 1 }}
                     >
-                      <Icon as={isPlaying ? Pause : Play} size="sm" className="mr-2" />
+                      <Icon as={isPlaying ? Pause : Play} size="sm" sx={{ marginRight: '$2' }} />
                       <ButtonText>{isPlaying ? 'Pause' : 'Play'}</ButtonText>
                     </Button>
                     <Button onPress={deleteRecording} action="negative" variant="outline">
@@ -322,7 +325,7 @@ export function AudioRecorder({
 
                   <HStack space="md">
                     <Button onPress={handleSave} style={{ flex: 1 }}>
-                      <Icon as={Check} size="sm" className="mr-2" />
+                      <Icon as={Check} size="sm" sx={{ marginRight: '$2' }} />
                       <ButtonText>Save</ButtonText>
                     </Button>
                     <Button onPress={handleClose} variant="outline" style={{ flex: 1 }}>

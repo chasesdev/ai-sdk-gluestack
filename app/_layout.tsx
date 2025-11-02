@@ -7,7 +7,6 @@ import { View, Platform } from 'react-native'
 import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ThemeProvider, useTheme } from '../contexts/ThemeContext'
 import { getThemeColors } from '../constants/theme'
-import '../global.css'
 
 // Fix for Reanimated on web
 if (typeof window !== 'undefined') {

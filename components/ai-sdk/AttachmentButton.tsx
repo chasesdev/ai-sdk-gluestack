@@ -213,19 +213,19 @@ export function AttachmentButton({
       )}
     >
       <MenuItem onPress={handleCamera}>
-        <Icon as={Camera} size="sm" className="mr-2" />
+        <Icon as={Camera} size="sm" sx={{ marginRight: '$2' }} />
         <MenuItemLabel>Take Photo</MenuItemLabel>
       </MenuItem>
       <MenuItem onPress={handleGallery}>
-        <Icon as={Image} size="sm" className="mr-2" />
+        <Icon as={Image} size="sm" sx={{ marginRight: '$2' }} />
         <MenuItemLabel>Choose from Gallery</MenuItemLabel>
       </MenuItem>
       <MenuItem onPress={handleDocument}>
-        <Icon as={FileText} size="sm" className="mr-2" />
+        <Icon as={FileText} size="sm" sx={{ marginRight: '$2' }} />
         <MenuItemLabel>Select Document</MenuItemLabel>
       </MenuItem>
       <MenuItem onPress={handleAudioRecord}>
-        <Icon as={Mic} size="sm" className="mr-2" />
+        <Icon as={Mic} size="sm" sx={{ marginRight: '$2' }} />
         <MenuItemLabel>Record Audio</MenuItemLabel>
       </MenuItem>
     </Menu>

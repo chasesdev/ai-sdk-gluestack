@@ -1415,8 +1415,7 @@ export default function ComponentsPage() {
                     sx={{ textAlign: 'center' }}
                     style={{ color: mutedTextColor }}
                   >
-                    Built with Expo 54, Gluestack UI v3, NativeWind v4 &
-                    Reanimated v3
+                    Built with Expo 54, Gluestack UI v3, Reanimated v3 & FlashList
                   </Text>
                   <HStack space="sm">
                     <Badge>

@@ -1,5 +1,5 @@
+import React, { ReactNode, memo } from 'react'
 import { VStack } from '@gluestack-ui/themed'
-import { ReactNode } from 'react'
 import { ThemedHeading, ThemedText } from './themed'
 
 interface ComponentSectionProps {
@@ -8,7 +8,7 @@ interface ComponentSectionProps {
   children: ReactNode
 }
 
-export function ComponentSection({
+export const ComponentSection = memo(function ComponentSection({
   title,
   description,
   children,
@@ -28,4 +28,4 @@ export function ComponentSection({
       </VStack>
     </VStack>
   )
-}
+})

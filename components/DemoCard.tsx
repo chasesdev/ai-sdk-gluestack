@@ -1,5 +1,5 @@
+import React, { ReactNode, memo } from 'react'
 import { VStack, Box } from '@gluestack-ui/themed'
-import { ReactNode } from 'react'
 import { ThemedCard, ThemedHeading, ThemedText } from './themed'
 
 interface DemoCardProps {
@@ -8,7 +8,7 @@ interface DemoCardProps {
   children: ReactNode
 }
 
-export function DemoCard({ title, description, children }: DemoCardProps) {
+export const DemoCard = memo(function DemoCard({ title, description, children }: DemoCardProps) {
   return (
     <ThemedCard>
       <VStack space="md">
@@ -24,4 +24,4 @@ export function DemoCard({ title, description, children }: DemoCardProps) {
       </VStack>
     </ThemedCard>
   )
-}
+})

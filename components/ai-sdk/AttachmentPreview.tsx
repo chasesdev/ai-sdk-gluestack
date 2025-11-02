@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, memo } from 'react'
 import { TouchableOpacity, Dimensions } from 'react-native'
 import {
   Box,
@@ -35,7 +35,7 @@ const formatDuration = (seconds?: number): string => {
   return `${mins}:${secs.toString().padStart(2, '0')}`
 }
 
-export function AttachmentPreview({
+export const AttachmentPreview = memo(function AttachmentPreview({
   attachment,
   onPress,
   onRemove,
@@ -189,4 +189,4 @@ export function AttachmentPreview({
   }
 
   return null
-}
+})

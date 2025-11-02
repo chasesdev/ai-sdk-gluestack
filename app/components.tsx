@@ -204,7 +204,7 @@ export default function ComponentsPage() {
     <>
       <ScrollView
         ref={scrollViewRef}
-        sx={{ flex: 1 }}
+        style={{ flex: 1 }}
         contentInsetAdjustmentBehavior="automatic"
       >
         <ResponsiveContainer>

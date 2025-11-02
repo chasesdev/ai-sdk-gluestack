@@ -1,5 +1,6 @@
 import React, { useState, useRef, useCallback } from 'react'
-import { Platform } from 'react-native'
+import { Platform, View } from 'react-native'
+import { FlashList } from '@shopify/flash-list'
 import {
   VStack,
   HStack,
@@ -10,7 +11,6 @@ import {
   Button,
   ButtonText,
   Icon,
-  ScrollView,
 } from '@gluestack-ui/themed'
 import { Message, Attachment } from './types'
 import { ChatMessage } from './ChatMessage'
@@ -49,7 +49,7 @@ export function AIChatbot({
   const [isLoading, setIsLoading] = useState(false)
   const [selectedAttachments, setSelectedAttachments] = useState<Attachment[]>([])
   const [showAudioRecorder, setShowAudioRecorder] = useState(false)
-  const scrollViewRef = useRef<any>(null)
+  const flashListRef = useRef<any>(null)
 
   const handleAttachmentSelected = useCallback((attachment: Attachment) => {
     setSelectedAttachments(prev => [...prev, attachment])
@@ -147,19 +147,29 @@ export function AIChatbot({
     }
   }, [inputValue, selectedAttachments, disabled, isLoading, onSendMessage])
 
+  // Auto-scroll to bottom when messages change
+  React.useEffect(() => {
+    if (messages.length > 0) {
+      setTimeout(() => {
+        flashListRef.current?.scrollToEnd({ animated: true })
+      }, 100)
+    }
+  }, [messages.length])
+
   return (
     <VStack space="md" sx={{ height: '100%' }}>
-      <ScrollView
-        ref={scrollViewRef}
-        style={{ flex: 1 }}
-        onContentSizeChange={() => {
-          scrollViewRef.current?.scrollToEnd({ animated: true })
-        }}
-        accessibilityRole="list"
-        accessibilityLabel="Chat messages"
-      >
-        <VStack space="sm" sx={{ paddingHorizontal: '$4', paddingBottom: '$4', paddingTop: '$4' }}>
-          {messages.length === 0 ? (
+      <View style={{ flex: 1 }}>
+        <FlashList
+          ref={flashListRef}
+          data={messages}
+          renderItem={({ item }) => <ChatMessage message={item} />}
+          keyExtractor={item => item.id}
+          contentContainerStyle={{
+            paddingHorizontal: 16,
+            paddingBottom: 16,
+            paddingTop: 16,
+          }}
+          ListEmptyComponent={
             <Box sx={{ paddingVertical: '$8' }}>
               <Text
                 size="sm"
@@ -169,13 +179,9 @@ export function AIChatbot({
                 Start a conversation
               </Text>
             </Box>
-          ) : (
-            messages.map(message => (
-              <ChatMessage key={message.id} message={message} />
-            ))
-          )}
-        </VStack>
-      </ScrollView>
+          }
+        />
+      </View>
 
       <Box
         style={{

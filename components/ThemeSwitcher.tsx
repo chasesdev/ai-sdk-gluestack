@@ -91,16 +91,14 @@ export function ThemeSwitcher() {
               <Icon
                 as={SunIcon}
                 size="lg"
-                style={{ marginRight: 12 }}
-                style={{ color: textColor }}
+                style={{ marginRight: 12, color: textColor }}
               />
               <ActionsheetItemText style={{ color: textColor }}>
                 Light
               </ActionsheetItemText>
               {theme === 'light' && (
                 <View
-                  style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: 9999 }}
-                  style={{ backgroundColor: ACCENT_COLOR }}
+                  style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: 9999, backgroundColor: ACCENT_COLOR }}
                 />
               )}
             </ActionsheetItem>
@@ -114,16 +112,14 @@ export function ThemeSwitcher() {
               <Icon
                 as={MoonIcon}
                 size="lg"
-                style={{ marginRight: 12 }}
-                style={{ color: textColor }}
+                style={{ marginRight: 12, color: textColor }}
               />
               <ActionsheetItemText style={{ color: textColor }}>
                 Dark
               </ActionsheetItemText>
               {theme === 'dark' && (
                 <View
-                  style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: 9999 }}
-                  style={{ backgroundColor: ACCENT_COLOR }}
+                  style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: 9999, backgroundColor: ACCENT_COLOR }}
                 />
               )}
             </ActionsheetItem>
@@ -137,16 +133,14 @@ export function ThemeSwitcher() {
               <Icon
                 as={SettingsIcon}
                 size="lg"
-                style={{ marginRight: 12 }}
-                style={{ color: textColor }}
+                style={{ marginRight: 12, color: textColor }}
               />
               <ActionsheetItemText style={{ color: textColor }}>
                 System
               </ActionsheetItemText>
               {theme === 'system' && (
                 <View
-                  style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: 9999 }}
-                  style={{ backgroundColor: ACCENT_COLOR }}
+                  style={{ marginLeft: 'auto', width: 8, height: 8, borderRadius: 9999, backgroundColor: ACCENT_COLOR }}
                 />
               )}
             </ActionsheetItem>

@@ -1,5 +1,5 @@
 import React, { memo } from 'react'
-import { StyleSheet } from 'react-native'
+import { StyleSheet, Platform } from 'react-native'
 import { Gesture, GestureDetector } from 'react-native-gesture-handler'
 import Animated, {
   useAnimatedStyle,
@@ -19,6 +19,20 @@ import {
   Badge,
   BadgeText,
   Icon,
+  Button,
+  ButtonText,
+  AlertDialog,
+  AlertDialogBackdrop,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogBody,
+  AlertDialogFooter,
+  Actionsheet,
+  ActionsheetBackdrop,
+  ActionsheetContent,
+  ActionsheetDragIndicator,
+  ActionsheetDragIndicatorWrapper,
+  ActionsheetItem,
 } from '@gluestack-ui/themed'
 import { useTheme } from '../../contexts/ThemeContext'
 import { getThemeColors } from '../../constants/theme'
@@ -29,8 +43,12 @@ import {
   CheckCircleIcon,
   AlertCircleIcon,
   CheckIcon,
+  EditIcon,
+  CopyIcon,
+  TrashIcon,
 } from '@gluestack-ui/themed'
 import type { WorkflowNode as WorkflowNodeType, Position } from './types'
+import { useContextMenuGesture } from '../../app/hooks/useTouchGestures'
 
 interface WorkflowNodeProps {
   node: WorkflowNodeType
@@ -41,6 +59,9 @@ interface WorkflowNodeProps {
   onDragEnd: (nodeId: string) => void
   scale: number
   disabled?: boolean
+  onEdit?: (nodeId: string) => void
+  onDuplicate?: (nodeId: string) => void
+  onDelete?: (nodeId: string) => void
 }
 
 const iconMap = {
@@ -85,6 +106,9 @@ export const WorkflowNode = memo(
     onDragEnd,
     scale,
     disabled = false,
+    onEdit,
+    onDuplicate,
+    onDelete,
   }: WorkflowNodeProps) => {
     const translateX = useSharedValue(node.position.x)
     const translateY = useSharedValue(node.position.y)
@@ -92,9 +116,42 @@ export const WorkflowNode = memo(
     const startX = useSharedValue(0)
     const startY = useSharedValue(0)
     const isDraggingRef = React.useRef(false)
+    const [showContextMenu, setShowContextMenu] = React.useState(false)
+    const [showDeleteDialog, setShowDeleteDialog] = React.useState(false)
 
     // Pulse animation for running status
     const pulseScale = useSharedValue(1)
+
+    const handleContextMenu = React.useCallback(() => {
+      setShowContextMenu(true)
+    }, [])
+
+    const handleEdit = React.useCallback(() => {
+      onEdit?.(node.id)
+      setShowContextMenu(false)
+    }, [node.id, onEdit])
+
+    const handleDuplicate = React.useCallback(() => {
+      onDuplicate?.(node.id)
+      setShowContextMenu(false)
+    }, [node.id, onDuplicate])
+
+    const handleDelete = React.useCallback(() => {
+      onDelete?.(node.id)
+      setShowDeleteDialog(false)
+      setShowContextMenu(false)
+    }, [node.id, onDelete])
+
+    const handleDeleteConfirm = React.useCallback(() => {
+      setShowDeleteDialog(true)
+      setShowContextMenu(false)
+    }, [])
+
+    // Context menu gesture for right-click on web and long-press on mobile
+    const { gesture: contextMenuGesture, contextMenuProps } = useContextMenuGesture(
+      handleContextMenu,
+      { enabled: !disabled }
+    )
 
     // Sync shared values with node position prop changes (but not during drag)
     // Using setTimeout to ensure this runs after render phase
@@ -155,7 +212,7 @@ export const WorkflowNode = memo(
       runOnJS(onPress)(node.id)
     })
 
-    const composed = Gesture.Race(panGesture, tapGesture)
+    const composed = Gesture.Race(panGesture, tapGesture, contextMenuGesture)
 
     const animatedStyle = useAnimatedStyle(() => {
       return {
@@ -189,9 +246,10 @@ export const WorkflowNode = memo(
           accessibilityRole="button"
           accessibilityLabel={`${node.data.label} node, status: ${status}`}
           accessibilityHint={
-            disabled ? 'Node is disabled' : 'Double tap to select, drag to move'
+            disabled ? 'Node is disabled' : 'Double tap to select, drag to move, long press for options'
           }
           accessibilityState={{ selected: isSelected, disabled }}
+          {...contextMenuProps}
         >
           <Box
             style={[
@@ -324,6 +382,70 @@ export const WorkflowNode = memo(
               ]}
             />
           </Box>
+
+        {/* Context Menu Actionsheet */}
+        {showContextMenu && (
+          <Actionsheet isOpen={showContextMenu} onClose={() => setShowContextMenu(false)}>
+            <ActionsheetBackdrop />
+            <ActionsheetContent>
+              <ActionsheetDragIndicatorWrapper>
+                <ActionsheetDragIndicator />
+              </ActionsheetDragIndicatorWrapper>
+
+              {onEdit && (
+                <ActionsheetItem onPress={handleEdit}>
+                  <Icon as={EditIcon} mr="$3" />
+                  <Text>Edit Node</Text>
+                </ActionsheetItem>
+              )}
+
+              {onDuplicate && (
+                <ActionsheetItem onPress={handleDuplicate}>
+                  <Icon as={CopyIcon} mr="$3" />
+                  <Text>Duplicate Node</Text>
+                </ActionsheetItem>
+              )}
+
+              {onDelete && (
+                <ActionsheetItem onPress={handleDeleteConfirm}>
+                  <Icon as={TrashIcon} mr="$3" />
+                  <Text>Delete Node</Text>
+                </ActionsheetItem>
+              )}
+            </ActionsheetContent>
+          </Actionsheet>
+        )}
+
+        {/* Delete Confirmation Dialog */}
+        {showDeleteDialog && (
+          <AlertDialog isOpen={showDeleteDialog} onClose={() => setShowDeleteDialog(false)}>
+            <AlertDialogBackdrop />
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <Heading size="lg">Delete Node</Heading>
+              </AlertDialogHeader>
+              <AlertDialogBody>
+                <Text>Are you sure you want to delete "{node.data.label}"? This action cannot be undone.</Text>
+              </AlertDialogBody>
+              <AlertDialogFooter>
+                <Button
+                  variant="outline"
+                  action="secondary"
+                  onPress={() => setShowDeleteDialog(false)}
+                  mr="$3"
+                >
+                  <ButtonText>Cancel</ButtonText>
+                </Button>
+                <Button
+                  action="negative"
+                  onPress={handleDelete}
+                >
+                  <ButtonText>Delete</ButtonText>
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
+        )}
         </Animated.View>
       </GestureDetector>
     )

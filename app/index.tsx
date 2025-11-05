@@ -25,7 +25,7 @@ export default function HomePage() {
           {/* Header */}
           <VStack space="md" sx={{ marginBottom: '$6' }}>
             <VStack space="sm">
-              <ThemedHeading size="xl">AI SDK Components</ThemedHeading>
+              <ThemedHeading size="xl">Gluestack UI Components</ThemedHeading>
               <ThemedText variant="muted" size="lg">
                 Interactive workflow and chat demonstrations
               </ThemedText>

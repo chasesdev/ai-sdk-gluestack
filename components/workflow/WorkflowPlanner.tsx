@@ -1,5 +1,5 @@
-import React, { useState, useCallback, useMemo } from 'react'
-import { ScrollView, StyleSheet, Dimensions } from 'react-native'
+import React, { useState, useCallback, useMemo, useRef } from 'react'
+import { ScrollView, StyleSheet, Dimensions, Platform } from 'react-native'
 import { GestureHandlerRootView } from 'react-native-gesture-handler'
 import Svg, { Defs, Pattern, Rect, Circle } from 'react-native-svg'
 import {
@@ -31,6 +31,7 @@ import type {
 } from './types'
 import { useTheme } from '../../contexts/ThemeContext'
 import { getThemeColors } from '../../constants/theme'
+import { useMouseWheelZoom } from '../../app/hooks/useMouseWheelZoom'
 
 const { width: screenWidth } = Dimensions.get('window')
 
@@ -60,6 +61,17 @@ export function WorkflowPlanner({
   const [scale, setScale] = useState(1)
   const [showAddNodeModal, setShowAddNodeModal] = useState(false)
   const [isRunning, setIsRunning] = useState(false)
+  const scrollViewRef = useRef<any>(null)
+
+  // Mouse wheel zoom for desktop
+  const { setScale: setZoomScale } = useMouseWheelZoom(scrollViewRef, {
+    minScale: 0.5,
+    maxScale: 2,
+    zoomSpeed: 0.002,
+    onZoomChange: (newScale) => {
+      setScale(newScale)
+    }
+  })
 
   const nodeTypes = [
     {
@@ -213,6 +225,41 @@ export function WorkflowPlanner({
     // Optional: Add snap-to-grid logic here
   }, [])
 
+  const handleNodeEdit = useCallback((nodeId: string) => {
+    // TODO: Implement node editing functionality
+    console.log('Edit node:', nodeId)
+  }, [])
+
+  const handleNodeDuplicate = useCallback((nodeId: string) => {
+    const nodeToDuplicate = nodes.find(n => n.id === nodeId)
+    if (!nodeToDuplicate) return
+
+    const newNode: WorkflowNodeType = {
+      ...nodeToDuplicate,
+      id: `node-${Date.now()}`,
+      position: {
+        x: nodeToDuplicate.position.x + 50,
+        y: nodeToDuplicate.position.y + 50,
+      },
+      data: {
+        ...nodeToDuplicate.data,
+        label: `${nodeToDuplicate.data.label} (Copy)`,
+      },
+    }
+
+    setNodes(prev => [...prev, newNode])
+    setSelectedNodeId(newNode.id)
+  }, [nodes])
+
+  const handleNodeDelete = useCallback((nodeId: string) => {
+    setNodes(prev => prev.filter(n => n.id !== nodeId))
+    setEdges(prev => prev.filter(e => e.source !== nodeId && e.target !== nodeId))
+
+    if (selectedNodeId === nodeId) {
+      setSelectedNodeId(undefined)
+    }
+  }, [selectedNodeId])
+
   const handleZoomIn = useCallback(() => {
     setScale(prev => Math.min(prev + 0.1, 2))
   }, [])
@@ -322,6 +369,7 @@ export function WorkflowPlanner({
 
         {/* Canvas */}
         <ScrollView
+          ref={scrollViewRef}
           style={styles.scrollView}
           contentContainerStyle={{
             width: canvasWidth * scale,
@@ -330,6 +378,7 @@ export function WorkflowPlanner({
           showsHorizontalScrollIndicator
           showsVerticalScrollIndicator
           bounces={false}
+          scrollEnabled={!isLocked}
         >
           <Box
             style={[
@@ -393,6 +442,9 @@ export function WorkflowPlanner({
                 onDragStart={handleNodeDragStart}
                 onDrag={handleNodeDrag}
                 onDragEnd={handleNodeDragEnd}
+                onEdit={handleNodeEdit}
+                onDuplicate={handleNodeDuplicate}
+                onDelete={handleNodeDelete}
                 scale={scale}
                 disabled={isLocked}
               />

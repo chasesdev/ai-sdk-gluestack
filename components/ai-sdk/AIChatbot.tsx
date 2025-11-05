@@ -27,6 +27,9 @@ interface AIChatbotProps {
   placeholder?: string
   disabled?: boolean
   title?: string
+  onReplyToMessage?: (message: Message) => void
+  onDeleteMessage?: (messageId: string) => void
+  onCopyMessage?: (content: string) => void
 }
 
 export function AIChatbot({
@@ -35,6 +38,9 @@ export function AIChatbot({
   placeholder = 'Type your message...',
   disabled = false,
   title = 'AI Chatbot',
+  onReplyToMessage,
+  onDeleteMessage,
+  onCopyMessage,
 }: AIChatbotProps) {
   const { resolvedTheme } = useTheme()
   const colors = getThemeColors(resolvedTheme === 'dark')
@@ -63,6 +69,28 @@ export function AIChatbot({
     setSelectedAttachments(prev => [...prev, attachment])
     setShowAudioRecorder(false)
   }, [])
+
+  const handleReplyToMessage = useCallback((message: Message) => {
+    onReplyToMessage?.(message)
+    // Auto-fill input with reply indicator
+    setInputValue(`> ${message.content.split('\n')[0]}\n`)
+  }, [onReplyToMessage])
+
+  const handleDeleteMessage = useCallback((messageId: string) => {
+    onDeleteMessage?.(messageId)
+    setMessages(prev => prev.filter(msg => msg.id !== messageId))
+  }, [onDeleteMessage])
+
+  const handleCopyMessage = useCallback((content: string) => {
+    onCopyMessage?.(content)
+    // Copy to clipboard
+    if (Platform.OS === 'web' && navigator.clipboard) {
+      navigator.clipboard.writeText(content).catch(() => {
+        // Fallback if clipboard API is not available
+        console.log('Clipboard not available')
+      })
+    }
+  }, [onCopyMessage])
 
   const handleSend = useCallback(async () => {
     if ((!inputValue.trim() && selectedAttachments.length === 0) || disabled || isLoading) return
@@ -162,7 +190,14 @@ export function AIChatbot({
         <FlashList
           ref={flashListRef}
           data={messages}
-          renderItem={({ item }) => <ChatMessage message={item} />}
+          renderItem={({ item }) => (
+            <ChatMessage
+              message={item}
+              onReply={handleReplyToMessage}
+              onDelete={handleDeleteMessage}
+              onCopy={handleCopyMessage}
+            />
+          )}
           keyExtractor={item => item.id}
           contentContainerStyle={{
             paddingHorizontal: 16,

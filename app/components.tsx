@@ -1,6 +1,7 @@
 import { useState, useRef, useMemo } from 'react'
 import { ScrollView, View, Switch as RNSwitch, Platform } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import { Link } from 'expo-router'
 import {
   Box,
   VStack,
@@ -205,6 +206,7 @@ export default function ComponentsPage() {
       <ScrollView
         ref={scrollViewRef}
         style={{ flex: 1 }}
+        contentContainerStyle={{ flexGrow: 1 }}
         contentInsetAdjustmentBehavior="automatic"
       >
         <ResponsiveContainer>
@@ -213,7 +215,20 @@ export default function ComponentsPage() {
             <Animated.View entering={FadeIn.duration(400)}>
               <VStack sx={{ marginBottom: '$6' }}>
                 <VStack space="sm">
-                  <ThemedHeading size="xl">Gluestack UI Showcase</ThemedHeading>
+                  <Link href="/" asChild>
+                    <ThemedHeading
+                      size="xl"
+                      sx={{
+                        cursor: 'pointer',
+                        ':hover': {
+                          color: '$blue500',
+                          textDecorationLine: 'underline'
+                        }
+                      }}
+                    >
+                      Gluestack UI Showcase
+                    </ThemedHeading>
+                  </Link>
                   <ThemedText variant="muted" size="lg">
                     Interactive demo of all 35+ components
                   </ThemedText>
@@ -280,11 +295,7 @@ export default function ComponentsPage() {
               }}
             >
               <Animated.View entering={FadeInDown.delay(200).duration(400)}>
-                <Accordion
-                  defaultValue={['foundation']}
-                  type="single"
-                  collapsable
-                >
+                <Accordion>
                   <AccordionItem value="foundation">
                     <AccordionHeader>
                       <AccordionTrigger>
@@ -1428,6 +1439,22 @@ export default function ComponentsPage() {
                       <BadgeText>Accessible</BadgeText>
                     </Badge>
                   </HStack>
+
+                  <Link href="/" asChild>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      sx={{
+                        marginTop: '$4',
+                        ':hover': {
+                          backgroundColor: '$blue50',
+                          borderColor: '$blue500'
+                        }
+                      }}
+                    >
+                      <ButtonText>← Back to Home</ButtonText>
+                    </Button>
+                  </Link>
                 </VStack>
               </Box>
             </Animated.View>
